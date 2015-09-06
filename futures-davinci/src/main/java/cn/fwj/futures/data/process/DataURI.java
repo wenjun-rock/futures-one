@@ -7,19 +7,12 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 import cn.fwj.futures.data.enu.Product;
 
+@Component
 public class DataURI {
-
-	private final static DataURI instance = new DataURI();
-
-	private DataURI() {
-
-	}
-
-	public static DataURI get() {
-		return instance;
-	}
 
 	private final static String DATA_URL_SINA = "http://stock2.finance.sina.com.cn/futures/api/json.php";
 	private final static String DATA_RAW_DIR = "F:/futures/data/raw";

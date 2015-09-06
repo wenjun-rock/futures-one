@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Files;
@@ -21,19 +24,11 @@ import cn.fwj.futures.data.vo.DailyKLine;
 import cn.fwj.futures.data.vo.Formula;
 import cn.fwj.futures.data.vo.XYLine;
 
+@Component
 public class DataProcessor {
 
-	private final static DataProcessor instance = new DataProcessor();
-
-	private DataProcessor() {
-
-	}
-
-	public static DataProcessor get() {
-		return instance;
-	}
-
-	private DataURI dataURI = DataURI.get();
+	@Autowired
+	private DataURI dataURI;
 
 	private DailyKLine loadDailyKLine(Product prod) throws IOException {
 		DailyKLine kLine = new DailyKLine(prod);
@@ -158,7 +153,7 @@ public class DataProcessor {
 		for (DailyKLine kLine : kLineList) {
 			fileName += "_" + kLine.getProd().getCode();
 		}
-		Files.asCharSink(DataURI.get().getModelFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
+		Files.asCharSink(dataURI.getModelFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
 	}
 
 	public void exportEndPriceNormal(String startDt, String endDt, int range, Product... prods) throws Exception {
@@ -169,7 +164,7 @@ public class DataProcessor {
 		for (DailyKLine kLine : kLineList) {
 			fileName += "_" + kLine.getProd().getCode();
 		}
-		Files.asCharSink(DataURI.get().getModelFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
+		Files.asCharSink(dataURI.getModelFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
 	}
 
 	public void testEndPriceFormula(String startDt, String endDt, Formula formula) throws Exception {
@@ -181,7 +176,7 @@ public class DataProcessor {
 		for (DailyKLine kLine : kLineList) {
 			fileName += "_" + kLine.getProd().getCode();
 		}
-		Files.asCharSink(DataURI.get().getTestFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
+		Files.asCharSink(dataURI.getTestFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
 	}
 
 	public void monitorEndPriceFormula(String startDt, Formula formula) throws Exception {
@@ -194,7 +189,7 @@ public class DataProcessor {
 		for (DailyKLine kLine : kLineList) {
 			fileName += "_" + kLine.getProd().getCode();
 		}
-		Files.asCharSink(DataURI.get().getMonitorFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
+		Files.asCharSink(dataURI.getMonitorFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
 
 	}
 
