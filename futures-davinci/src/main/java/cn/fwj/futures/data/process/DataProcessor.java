@@ -1,6 +1,5 @@
 package cn.fwj.futures.data.process;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
@@ -14,55 +13,22 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Files;
 
 import cn.fwj.futures.data.enu.Product;
-import cn.fwj.futures.data.vo.DailyK;
-import cn.fwj.futures.data.vo.DailyKLine;
-import cn.fwj.futures.data.vo.Formula;
-import cn.fwj.futures.data.vo.XYLine;
+import cn.fwj.futures.data.repository.KLineRepo;
+import cn.fwj.futures.data.struct.DailyKLine;
+import cn.fwj.futures.data.struct.Formula;
+import cn.fwj.futures.data.struct.XYLine;
 
 @Component
 public class DataProcessor {
 
 	@Autowired
 	private DataURI dataURI;
-
-	private DailyKLine loadDailyKLine(Product prod) throws IOException {
-		DailyKLine kLine = new DailyKLine(prod);
-		String jsonStr = Files.asCharSource(dataURI.getLatestDailyKLineFile(prod), StandardCharsets.UTF_8).read();
-		JSONArray dailyKs = JSON.parseArray(jsonStr);
-		for (int i = 0; i < dailyKs.size(); i++) {
-			JSONArray ele = dailyKs.getJSONArray(i);
-			DailyK daily = new DailyK();
-			daily.setDt(ele.getString(0));
-			daily.setOpenPrice(ele.getBigDecimal(1));
-			daily.setMaxPrice(ele.getBigDecimal(2));
-			daily.setMinPrice(ele.getBigDecimal(3));
-			daily.setEndPrice(ele.getBigDecimal(4));
-			daily.setTradeVol(ele.getLong(5));
-			kLine.setDailyK(daily.getDt(), daily);
-		}
-		return kLine;
-	}
-
-	private List<DailyKLine> loadAllDailyKLines() throws IOException {
-		List<DailyKLine> dailyKLines = new ArrayList<>();
-		for (Product prod : Product.values()) {
-			dailyKLines.add(loadDailyKLine(prod));
-		}
-		return dailyKLines;
-	}
-
-	private List<DailyKLine> loadDailyKLines(Product[] prods) throws IOException {
-		List<DailyKLine> dailyKLines = new ArrayList<>();
-		for (Product prod : prods) {
-			dailyKLines.add(loadDailyKLine(prod));
-		}
-		return dailyKLines;
-	}
+	
+	@Autowired
+	private KLineRepo kLineRepo;
 
 	private List<String> tableFormular(String startDt, String endDt, List<XYLine> xyLineList, Formula formula)
 			throws Exception {
@@ -146,7 +112,7 @@ public class DataProcessor {
 	}
 
 	public void exportEndPrice(String startDt, String endDt, Product... prods) throws Exception {
-		List<DailyKLine> kLineList = prods == null ? this.loadAllDailyKLines() : this.loadDailyKLines(prods);
+		List<DailyKLine> kLineList = prods == null ? kLineRepo.loadAllDailyKLines() : kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList);
 		List<String> lines = this.table(startDt, endDt, xyLineList);
 		String fileName = startDt + "_" + endDt + "_" + kLineList.size();
@@ -157,7 +123,7 @@ public class DataProcessor {
 	}
 
 	public void exportEndPriceNormal(String startDt, String endDt, int range, Product... prods) throws Exception {
-		List<DailyKLine> kLineList = prods == null ? this.loadAllDailyKLines() : this.loadDailyKLines(prods);
+		List<DailyKLine> kLineList = prods == null ? kLineRepo.loadAllDailyKLines() : kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList, range);
 		List<String> lines = this.table(startDt, endDt, xyLineList);
 		String fileName = "N_" + startDt + "_" + endDt + "_" + kLineList.size();
@@ -169,7 +135,7 @@ public class DataProcessor {
 
 	public void testEndPriceFormula(String startDt, String endDt, Formula formula) throws Exception {
 		Product[] prods = formula.getMultinomials().keySet().toArray(new Product[] {});
-		List<DailyKLine> kLineList = this.loadDailyKLines(prods);
+		List<DailyKLine> kLineList = kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList);
 		List<String> lines = this.tableFormular(startDt, endDt, xyLineList, formula);
 		String fileName = "T_" + startDt + "_" + endDt + "_" + kLineList.size();
@@ -182,7 +148,7 @@ public class DataProcessor {
 	public void monitorEndPriceFormula(String startDt, Formula formula) throws Exception {
 		String endDt = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		Product[] prods = formula.getMultinomials().keySet().toArray(new Product[] {});
-		List<DailyKLine> kLineList = this.loadDailyKLines(prods);
+		List<DailyKLine> kLineList = kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList);
 		List<String> lines = this.tableFormular(startDt, endDt, xyLineList, formula);
 		String fileName = "M_" + startDt + "_" + endDt + "_" + kLineList.size();

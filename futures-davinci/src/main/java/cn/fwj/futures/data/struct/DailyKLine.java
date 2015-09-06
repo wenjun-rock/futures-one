@@ -1,9 +1,10 @@
-package cn.fwj.futures.data.vo;
+package cn.fwj.futures.data.struct;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import cn.fwj.futures.data.enu.Product;
 
@@ -14,7 +15,7 @@ public class DailyKLine {
 
 	public DailyKLine(Product prod) {
 		this.prod = prod;
-		this.prices = new HashMap<>();
+		this.prices = new TreeMap<>();
 	}
 
 	public Product getProd() {

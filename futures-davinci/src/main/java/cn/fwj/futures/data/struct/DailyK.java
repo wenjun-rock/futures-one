@@ -1,8 +1,8 @@
-package cn.fwj.futures.data.vo;
+package cn.fwj.futures.data.struct;
 
 import java.math.BigDecimal;
 
-public class DailyK {
+public class DailyK implements Comparable<DailyK> {
 
 	private String dt;
 	private BigDecimal openPrice;
@@ -57,5 +57,19 @@ public class DailyK {
 
 	public void setTradeVol(Long tradeVol) {
 		this.tradeVol = tradeVol;
+	}
+
+	/*
+	 * 按照dt升序
+	 */
+	@Override
+	public int compareTo(DailyK that) {
+		if (that == null || that.dt == null) {
+			return -1;
+		} else if (this.dt == null) {
+			return 1;
+		} else {
+			return that.dt.compareTo(this.dt);
+		}
 	}
 }

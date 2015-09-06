@@ -1,4 +1,4 @@
-package cn.fwj.futures.data.vo;
+package cn.fwj.futures.data.struct;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

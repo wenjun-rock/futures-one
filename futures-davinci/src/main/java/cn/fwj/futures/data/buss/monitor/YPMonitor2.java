@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import cn.fwj.futures.data.enu.Product;
 import cn.fwj.futures.data.launch.AbstractBaseLaunch;
 import cn.fwj.futures.data.process.DataProcessor;
-import cn.fwj.futures.data.vo.Formula;
+import cn.fwj.futures.data.struct.Formula;
 
 @Component
 public class YPMonitor2 extends AbstractBaseLaunch {
