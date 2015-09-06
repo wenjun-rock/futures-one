@@ -2,17 +2,17 @@ package cn.fwj.futures.data.enu;
 
 public enum Product {
 	
-	/* Ö£ÖİÉÌÆ·½»Ò×Ëù  */
-	CaiYou("OI", "²ËÓÍ", Exchange.ZZ),
+	/* éƒ‘å·å•†å“äº¤æ˜“æ‰€  */
+	CaiYou("OI", "èœæ²¹", Exchange.ZZ),
 	
-	/* ´óÁ¬ÉÌÆ·½»Ò×Ëù  */
-	JiDan("JD", "¼¦µ°", Exchange.DL), 
-	YuMi("C", "ÓñÃ×", Exchange.DL), 
-	DouPo("M", "¶¹ÆÉ", Exchange.DL), 
-	DaDou1("A", "´ó¶¹Ò»ºÅ",Exchange.DL),	
-	DouYou("Y", "¶¹ÓÍ",Exchange.DL),
-	ZongLvYou("P", "×ØéµÓÍ",Exchange.DL),
-	DaDou2("B", "´ó¶¹¶şºÅ",Exchange.DL);
+	/* å¤§è¿å•†å“äº¤æ˜“æ‰€  */
+	JiDan("JD", "é¸¡è›‹", Exchange.DL), 
+	YuMi("C", "ç‰ç±³", Exchange.DL), 
+	DouPo("M", "è±†ç²•", Exchange.DL), 
+	DaDou1("A", "å¤§è±†ä¸€å·",Exchange.DL),	
+	DouYou("Y", "è±†æ²¹",Exchange.DL),
+	ZongLvYou("P", "æ£•æ¦ˆæ²¹",Exchange.DL),
+	DaDou2("B", "å¤§è±†äºŒå·",Exchange.DL);
 	
 
 

@@ -4,9 +4,9 @@
 	<parent>
 		<groupId>cn.fwj.futures</groupId>
 		<artifactId>futures-one</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.1.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>futures-data</artifactId>
+	<artifactId>futures-davinci</artifactId>
 
 	<dependencies>
 		<dependency>
@@ -20,5 +20,19 @@
 			<version>18.0</version>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
