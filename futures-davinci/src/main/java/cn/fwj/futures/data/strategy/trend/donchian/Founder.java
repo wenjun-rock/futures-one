@@ -34,7 +34,7 @@ public class Founder extends AbstractBaseLaunch {
 	}
 
 	private DonchianResult createDonchianResult(Product product, int range) throws Exception {
-		DailyKLine kLine = kLineRepo.loadDailyKLine(product, false);
+		DailyKLine kLine = kLineRepo.loadDailyKLine(product);
 		ArrayList<DailyK> kList = new ArrayList<>(kLine.getAllDailyK());
 		int startIndex = (kList.size() - 1 < range) ? 0 : (kList.size() - 1 - range);
 		BigDecimal minPrice = new BigDecimal(Integer.MAX_VALUE);
