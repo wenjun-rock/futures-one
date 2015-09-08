@@ -6,27 +6,23 @@ import java.util.List;
 
 import cn.fwj.futures.data.enu.Product;
 import cn.fwj.futures.data.strategy.trend.donchian.struct.DonchianWave.Direction;
-import cn.fwj.futures.data.struct.DailyK;
 
 public class DonchianTrend {
 
 	private Product product; // 产品
 	private int enterBreakout;
 	private int exitBreakout;
-	private FixedSizeQueue enterQueue;
-	private FixedSizeQueue exitQueue;
 
 	private String startDt; // 统计开始日期
 	private String endDt; // 统计结束日期
 	private DonchianWave currentWave;
 	private List<DonchianWave> histWave;
+	private DonchianPrepare prepare;
 
 	public DonchianTrend(Product product, int enterBreakout, int exitBreakout) {
 		this.product = product;
 		this.enterBreakout = enterBreakout;
 		this.exitBreakout = exitBreakout;
-		this.enterQueue = new FixedSizeQueue(enterBreakout);
-		this.exitQueue = new FixedSizeQueue(exitBreakout);
 		this.histWave = new ArrayList<>();
 	}
 
@@ -50,22 +46,6 @@ public class DonchianTrend {
 		return exitBreakout;
 	}
 
-	public FixedSizeQueue getEnterQueue() {
-		return enterQueue;
-	}
-
-	public FixedSizeQueue getExitQueue() {
-		return exitQueue;
-	}
-
-	public void setStartDt(String startDt) {
-		this.startDt = startDt;
-	}
-
-	public void setEndDt(String endDt) {
-		this.endDt = endDt;
-	}
-
 	public DonchianWave getCurrentWave() {
 		return currentWave;
 	}
@@ -74,35 +54,53 @@ public class DonchianTrend {
 		return histWave;
 	}
 
-	public void setCurrentWave(DonchianWave currentWave) {
-		this.currentWave = currentWave;
+	public DonchianPrepare getPrepare() {
+		return prepare;
 	}
 
-	public void setHistWave(List<DonchianWave> histWave) {
-		this.histWave = histWave;
+	public void includeDt(String dt) {
+		this.endDt = dt;
+		if (this.startDt == null) {
+			this.startDt = dt;
+		}
 	}
 
-	public void addK(DailyK k) {
-		this.enterQueue.enqueue(k);
-		this.exitQueue.enqueue(k);
-	}
-
-	public void enter(Direction direction, String dt, BigDecimal price) {
-		currentWave = new DonchianWave(direction);
+	public void enterWave(Direction direction, String dt, BigDecimal price) {
+		prepare = null;
+		currentWave = new DonchianWave(direction, dt, price);
 		histWave.add(currentWave);
-		currentWave.setStartDt(dt);
-		currentWave.setMaeDt(dt);
-		currentWave.setMfeDt(dt);
-		currentWave.setEnterPrice(price);
-		currentWave.setMaePrice(price);
-		currentWave.setMfePrice(price);
-		
 	}
 
-	public void exit(String dt, BigDecimal price) {
-		currentWave.setEndDt(dt);
-		currentWave.setExitPrice(price);
-		currentWave = null;	
+	public void exitWave() {
+		currentWave.setEnding(true);
+		currentWave = null;
+	}
+
+	public void prepare(BigDecimal price, BigDecimal min, BigDecimal max, BigDecimal EMA25, BigDecimal EMA350) {
+		prepare = new DonchianPrepare(price, min, max, EMA25, EMA350);
+	}
+
+	public class DonchianPrepare {
+
+		private BigDecimal current;
+		private BigDecimal min;
+		private BigDecimal max;
+		private BigDecimal EMA25;
+		private BigDecimal EMA350;
+
+		private DonchianPrepare(BigDecimal current, BigDecimal min, BigDecimal max, BigDecimal EMA25,
+				BigDecimal EMA350) {
+			this.current = current;
+			this.min = min;
+			this.max = max;
+			this.EMA25 = EMA25;
+			this.EMA350 = EMA350;
+		}
+
+		public String toString() {
+			return String.format("%s|%s|%s|%s|%s|%s", current, min, max, EMA25, EMA350);
+		}
+
 	}
 
 }

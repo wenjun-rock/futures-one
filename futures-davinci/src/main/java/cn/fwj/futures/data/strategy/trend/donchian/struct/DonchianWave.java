@@ -14,9 +14,45 @@ public class DonchianWave {
 	private BigDecimal maePrice; // 最大衰退价格
 	private BigDecimal mfePrice; // 最大盈利价格
 	private long tradeVol;
+	private boolean ending;
 
-	public DonchianWave(Direction direction) {
+	public DonchianWave(Direction direction, String dt, BigDecimal price) {
 		this.direction = direction;
+		this.startDt = dt;
+		this.endDt = dt;
+		this.maeDt = dt;
+		this.mfeDt = dt;
+		this.enterPrice = price;
+		this.exitPrice = price;
+		this.maePrice = price;
+		this.mfePrice = price;
+		ending = false;
+	}
+	
+	public void put(String dt, BigDecimal price) {
+		if (this.direction == Direction.UP) {
+			// 向上通道
+			if (this.mfePrice.compareTo(price) < 0) {
+				this.mfeDt = dt;
+				this.mfePrice = price;
+			}
+			if (this.maePrice.compareTo(price) > 0) {
+				this.maeDt = dt;
+				this.maePrice = price;
+			}
+		} else if (this.direction == Direction.DOWN) {
+			// 向下通道
+			if (this.mfePrice.compareTo(price) > 0) {
+				this.mfeDt = dt;
+				this.mfePrice = price;
+			}
+			if (this.maePrice.compareTo(price) < 0) {
+				this.maeDt = dt;
+				this.maePrice = price;
+			}
+		}
+		endDt = dt;
+		exitPrice = price;
 	}
 
 	public Direction getDirection() {
@@ -93,6 +129,14 @@ public class DonchianWave {
 
 	public void setTradeVol(long tradeVol) {
 		this.tradeVol = tradeVol;
+	}
+
+	public boolean isEnding() {
+		return ending;
+	}
+
+	public void setEnding(boolean ending) {
+		this.ending = ending;
 	}
 
 	public enum Direction {

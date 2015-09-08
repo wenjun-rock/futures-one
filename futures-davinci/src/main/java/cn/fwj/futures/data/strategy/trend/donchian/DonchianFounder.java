@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.fwj.futures.data.enu.Product;
 import cn.fwj.futures.data.launch.AbstractBaseLaunch;
 import cn.fwj.futures.data.repository.KLineRepo;
@@ -21,13 +19,33 @@ public class DonchianFounder extends AbstractBaseLaunch {
 	@Autowired
 	private KLineRepo kLineRepo;
 
-	@Override
 	protected void execute() throws Exception {
 
+		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
+		DailyKLine kLine = kLineRepo.loadDailyKLine(Product.DouYou);
+		DonchianTrend trend = builder.createEndPriceDonchianTrend(kLine);
+
+		BigDecimal total = BigDecimal.ZERO;
+		int size = 0;
+		for (DonchianWave wave : trend.getHistWave()) {
+			size++;
+			 if (wave.getDirection() == Direction.UP) {
+			  total = wave.getExitPrice().subtract(wave.getEnterPrice());
+			 } else if (wave.getDirection() == Direction.DOWN) {
+				 total = wave.getEnterPrice().subtract(wave.getExitPrice());
+			 }
+			System.out.println(String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s", size,total, wave.getDirection(), wave.getStartDt(),
+					wave.getEndDt(), wave.getEnterPrice(), wave.getExitPrice()));
+		}
+
+	}
+
+	protected void execute2() throws Exception {
+
+		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
 		for (Product product : Product.values()) {
 			DailyKLine kLine = kLineRepo.loadDailyKLine(product);
-			DonchianTrend trend = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10)
-					.createDonchianTrend(kLine);
+			DonchianTrend trend = builder.createEndPriceDonchianTrend(kLine);
 
 			BigDecimal total = BigDecimal.ZERO;
 			int size = 0;
