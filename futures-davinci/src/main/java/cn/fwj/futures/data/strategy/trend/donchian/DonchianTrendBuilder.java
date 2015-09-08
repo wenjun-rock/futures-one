@@ -7,7 +7,7 @@ import cn.fwj.futures.data.strategy.trend.donchian.struct.DonchianTrend;
 import cn.fwj.futures.data.strategy.trend.donchian.struct.DonchianWave;
 import cn.fwj.futures.data.strategy.trend.donchian.struct.DonchianWave.Direction;
 import cn.fwj.futures.data.strategy.trend.donchian.struct.EMA;
-import cn.fwj.futures.data.strategy.trend.donchian.struct.FixedSizeQueue;
+import cn.fwj.futures.data.strategy.trend.donchian.struct.FixedSizeEndPriceQueue;
 import cn.fwj.futures.data.struct.DailyK;
 import cn.fwj.futures.data.struct.DailyKLine;
 
@@ -30,8 +30,8 @@ public class DonchianTrendBuilder {
 
 		int days = 0;
 		DonchianTrend trend = new DonchianTrend(kLine.getProd(), enterBreakout, exitBreakout);
-		FixedSizeQueue enterQueue = new FixedSizeQueue(enterBreakout);
-		FixedSizeQueue exitQueue = new FixedSizeQueue(exitBreakout);
+		FixedSizeEndPriceQueue enterQueue = new FixedSizeEndPriceQueue(enterBreakout);
+		FixedSizeEndPriceQueue exitQueue = new FixedSizeEndPriceQueue(exitBreakout);
 		EMA EMA25 = new EMA(25);
 		EMA EMA350 = new EMA(350);
 		for (String dt : DateGenerator.range(startDt, endDt)) {

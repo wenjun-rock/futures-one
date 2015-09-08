@@ -2,31 +2,29 @@ package cn.fwj.futures.data.strategy.trend.donchian.struct;
 
 import java.math.BigDecimal;
 
-public class FixedSizeQueue {
+public class FixedSizeMinMaxPriceQueue {
 
 	private int size;
-	private BigDecimal[] queue;
-	private int count = 0;
+	private BigDecimal[] minQueue;
+	private BigDecimal[] maxQueue;
+	private int count;
 
-	public FixedSizeQueue(int size) {
+	public FixedSizeMinMaxPriceQueue(int size) {
 		this.size = size;
-		queue = new BigDecimal[size];
+		minQueue = new BigDecimal[size];
+		maxQueue = new BigDecimal[size];
 	}
 
-	public BigDecimal enqueue(BigDecimal in) {
-		int index = count % size;
-		count++;
-		BigDecimal previous = queue[index];
-		queue[index] = in;
-		return previous;
+	public BigDecimal enqueue(BigDecimal min, BigDecimal max) {
+		int index = count++ % size;
+		minQueue[index] = min;
+		maxQueue[index] = max;
+		return null;
 	}
 
 	public BigDecimal getMax() {
-		if (count < size) {
-			return new BigDecimal(Integer.MAX_VALUE);
-		}
 		BigDecimal max = new BigDecimal(Integer.MIN_VALUE);
-		for (BigDecimal element : queue) {
+		for (BigDecimal element : maxQueue) {
 			if (element != null) {
 				max = element.compareTo(max) > 0 ? element : max;
 			}
@@ -35,11 +33,8 @@ public class FixedSizeQueue {
 	}
 
 	public BigDecimal getMin() {
-		if (count < size) {
-			return new BigDecimal(Integer.MIN_VALUE);
-		}
 		BigDecimal min = new BigDecimal(Integer.MAX_VALUE);
-		for (BigDecimal element : queue) {
+		for (BigDecimal element : minQueue) {
 			if (element != null) {
 				min = element.compareTo(min) < 0 ? element : min;
 			}
