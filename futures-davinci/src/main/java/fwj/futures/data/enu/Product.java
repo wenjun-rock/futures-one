@@ -29,7 +29,7 @@ public enum Product {
 	JiaoTan("J", "焦炭", Exchange.DL), 
 	JiDan("JD", "鸡蛋", Exchange.DL), 
 	JiaoMei("JM", "焦煤", Exchange.DL), 
-	JuYiXi("L", "聚乙烯", Exchange.DL), 
+	SuLiao("L", "聚乙烯", Exchange.DL), 
 	DouPo("M", "豆粕", Exchange.DL), 
 	ZongLvYou("P", "棕榈油", Exchange.DL), 
 	JuBinXi("PP", "聚丙烯", Exchange.DL), 
