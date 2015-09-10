@@ -1,0 +1,5 @@
+fire <- read.csv('F:/futures/data/model/2014-09-01_2016-09-02_3_A_M_Y.csv', head = T)
+plot(A~M,data=fire)
+plot(A~Y,data=fire)
+fire.reg <- lm(A~M+Y,fire)
+summary(fire.reg)
