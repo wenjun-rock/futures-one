@@ -15,7 +15,7 @@ public class ExportOrigin extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		dataProcessor.exportEndPrice("2014-09-01", "2016-09-02", Product.JiaoTan, Product.JiaoMei);
+		dataProcessor.exportEndPrice("2010-09-01", "2016-09-02", Product.DouPo, Product.CaiPo);
 	}
 
 	public static void main(String[] args) {
