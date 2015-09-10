@@ -1,4 +1,4 @@
-package fwj.futures.data.strategy.hedging.test;
+package fwj.futures.data.strategy.hedging.monitor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,8 +9,8 @@ import fwj.futures.data.process.DataProcessor;
 import fwj.futures.data.struct.Formula;
 
 @Component
-public class CalculateOrigin extends AbstractBaseLaunch {
-
+public class JJMMonitor1  extends AbstractBaseLaunch {
+	
 	@Autowired
 	private DataProcessor dataProcessor;
 
@@ -18,11 +18,12 @@ public class CalculateOrigin extends AbstractBaseLaunch {
 	protected void execute() throws Exception {
 		Formula formula = Formula.create().putConstant("131.45166").putMultinomials(Product.JiaoTan, "1")
 				.putMultinomials(Product.JiaoMei, "-1.55585");
-		dataProcessor.testEndPriceFormula("2014-09-01", "2016-09-02", formula);
+
+		dataProcessor.monitorEndPriceFormula("2015-01-01", formula);
 	}
 
 	public static void main(String[] args) {
-		launch(CalculateOrigin.class);
+		launch(JJMMonitor1.class);
 	}
 
 }
