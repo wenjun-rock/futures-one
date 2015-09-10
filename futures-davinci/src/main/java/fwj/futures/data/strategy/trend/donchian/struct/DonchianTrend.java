@@ -80,6 +80,18 @@ public class DonchianTrend {
 		prepare = new DonchianPrepare(price, min, max, EMA25, EMA350);
 	}
 
+	public BigDecimal totalProfit() {
+		BigDecimal profit = BigDecimal.ZERO;
+		for (DonchianWave wave : histWave) {
+			if (wave.getDirection() == Direction.UP) {
+				profit = profit.add(wave.getExitPrice()).subtract(wave.getEnterPrice());
+			} else if (wave.getDirection() == Direction.DOWN) {
+				profit = profit.add(wave.getEnterPrice()).subtract(wave.getExitPrice());
+			}
+		}
+		return profit;
+	}
+
 	public class DonchianPrepare {
 
 		private BigDecimal current;
@@ -98,7 +110,7 @@ public class DonchianTrend {
 		}
 
 		public String toString() {
-			return String.format("%s|%s|%s|%s|%s|%s", current, min, max, EMA25, EMA350);
+			return String.format("%s|%s|%s|%s|%s", current, min, max, EMA25, EMA350);
 		}
 
 	}

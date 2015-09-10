@@ -18,8 +18,61 @@ public class DonchianFounder extends AbstractBaseLaunch {
 
 	@Autowired
 	private KLineRepo kLineRepo;
+	
+	protected void execute11() throws Exception {
+
+		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
+		for (Product product : Product.values()) {
+			DailyKLine kLine = kLineRepo.loadDailyKLine(product);
+			DonchianTrend trendMinMax = builder.createMinMaxPriceDonchianTrend(kLine);
+			if(trendMinMax.getCurrentWave() == null) {
+				System.out.println(String.format("%-8s\t%s\t%s\t%s", product, trendMinMax.getPrepare(), trendMinMax.getHistWave().size(),
+						trendMinMax.totalProfit()));
+			} else {
+				System.out.println(String.format("%-8s\t%s\t%s\t%s", product, trendMinMax.getCurrentWave(), trendMinMax.getHistWave().size(),
+						trendMinMax.totalProfit()));
+			}
+		}
+	}
+
+	protected void compare() throws Exception {
+
+		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
+		for (Product product : Product.values()) {
+			DailyKLine kLine = kLineRepo.loadDailyKLine(product);
+			DonchianTrend trendMinMax = builder.createMinMaxPriceDonchianTrend(kLine);
+			DonchianTrend trendEnd = builder.createEndPriceDonchianTrend(kLine);
+			System.out.println(String.format("%s\t%s\t%s\t%s\t%s", product, trendMinMax.getHistWave().size(),
+					trendMinMax.totalProfit(), trendEnd.getHistWave().size(), trendEnd.totalProfit()));
+		}
+	}
 
 	protected void execute() throws Exception {
+
+		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
+		DailyKLine kLine = kLineRepo.loadDailyKLine(Product.Lv);
+		// DonchianTrend trend = builder.createMinMaxPriceDonchianTrend(kLine);
+		DonchianTrend trend = builder.createEndPriceDonchianTrend(kLine);
+
+		BigDecimal profit = BigDecimal.ZERO;
+		BigDecimal total = BigDecimal.ZERO;
+		int size = 0;
+		for (DonchianWave wave : trend.getHistWave()) {
+			size++;
+			if (wave.getDirection() == Direction.UP) {
+				profit = wave.getExitPrice().subtract(wave.getEnterPrice());
+			} else if (wave.getDirection() == Direction.DOWN) {
+				profit = wave.getEnterPrice().subtract(wave.getExitPrice());
+			}
+			total = total.add(profit);
+			System.out.println(String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s", size, profit, wave.getDirection(),
+					wave.getStartDt(), wave.getEndDt(), wave.getEnterPrice(), wave.getExitPrice()));
+		}
+		System.out.println(total);
+
+	}
+
+	protected void execute2() throws Exception {
 
 		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
 		DailyKLine kLine = kLineRepo.loadDailyKLine(Product.DouYou);
@@ -29,18 +82,18 @@ public class DonchianFounder extends AbstractBaseLaunch {
 		int size = 0;
 		for (DonchianWave wave : trend.getHistWave()) {
 			size++;
-			 if (wave.getDirection() == Direction.UP) {
-			  total = wave.getExitPrice().subtract(wave.getEnterPrice());
-			 } else if (wave.getDirection() == Direction.DOWN) {
-				 total = wave.getEnterPrice().subtract(wave.getExitPrice());
-			 }
-			System.out.println(String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s", size,total, wave.getDirection(), wave.getStartDt(),
-					wave.getEndDt(), wave.getEnterPrice(), wave.getExitPrice()));
+			if (wave.getDirection() == Direction.UP) {
+				total = wave.getExitPrice().subtract(wave.getEnterPrice());
+			} else if (wave.getDirection() == Direction.DOWN) {
+				total = wave.getEnterPrice().subtract(wave.getExitPrice());
+			}
+			System.out.println(String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s", size, total, wave.getDirection(),
+					wave.getStartDt(), wave.getEndDt(), wave.getEnterPrice(), wave.getExitPrice()));
 		}
 
 	}
 
-	protected void execute2() throws Exception {
+	protected void execute2bak() throws Exception {
 
 		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
 		for (Product product : Product.values()) {
