@@ -6,5 +6,6 @@
   <packaging>pom</packaging>
   <modules>
   	<module>futures-davinci</module>
+  	<module>futures-gauss</module>
   </modules>
 </project>
