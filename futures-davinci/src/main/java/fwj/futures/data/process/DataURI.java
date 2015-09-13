@@ -9,7 +9,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 
 @Component
 public class DataURI {
@@ -20,12 +20,17 @@ public class DataURI {
 	private final static String DATA_TEST_DIR = "F:/futures/data/test";
 	private final static String DATA_MONITOR_DIR = "F:/futures/data/monitor";
 
-	public URL getDailyKLineUrl(Product prod) throws IOException {
+	public URL getDailyKLineUrl(ProdEnum prod) throws IOException {
 		return new URL(
 				String.format("%s/IndexService.getInnerFuturesDailyKLine?symbol=%s0", DATA_URL_SINA, prod.getCode()));
 	}
+	
+	public URL getDailyKLineUrl(String code) throws IOException {
+		return new URL(
+				String.format("%s/IndexService.getInnerFuturesDailyKLine?symbol=%s0", DATA_URL_SINA, code));
+	}
 
-	public File getLatestDailyKLineFile(final Product prod) throws IOException {
+	public File getLatestDailyKLineFile(final ProdEnum prod) throws IOException {
 		File dir = new File(DATA_RAW_DIR);
 		File[] files = dir.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {
@@ -47,11 +52,11 @@ public class DataURI {
 		return latestFile;
 	}
 
-	public File getDailyKLineFile(Product prod, String dateStr) {
+	public File getDailyKLineFile(ProdEnum prod, String dateStr) {
 		return new File(String.format("%s/%s_%s.json", DATA_RAW_DIR, dateStr, prod.getCode()));
 	}
 
-	public File getDailyKLineFile(Product prod, Date date) {
+	public File getDailyKLineFile(ProdEnum prod, Date date) {
 		return getDailyKLineFile(prod, new SimpleDateFormat("yyyy-MM-dd").format(date));
 	}
 	

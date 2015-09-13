@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.io.Files;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.repository.KLineRepo;
 import fwj.futures.data.struct.DailyKLine;
 import fwj.futures.data.struct.Formula;
@@ -111,7 +111,7 @@ public class DataProcessor {
 		return xyLineList;
 	}
 
-	public void exportEndPrice(String startDt, String endDt, Product... prods) throws Exception {
+	public void exportEndPrice(String startDt, String endDt, ProdEnum... prods) throws Exception {
 		List<DailyKLine> kLineList = prods == null ? kLineRepo.loadAllDailyKLines() : kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList);
 		List<String> lines = this.table(startDt, endDt, xyLineList);
@@ -122,7 +122,7 @@ public class DataProcessor {
 		Files.asCharSink(dataURI.getModelFile(fileName), StandardCharsets.UTF_8).writeLines(lines);
 	}
 
-	public void exportEndPriceNormal(String startDt, String endDt, int range, Product... prods) throws Exception {
+	public void exportEndPriceNormal(String startDt, String endDt, int range, ProdEnum... prods) throws Exception {
 		List<DailyKLine> kLineList = prods == null ? kLineRepo.loadAllDailyKLines() : kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList, range);
 		List<String> lines = this.table(startDt, endDt, xyLineList);
@@ -134,7 +134,7 @@ public class DataProcessor {
 	}
 
 	public void testEndPriceFormula(String startDt, String endDt, Formula formula) throws Exception {
-		Product[] prods = formula.getMultinomials().keySet().toArray(new Product[] {});
+		ProdEnum[] prods = formula.getMultinomials().keySet().toArray(new ProdEnum[] {});
 		List<DailyKLine> kLineList = kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList);
 		List<String> lines = this.tableFormular(startDt, endDt, xyLineList, formula);
@@ -147,7 +147,7 @@ public class DataProcessor {
 
 	public void monitorEndPriceFormula(String startDt, Formula formula) throws Exception {
 		String endDt = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		Product[] prods = formula.getMultinomials().keySet().toArray(new Product[] {});
+		ProdEnum[] prods = formula.getMultinomials().keySet().toArray(new ProdEnum[] {});
 		List<DailyKLine> kLineList = kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList);
 		List<String> lines = this.tableFormular(startDt, endDt, xyLineList, formula);

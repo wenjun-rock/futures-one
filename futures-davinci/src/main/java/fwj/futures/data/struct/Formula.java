@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 
 public class Formula {
 
 	private BigDecimal constant;
-	private Map<Product, BigDecimal> multinomials = new HashMap<>();
+	private Map<ProdEnum, BigDecimal> multinomials = new HashMap<>();
 
 	private Formula() {
 
@@ -24,7 +24,7 @@ public class Formula {
 		return this;
 	}
 
-	public Formula putMultinomials(Product prod, BigDecimal coefficient) {
+	public Formula putMultinomials(ProdEnum prod, BigDecimal coefficient) {
 		multinomials.put(prod, coefficient);
 		return this;
 	}
@@ -34,7 +34,7 @@ public class Formula {
 		return this;
 	}
 
-	public Formula putMultinomials(Product prod, String coefficient) {
+	public Formula putMultinomials(ProdEnum prod, String coefficient) {
 		multinomials.put(prod, new BigDecimal(coefficient));
 		return this;
 	}
@@ -43,7 +43,7 @@ public class Formula {
 		return constant;
 	}
 
-	public Map<Product, BigDecimal> getMultinomials() {
+	public Map<ProdEnum, BigDecimal> getMultinomials() {
 		return multinomials;
 	}
 

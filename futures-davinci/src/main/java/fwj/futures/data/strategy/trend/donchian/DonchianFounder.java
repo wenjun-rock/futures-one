@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.repository.KLineRepo;
 import fwj.futures.data.strategy.trend.donchian.struct.DonchianTrend;
@@ -22,7 +22,7 @@ public class DonchianFounder extends AbstractBaseLaunch {
 	protected void execute11() throws Exception {
 
 		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
-		for (Product product : Product.values()) {
+		for (ProdEnum product : ProdEnum.values()) {
 			DailyKLine kLine = kLineRepo.loadDailyKLine(product);
 			DonchianTrend trendMinMax = builder.createMinMaxPriceDonchianTrend(kLine);
 			if(trendMinMax.getCurrentWave() == null) {
@@ -38,7 +38,7 @@ public class DonchianFounder extends AbstractBaseLaunch {
 	protected void compare() throws Exception {
 
 		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
-		for (Product product : Product.values()) {
+		for (ProdEnum product : ProdEnum.values()) {
 			DailyKLine kLine = kLineRepo.loadDailyKLine(product);
 			DonchianTrend trendMinMax = builder.createMinMaxPriceDonchianTrend(kLine);
 			DonchianTrend trendEnd = builder.createEndPriceDonchianTrend(kLine);
@@ -50,7 +50,7 @@ public class DonchianFounder extends AbstractBaseLaunch {
 	protected void execute() throws Exception {
 
 		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
-		DailyKLine kLine = kLineRepo.loadDailyKLine(Product.Lv);
+		DailyKLine kLine = kLineRepo.loadDailyKLine(ProdEnum.Lv);
 		// DonchianTrend trend = builder.createMinMaxPriceDonchianTrend(kLine);
 		DonchianTrend trend = builder.createEndPriceDonchianTrend(kLine);
 
@@ -75,7 +75,7 @@ public class DonchianFounder extends AbstractBaseLaunch {
 	protected void execute2() throws Exception {
 
 		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
-		DailyKLine kLine = kLineRepo.loadDailyKLine(Product.DouYou);
+		DailyKLine kLine = kLineRepo.loadDailyKLine(ProdEnum.DouYou);
 		DonchianTrend trend = builder.createEndPriceDonchianTrend(kLine);
 
 		BigDecimal total = BigDecimal.ZERO;
@@ -96,7 +96,7 @@ public class DonchianFounder extends AbstractBaseLaunch {
 	protected void execute2bak() throws Exception {
 
 		DonchianTrendBuilder builder = new DonchianTrendBuilder("2005-01-01", "2016-01-01", 20, 10);
-		for (Product product : Product.values()) {
+		for (ProdEnum product : ProdEnum.values()) {
 			DailyKLine kLine = kLineRepo.loadDailyKLine(product);
 			DonchianTrend trend = builder.createEndPriceDonchianTrend(kLine);
 

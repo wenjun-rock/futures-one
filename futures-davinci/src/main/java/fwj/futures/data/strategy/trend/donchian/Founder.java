@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.repository.KLineRepo;
 import fwj.futures.data.struct.DailyK;
@@ -24,7 +24,7 @@ public class Founder extends AbstractBaseLaunch {
 	@Override
 	protected void execute() throws Exception {
 		List<DonchianResult> list = new ArrayList<>();
-		for (Product product : Product.values()) {
+		for (ProdEnum product : ProdEnum.values()) {
 			list.add(createDonchianResult(product, 20));
 		}
 		Collections.sort(list);
@@ -33,7 +33,7 @@ public class Founder extends AbstractBaseLaunch {
 		}
 	}
 
-	private DonchianResult createDonchianResult(Product product, int range) throws Exception {
+	private DonchianResult createDonchianResult(ProdEnum product, int range) throws Exception {
 		DailyKLine kLine = kLineRepo.loadDailyKLine(product);
 		ArrayList<DailyK> kList = new ArrayList<>(kLine.getAllDailyK());
 		int startIndex = (kList.size() - 1 < range) ? 0 : (kList.size() - 1 - range);
@@ -60,7 +60,7 @@ public class Founder extends AbstractBaseLaunch {
 	public static class DonchianResult implements Comparable<DonchianResult> {
 
 		private int range;
-		private Product product;
+		private ProdEnum product;
 		private BigDecimal minPrice;
 		private BigDecimal maxPrice;
 		private BigDecimal currentPrice;
@@ -68,7 +68,7 @@ public class Founder extends AbstractBaseLaunch {
 		private String dt;
 		private long tradeVol;
 
-		public DonchianResult(int range, Product product, BigDecimal minPrice, BigDecimal maxPrice,
+		public DonchianResult(int range, ProdEnum product, BigDecimal minPrice, BigDecimal maxPrice,
 				BigDecimal currentPrice, String dt, long tradeVol) {
 			this.range = range;
 			this.product = product;
@@ -80,7 +80,7 @@ public class Founder extends AbstractBaseLaunch {
 			this.position = currentPrice.subtract(minPrice).divide(maxPrice.subtract(minPrice), 2, RoundingMode.UP);
 		}
 
-		public Product getProduct() {
+		public ProdEnum getProduct() {
 			return product;
 		}
 
@@ -104,7 +104,7 @@ public class Founder extends AbstractBaseLaunch {
 			return position;
 		}
 
-		public void setProduct(Product product) {
+		public void setProduct(ProdEnum product) {
 			this.product = product;
 		}
 

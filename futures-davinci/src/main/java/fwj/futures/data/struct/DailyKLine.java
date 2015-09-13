@@ -6,19 +6,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 
 public class DailyKLine {
 
-	private Product prod;
+	private ProdEnum prod;
 	private Map<String, DailyK> prices;
 
-	public DailyKLine(Product prod) {
+	public DailyKLine(ProdEnum prod) {
 		this.prod = prod;
 		this.prices = new TreeMap<>();
 	}
 
-	public Product getProd() {
+	public ProdEnum getProd() {
 		return prod;
 	}
 

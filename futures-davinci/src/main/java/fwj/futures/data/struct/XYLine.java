@@ -9,21 +9,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 
 public class XYLine {
 
 	private int range;
-	private Product prod;
+	private ProdEnum prod;
 	private Map<String, BigDecimal> xy;
 
-	public XYLine(Product prod, Map<String, BigDecimal> xy, int range) {
+	public XYLine(ProdEnum prod, Map<String, BigDecimal> xy, int range) {
 		this.prod = prod;
 		this.xy = xy;
 		this.range = range;
 	}
 
-	public Product getProd() {
+	public ProdEnum getProd() {
 		return prod;
 	}
 

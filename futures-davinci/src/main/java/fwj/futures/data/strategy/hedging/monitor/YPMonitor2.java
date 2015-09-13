@@ -3,7 +3,7 @@ package fwj.futures.data.strategy.hedging.monitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.process.DataProcessor;
 import fwj.futures.data.struct.Formula;
@@ -16,8 +16,8 @@ public class YPMonitor2 extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		Formula formula = Formula.create().putConstant("-587.08732").putMultinomials(Product.DouYou, "1")
-				.putMultinomials(Product.ZongLvYou, "-1.03179");
+		Formula formula = Formula.create().putConstant("-587.08732").putMultinomials(ProdEnum.DouYou, "1")
+				.putMultinomials(ProdEnum.ZongLvYou, "-1.03179");
 		dataProcessor.monitorEndPriceFormula("2014-03-03", formula);
 	}
 
