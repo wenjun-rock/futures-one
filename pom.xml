@@ -7,5 +7,6 @@
   <modules>
   	<module>futures-davinci</module>
   	<module>futures-gauss</module>
+  	<module>futures-michelangelo</module>
   </modules>
 </project>
