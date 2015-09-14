@@ -1,6 +1,5 @@
 package fwj.futures.data.strategy.hedging.model;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +45,7 @@ public class ExportOrigin extends AbstractBaseLaunch {
 
 		String head = codeList.stream().reduce("DATE", (l, r) -> l + "," + r);
 		Map<String, List<KLine>> kLineMap = codeList.stream()
-				.map(code -> kLineRepository.findByCodeDateRange(code, startDt, endDt))
+				.map(code -> kLineRepository.findByCodeAndDtBetween(code, startDt, endDt))
 				.flatMap(kLineList -> kLineList.stream())
 				.collect(Collectors.groupingBy(KLine::getDt, Collectors.toList()));
 		String content = kLineMap.entrySet().stream().filter(entry -> entry.getValue().size() == codeList.size())
