@@ -1,4 +1,4 @@
-package fwj.futures.resource.task;
+package fwj.futures.task;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
