@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -200,9 +201,10 @@ public class RealtimeHolder {
 
 	public Price findRealtimeByCode(Product prod) {
 		if (loopCache == null) {
-			return new Price();
+			return new Price(prod, new Object[0][2]);
 		}
-		List<UnitData> unitDataList = Stream.of(loopCache)
+		UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
+		List<UnitData> unitDataList = Stream.of(copy)
 				.flatMap(unitDataGroup -> unitDataGroup.getUnitDataList().stream())
 				.filter(unitData -> unitData.getCode().equals(prod.getCode())).collect(Collectors.toList());
 		Collections.sort(unitDataList);
@@ -218,5 +220,16 @@ public class RealtimeHolder {
 			}
 		}
 		return new Price(prod, data);
+	}
+	
+	public List<UnitDataGroup> getRealtime() {
+		if (loopCache == null) {
+			return Collections.emptyList();
+		}
+		
+		UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
+		List<UnitDataGroup> list = Arrays.asList(copy);
+		Collections.sort(list);
+		return list;
 	}
 }

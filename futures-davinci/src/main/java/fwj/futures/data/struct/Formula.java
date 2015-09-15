@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+
 import fwj.futures.data.enu.ProdEnum;
 
 public class Formula {
@@ -16,6 +18,10 @@ public class Formula {
 
 	public static Formula create() {
 		return new Formula();
+	}
+	
+	public static Formula parse(String json) {
+		return JSON.parseObject(json, Formula.class);
 	}
 
 	public Formula putConstant(BigDecimal constant) {
@@ -41,7 +47,7 @@ public class Formula {
 		return this;
 	}
 
-	public BigDecimal getCoefficient(String code) {
+	public BigDecimal findCoefficient(String code) {
 		for (Multinomial multinomial : multinomials) {
 			if (multinomial.getCode().equals(code)) {
 				return multinomial.getCoefficient();
@@ -66,7 +72,7 @@ public class Formula {
 		this.multinomials = multinomials;
 	}
 
-	public class Multinomial {
+	public static class Multinomial {
 
 		private String code;
 		private BigDecimal coefficient;
@@ -87,5 +93,7 @@ public class Formula {
 			this.coefficient = coefficient;
 		}
 	}
+	
+	
 
 }

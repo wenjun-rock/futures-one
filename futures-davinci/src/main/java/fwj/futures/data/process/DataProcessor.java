@@ -52,7 +52,7 @@ public class DataProcessor {
 					miss = true;
 					break;
 				} else {
-					diff = diff.add(val.multiply(formula.getCoefficient(xyLine.getProd().getCode())));
+					diff = diff.add(val.multiply(formula.findCoefficient(xyLine.getProd().getCode())));
 				}
 			}
 			if (!miss) {
