@@ -16,8 +16,8 @@ public class JJMMonitor1  extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		Formula formula = Formula.create().putConstant("131.45166").putMultinomials(ProdEnum.JiaoTan, "1")
-				.putMultinomials(ProdEnum.JiaoMei, "-1.55585");
+		Formula formula = Formula.create().putConstant("131.45166").putMultinomial(ProdEnum.JiaoTan, "1")
+				.putMultinomial(ProdEnum.JiaoMei, "-1.55585");
 
 		dataProcessor.monitorEndPriceFormula("2015-01-01", formula);
 	}

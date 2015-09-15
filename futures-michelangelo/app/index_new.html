@@ -85,23 +85,8 @@
 	 <script>
 	$(function () {
 	
-	$.ajax({ 
-            url:'http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMiniKLine5m?symbol=M0', 
-            type:'GET', 
-            dataType:'jsonp', 
-            success: function(data){ 
-                console.log(JSON.stringify(data));
-            } ,
-			error: function(data){ 
-                console.log(JSON.stringify(data));
-            }
-        }); 
+    $.getJSON('http://localhost:8000/futures-api/price/realtime/RB,Y,P', function (data) {
 	
-    $.getJSON('http://localhost:8000/futures-api/price/J,JM', function (data) {
-	
-		
-		
-		
 
         $('#container').highcharts({
 			chart: {

@@ -16,8 +16,8 @@ public class CalculateOrigin extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		Formula formula = Formula.create().putConstant("162.31").putMultinomials(ProdEnum.JiaoTan, "1")
-				.putMultinomials(ProdEnum.JiaoMei, "-1.60584");
+		Formula formula = Formula.create().putConstant("162.31").putMultinomial(ProdEnum.JiaoTan, "1")
+				.putMultinomial(ProdEnum.JiaoMei, "-1.60584");
 		dataProcessor.testEndPriceFormula("2014-01-01", "2016-09-02", formula);
 	}
 

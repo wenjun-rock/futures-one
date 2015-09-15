@@ -16,8 +16,8 @@ public class YOIMonitor1  extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		Formula formula = Formula.create().putConstant("1029").putMultinomials(ProdEnum.DouYou, "1")
-				.putMultinomials(ProdEnum.CaiYou, "-1.119");
+		Formula formula = Formula.create().putConstant("1029").putMultinomial(ProdEnum.DouYou, "1")
+				.putMultinomial(ProdEnum.CaiYou, "-1.119");
 		dataProcessor.monitorEndPriceFormula("2015-01-01", formula);
 	}
 

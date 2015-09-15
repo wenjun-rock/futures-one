@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class DataProcessor {
 
 	@Autowired
 	private DataURI dataURI;
-	
+
 	@Autowired
 	private KLineRepo kLineRepo;
 
@@ -51,7 +52,7 @@ public class DataProcessor {
 					miss = true;
 					break;
 				} else {
-					diff = diff.add(val.multiply(formula.getMultinomials().get(xyLine.getProd())));
+					diff = diff.add(val.multiply(formula.getCoefficient(xyLine.getProd().getCode())));
 				}
 			}
 			if (!miss) {
@@ -134,7 +135,8 @@ public class DataProcessor {
 	}
 
 	public void testEndPriceFormula(String startDt, String endDt, Formula formula) throws Exception {
-		ProdEnum[] prods = formula.getMultinomials().keySet().toArray(new ProdEnum[] {});
+		ProdEnum[] prods = formula.getMultinomials().stream().map(multinomial -> ProdEnum.codeOf(multinomial.getCode()))
+				.collect(Collectors.toList()).toArray(new ProdEnum[] {});
 		List<DailyKLine> kLineList = kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList);
 		List<String> lines = this.tableFormular(startDt, endDt, xyLineList, formula);
@@ -147,7 +149,8 @@ public class DataProcessor {
 
 	public void monitorEndPriceFormula(String startDt, Formula formula) throws Exception {
 		String endDt = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		ProdEnum[] prods = formula.getMultinomials().keySet().toArray(new ProdEnum[] {});
+		ProdEnum[] prods = formula.getMultinomials().stream().map(multinomial -> ProdEnum.codeOf(multinomial.getCode()))
+				.collect(Collectors.toList()).toArray(new ProdEnum[] {});
 		List<DailyKLine> kLineList = kLineRepo.loadDailyKLines(prods);
 		List<XYLine> xyLineList = this.toEndPriceXYLine(kLineList);
 		List<String> lines = this.tableFormular(startDt, endDt, xyLineList, formula);

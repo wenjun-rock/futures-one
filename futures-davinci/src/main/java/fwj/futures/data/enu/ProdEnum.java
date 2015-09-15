@@ -77,6 +77,15 @@ public enum ProdEnum {
 		return exchange;
 	}
 	
+	public static ProdEnum codeOf(String code) {
+		for(ProdEnum ele : ProdEnum.values()){
+			if(ele.getCode().equals(code)) {
+				return ele;
+			}
+		}
+		return null;
+	}
+	
 	public String toString() {
 		return code + "(" + name + ")"; 
 	}

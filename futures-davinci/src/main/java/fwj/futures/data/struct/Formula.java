@@ -1,18 +1,17 @@
 package fwj.futures.data.struct;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import fwj.futures.data.enu.ProdEnum;
 
 public class Formula {
 
 	private BigDecimal constant;
-	private Map<ProdEnum, BigDecimal> multinomials = new HashMap<>();
+	private List<Multinomial> multinomials = new ArrayList<>();
 
-	private Formula() {
-
+	public Formula() {
 	}
 
 	public static Formula create() {
@@ -24,8 +23,11 @@ public class Formula {
 		return this;
 	}
 
-	public Formula putMultinomials(ProdEnum prod, BigDecimal coefficient) {
-		multinomials.put(prod, coefficient);
+	public Formula putMultinomial(String code, BigDecimal coefficient) {
+		Multinomial multinomial = new Multinomial();
+		multinomial.setCode(code);
+		multinomial.setCoefficient(coefficient);
+		multinomials.add(multinomial);
 		return this;
 	}
 
@@ -34,17 +36,56 @@ public class Formula {
 		return this;
 	}
 
-	public Formula putMultinomials(ProdEnum prod, String coefficient) {
-		multinomials.put(prod, new BigDecimal(coefficient));
+	public Formula putMultinomial(ProdEnum prod, String coefficient) {
+		putMultinomial(prod.getCode(), new BigDecimal(coefficient));
 		return this;
+	}
+
+	public BigDecimal getCoefficient(String code) {
+		for (Multinomial multinomial : multinomials) {
+			if (multinomial.getCode().equals(code)) {
+				return multinomial.getCoefficient();
+			}
+		}
+		return BigDecimal.ZERO;
 	}
 
 	public BigDecimal getConstant() {
 		return constant;
 	}
 
-	public Map<ProdEnum, BigDecimal> getMultinomials() {
+	public List<Multinomial> getMultinomials() {
 		return multinomials;
+	}
+
+	public void setConstant(BigDecimal constant) {
+		this.constant = constant;
+	}
+
+	public void setMultinomials(List<Multinomial> multinomials) {
+		this.multinomials = multinomials;
+	}
+
+	public class Multinomial {
+
+		private String code;
+		private BigDecimal coefficient;
+
+		public String getCode() {
+			return code;
+		}
+
+		public BigDecimal getCoefficient() {
+			return coefficient;
+		}
+
+		public void setCode(String code) {
+			this.code = code;
+		}
+
+		public void setCoefficient(BigDecimal coefficient) {
+			this.coefficient = coefficient;
+		}
 	}
 
 }

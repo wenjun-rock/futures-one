@@ -16,8 +16,8 @@ public class YPMonitor2 extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		Formula formula = Formula.create().putConstant("-587.08732").putMultinomials(ProdEnum.DouYou, "1")
-				.putMultinomials(ProdEnum.ZongLvYou, "-1.03179");
+		Formula formula = Formula.create().putConstant("-587.08732").putMultinomial(ProdEnum.DouYou, "1")
+				.putMultinomial(ProdEnum.ZongLvYou, "-1.03179");
 		dataProcessor.monitorEndPriceFormula("2014-03-03", formula);
 	}
 
