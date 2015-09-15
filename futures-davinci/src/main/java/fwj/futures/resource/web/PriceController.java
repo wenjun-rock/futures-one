@@ -27,14 +27,14 @@ public class PriceController {
 	@Autowired
 	private ProductRepository productRepo;
 
-	@RequestMapping("/{codes}")
-	public List<Price> findByCodes(@PathVariable("codes") String codes) {
+	@RequestMapping("/daily/{codes}")
+	public List<HistPrice> findDailyByCodes(@PathVariable("codes") String codes) {
 		return Stream.of(codes.split(",")).map(code -> {
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			df.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Product prod = productRepo.findByCode(code);
 			if (prod == null) {
-				return new Price();
+				return new HistPrice();
 			} else {
 				List<KLine> kLineList = kLineRepo.findByCode(code);
 				Object[][] data = new Object[kLineList.size()][2];
@@ -48,25 +48,61 @@ public class PriceController {
 					}
 					data[i][1] = kline.getEndPrice();
 				}
-				return new Price(prod, data);
+				return new HistPrice(prod, data);
+			}
+		}).collect(Collectors.toList());
+	}
+	
+	@RequestMapping("/realtime/{codes}")
+	public List<HistPrice> findRealtimeByCodes(@PathVariable("codes") String codes) {
+		
+
+
+		
+		return Stream.of(codes.split(",")).map(code -> {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			df.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Product prod = productRepo.findByCode(code);
+			if (prod == null) {
+				return new HistPrice();
+			} else {
+				List<KLine> kLineList = kLineRepo.findByCode(code);
+				Object[][] data = new Object[kLineList.size()][2];
+				for (int i = 0; i < kLineList.size(); i++) {
+					KLine kline = kLineList.get(i);
+					try {
+						data[i][0] = df.parse(kline.getDt()).getTime();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					data[i][1] = kline.getEndPrice();
+				}
+				return new HistPrice(prod, data);
 			}
 		}).collect(Collectors.toList());
 	}
 
-	public static class Price {
+	public static class HistPrice {
 		private String name;
+		private String code;
 		private Object[][] data;
 
-		public Price(Product prod, Object[][] data) {
+		public HistPrice(Product prod, Object[][] data) {
 			this.name = prod.getCode() + "(" + prod.getName() + ")";
+			this.code = prod.getCode();
 			this.data = data;
 		}
 
-		public Price() {
+		public HistPrice() {
 		}
 
 		public String getName() {
 			return name;
+		}
+
+		public String getCode() {
+			return code;
 		}
 
 		public Object[][] getData() {

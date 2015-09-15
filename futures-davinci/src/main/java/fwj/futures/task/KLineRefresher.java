@@ -22,8 +22,6 @@ import fwj.futures.resource.repository.ProductRepository;
 @Component
 public class KLineRefresher extends AbstractBaseLaunch {
 
-	Logger log = Logger.getLogger(this.getClass());
-
 	@Autowired
 	private DataURI dataURI;
 
