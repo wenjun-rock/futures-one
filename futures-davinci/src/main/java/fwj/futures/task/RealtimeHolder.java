@@ -67,13 +67,17 @@ public class RealtimeHolder {
 		List<UnitData> currentList = current.getUnitDataList();
 		List<UnitData> lastList = last.getUnitDataList();
 		if (currentList.size() != lastList.size()) {
+			log.info(String.format("change! the product size from %s to %s", lastList.size(), currentList.size()));
 			return true;
 		}
 		for (int i = 0; i < currentList.size(); i++) {
-			if (currentList.get(i).getPrice().equals(lastList.get(i).getPrice())) {
+			if (!currentList.get(i).getPrice().equals(lastList.get(i).getPrice())) {
+				log.info(String.format("change! %s %s changed to %s %s", lastList.get(i).getCode(),
+						lastList.get(i).getPrice(), currentList.get(i).getCode(), currentList.get(i).getPrice()));
 				return true;
 			}
 		}
+		log.info("not change!");
 		return false;
 	}
 
@@ -111,10 +115,8 @@ public class RealtimeHolder {
 		if (diff(current, loopCache[lastIndex])) {
 			loopCache[index] = current;
 			index++;
-			log.info("change!");
 		} else {
 			rest = 5;
-			log.info("not change!");
 		}
 	}
 
