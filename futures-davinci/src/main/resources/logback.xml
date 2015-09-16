@@ -8,7 +8,7 @@
 	
 	<appender name="taskFile" class="ch.qos.logback.core.rolling.RollingFileAppender">   
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">   
-      		<fileNamePattern>task.%d{yyyy-MM-dd}.log</fileNamePattern>   
+      		<fileNamePattern>log/task.%d{yyyy-MM-dd}.log</fileNamePattern>   
       		<maxHistory>30</maxHistory>    
       	</rollingPolicy>
       	<layout class="ch.qos.logback.classic.PatternLayout">
@@ -18,7 +18,7 @@
 	
 	<appender name="defaultFile" class="ch.qos.logback.core.rolling.RollingFileAppender">   
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">   
-      		<fileNamePattern>default.%d{yyyy-MM-dd}.log</fileNamePattern>   
+      		<fileNamePattern>log/default.%d{yyyy-MM-dd}.log</fileNamePattern>   
       		<maxHistory>30</maxHistory>    
       	</rollingPolicy>
       	<layout class="ch.qos.logback.classic.PatternLayout">
