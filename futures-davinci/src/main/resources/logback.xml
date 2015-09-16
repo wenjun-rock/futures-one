@@ -5,6 +5,34 @@
 			<pattern>%-20(%d{HH:mm:ss.SSS} [%thread]) %-5level %logger{80} - %msg%n</pattern>
 		</layout>
 	</appender>
+	
+	<appender name="taskFile" class="ch.qos.logback.core.rolling.RollingFileAppender">   
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">   
+      		<fileNamePattern>task.%d{yyyy-MM-dd}.log</fileNamePattern>   
+      		<maxHistory>30</maxHistory>    
+      	</rollingPolicy>
+      	<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%-20(%d{HH:mm:ss.SSS} [%thread]) %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>
+	
+	<appender name="defaultFile" class="ch.qos.logback.core.rolling.RollingFileAppender">   
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">   
+      		<fileNamePattern>default.%d{yyyy-MM-dd}.log</fileNamePattern>   
+      		<maxHistory>30</maxHistory>    
+      	</rollingPolicy>
+      	<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%-20(%d{HH:mm:ss.SSS} [%thread]) %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>  
+	
+	<logger name="fwj.futures.task" level="INFO" additivity="false">  
+		<appender-ref ref="taskFile"/>
+    </logger> 
+	
+	<logger name="fwj.futures" level="INFO" additivity="false">  
+		<appender-ref ref="defaultFile"/>
+    </logger>   
 
 	<root level="INFO">
 		<appender-ref ref="stdout" />
