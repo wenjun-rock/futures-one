@@ -3,17 +3,13 @@ package fwj.futures.task;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,6 @@ import com.google.common.io.Resources;
 
 import fwj.futures.resource.entity.Product;
 import fwj.futures.resource.repository.ProductRepository;
-import fwj.futures.resource.web.PriceController.Price;
 
 @Component
 public class RealtimeHolder {
@@ -84,13 +79,14 @@ public class RealtimeHolder {
 
 	private void update() throws Exception {
 		String datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-		
+
 		List<String> lines = new ArrayList<>();
 		List<Product> prodList = productRepo.findAllActive();
 		int from = 0;
-		while(from < prodList.size()) {
+		while (from < prodList.size()) {
 			int to = Math.min(from + 10, prodList.size());
-			String params = prodList.subList(from, to).stream().map(prod -> prod.getCode() + "0").reduce((l, r) -> l + "," + r).get();
+			String params = prodList.subList(from, to).stream().map(prod -> prod.getCode() + "0")
+					.reduce((l, r) -> l + "," + r).get();
 			try {
 				lines.addAll(Resources.readLines(new URL(String.format(URI_RT, params)), StandardCharsets.UTF_8));
 			} catch (Exception ex) {
@@ -98,7 +94,7 @@ public class RealtimeHolder {
 				rest = 10;
 				return;
 			}
-			from +=10;
+			from += 10;
 		}
 
 		List<UnitData> list = new ArrayList<>();
@@ -214,28 +210,6 @@ public class RealtimeHolder {
 			return this.datetime.compareTo(that.datetime);
 		}
 
-	}
-
-	public Price findRealtimeByCode(Product prod) {
-		if (loopCache == null) {
-			return new Price(prod, new Object[0][2]);
-		}
-		UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
-		List<UnitData> unitDataList = Stream.of(copy).flatMap(unitDataGroup -> unitDataGroup.getUnitDataList().stream())
-				.filter(unitData -> unitData.getCode().equals(prod.getCode())).collect(Collectors.toList());
-		Collections.sort(unitDataList);
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getTimeZone("UTC"));
-		Object[][] data = new Object[unitDataList.size()][2];
-		for (int i = 0; i < data.length; i++) {
-			try {
-				data[i][0] = df.parse(unitDataList.get(i).getDatetime());
-				data[i][1] = unitDataList.get(i).getPrice();
-			} catch (ParseException e) {
-				log.error("", e);
-			}
-		}
-		return new Price(prod, data);
 	}
 
 	public List<UnitDataGroup> getRealtime() {
