@@ -30,7 +30,7 @@ import fwj.futures.resource.web.PriceController.Price;
 
 @Component
 public class RealtimeHolder {
-	
+
 	private Logger log = Logger.getLogger(this.getClass());
 
 	private final static String URI_5M = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMiniKLine5m?symbol=%s0";
@@ -38,6 +38,7 @@ public class RealtimeHolder {
 
 	@Autowired
 	private ProductRepository productRepo;
+
 	private int index = 0;
 	private int rest = 0;
 	private boolean first = true;
@@ -80,9 +81,23 @@ public class RealtimeHolder {
 
 	private void update() throws Exception {
 		String datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		
+		List<String> lines = new ArrayList<>();
 		List<Product> prodList = productRepo.findAllActive();
-		String params = prodList.stream().map(prod -> prod.getCode() + "0").reduce((l, r) -> l + "," + r).get();
-		List<String> lines = Resources.readLines(new URL(String.format(URI_RT, params)), StandardCharsets.UTF_8);
+		int from = 0;
+		while(from < prodList.size()) {
+			int to = Math.min(from + 10, prodList.size());
+			String params = prodList.subList(from, to).stream().map(prod -> prod.getCode() + "0").reduce((l, r) -> l + "," + r).get();
+			try {
+				lines.addAll(Resources.readLines(new URL(String.format(URI_RT, params)), StandardCharsets.UTF_8));
+			} catch (Exception ex) {
+				log.error("error when access " + String.format(URI_RT, params));
+				rest = 5;
+				return;
+			}
+			from +=10;
+		}
+
 		List<UnitData> list = new ArrayList<>();
 		for (int i = 0; i < prodList.size(); i++) {
 			String line = lines.get(i);
@@ -91,7 +106,6 @@ public class RealtimeHolder {
 				String code = prodList.get(i).getCode();
 				list.add(new UnitData(datetime, code, price));
 			}
-
 		}
 		UnitDataGroup current = new UnitDataGroup(datetime, list);
 		int lastIndex = (loopCache.length + index - 1) % loopCache.length;
@@ -123,8 +137,8 @@ public class RealtimeHolder {
 				.collect(Collectors.groupingBy(UnitData::getDatetime, Collectors.toList())).entrySet().stream()
 				.map(entry -> new UnitDataGroup(entry.getKey(), entry.getValue())).collect(Collectors.toList());
 		Collections.sort(resultList);
-		int toIndex=resultList.size();
-		int fromIndex=Math.max(0, resultList.size() - 480);
+		int toIndex = resultList.size();
+		int fromIndex = Math.max(0, resultList.size() - 480);
 		resultList = resultList.subList(fromIndex, toIndex);
 		loopCache = new UnitDataGroup[resultList.size()];
 		for (int i = 0; i < resultList.size(); i++) {
@@ -204,8 +218,7 @@ public class RealtimeHolder {
 			return new Price(prod, new Object[0][2]);
 		}
 		UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
-		List<UnitData> unitDataList = Stream.of(copy)
-				.flatMap(unitDataGroup -> unitDataGroup.getUnitDataList().stream())
+		List<UnitData> unitDataList = Stream.of(copy).flatMap(unitDataGroup -> unitDataGroup.getUnitDataList().stream())
 				.filter(unitData -> unitData.getCode().equals(prod.getCode())).collect(Collectors.toList());
 		Collections.sort(unitDataList);
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -221,12 +234,12 @@ public class RealtimeHolder {
 		}
 		return new Price(prod, data);
 	}
-	
+
 	public List<UnitDataGroup> getRealtime() {
 		if (loopCache == null) {
 			return Collections.emptyList();
 		}
-		
+
 		UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
 		List<UnitDataGroup> list = Arrays.asList(copy);
 		Collections.sort(list);

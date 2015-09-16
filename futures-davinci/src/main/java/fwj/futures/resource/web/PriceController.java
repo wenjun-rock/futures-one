@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
-
 import fwj.futures.data.struct.Formula;
 import fwj.futures.data.struct.Formula.Multinomial;
 import fwj.futures.resource.entity.Hedging;
@@ -96,30 +94,34 @@ public class PriceController {
 		Formula fomular = Formula.parse(hedging.getExpression());
 		List<UnitDataGroup> unitDataGroupList = realtimeHolder.getRealtime();
 		Object[][] data = new Object[unitDataGroupList.size()][2];
+		int j = 0;
 		for (int i = 0; i < unitDataGroupList.size(); i++) {
 			UnitDataGroup unitDataGroup = unitDataGroupList.get(i);
 			try {
-				data[i][0] = df.parse(unitDataGroup.getDatetime());
 				Map<String, BigDecimal> map = new HashMap<>();
 				for (UnitData unitData : unitDataGroup.getUnitDataList()) {
 					map.put(unitData.getCode(), unitData.getPrice());
 				}
+				boolean miss = false;
 				BigDecimal result = fomular.getConstant();
 				for (Multinomial multinomial : fomular.getMultinomials()) {
-					if(map.get(multinomial.getCode()) == null) {
-						System.out.println(JSON.toJSONString(fomular));
-						System.out.println(JSON.toJSONString(multinomial));
-						System.out.println(JSON.toJSONString(unitDataGroup));
+					if (map.get(multinomial.getCode()) == null) {
+						miss = true;
+						break;
 					} else {
-						result = result.add(multinomial.getCoefficient().multiply(map.get(multinomial.getCode())));						
+						result = result.add(multinomial.getCoefficient().multiply(map.get(multinomial.getCode())));
 					}
 				}
-				data[i][1] = result;
+				if (!miss) {
+					data[j][0] = df.parse(unitDataGroup.getDatetime());
+					data[j][1] = result;
+					j++;
+				}
 			} catch (ParseException e) {
 				log.error("", e);
 			}
 		}
-		return new Monitor(hedging.getUpLimit(), hedging.getDownLimit(), data).toSeries();
+		return new Monitor(hedging.getUpLimit(), hedging.getDownLimit(), Arrays.copyOf(data, j)).toSeries();
 	}
 
 	public static class Monitor {
