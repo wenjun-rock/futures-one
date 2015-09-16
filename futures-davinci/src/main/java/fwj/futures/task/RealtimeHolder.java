@@ -45,6 +45,9 @@ public class RealtimeHolder {
 	private boolean running = false;
 	private UnitDataGroup[] loopCache = null;
 
+	/**
+	 * 间隔1分钟调度
+	 */
 	@Scheduled(cron = "0 */1 * * * ?")
 	public void refresh() {
 		if (--rest > 0 || running) {
