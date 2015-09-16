@@ -95,7 +95,7 @@ public class RealtimeHolder {
 				lines.addAll(Resources.readLines(new URL(String.format(URI_RT, params)), StandardCharsets.UTF_8));
 			} catch (Exception ex) {
 				log.error("error when access " + String.format(URI_RT, params));
-				rest = 5;
+				rest = 10;
 				return;
 			}
 			from +=10;
