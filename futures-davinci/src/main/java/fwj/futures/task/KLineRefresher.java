@@ -36,7 +36,7 @@ public class KLineRefresher {
 	 * 每天6时调度。
 	 */
 	@Scheduled(cron = "0 0 6 * * ?")
-	protected void doTask() {
+	public void doTask() {
 		for (Product prod : productRepository.findAllActive()) {
 			log.info("Downloading " + prod.getCode());
 
