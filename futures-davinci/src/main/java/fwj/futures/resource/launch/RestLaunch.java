@@ -1,4 +1,4 @@
-package fwj.futures.launch;
+package fwj.futures.resource.launch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

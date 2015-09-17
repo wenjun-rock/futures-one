@@ -26,9 +26,9 @@
 		</layout>
 	</appender>  
 	
-	<logger name="fwj.futures.task" level="INFO" additivity="false">  
+	<logger name="fwj.futures.resource.task" level="INFO" additivity="false">  
 		<appender-ref ref="taskFile"/>
-    </logger> 
+    </logger>
 	
 	<logger name="fwj.futures" level="INFO" additivity="false">  
 		<appender-ref ref="defaultFile"/>

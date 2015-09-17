@@ -1,4 +1,4 @@
-package fwj.futures.task;
+package fwj.futures.resource.task;
 
 import java.math.BigDecimal;
 import java.net.URL;
@@ -205,6 +205,13 @@ public class RealtimeHolder {
 
 		public List<UnitData> getUnitDataList() {
 			return unitDataList;
+		}
+
+		public UnitData getUnitData(String code) {
+			if (unitDataList == null) {
+				return null;
+			}
+			return unitDataList.stream().filter(unitData -> unitData.getCode().equals(code)).findAny().orElse(null);
 		}
 
 		@Override

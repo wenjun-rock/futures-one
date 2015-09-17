@@ -1,4 +1,4 @@
-package fwj.futures.task;
+package fwj.futures.resource.task;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;

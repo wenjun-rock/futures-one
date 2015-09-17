@@ -17,10 +17,10 @@ import fwj.futures.resource.entity.KLine;
 import fwj.futures.resource.entity.Product;
 import fwj.futures.resource.repository.KLineRepository;
 import fwj.futures.resource.repository.ProductRepository;
+import fwj.futures.resource.task.RealtimeHolder;
+import fwj.futures.resource.task.RealtimeHolder.UnitDataGroup;
 import fwj.futures.resource.web.vo.ProductPrice;
 import fwj.futures.resource.web.vo.Series;
-import fwj.futures.task.RealtimeHolder;
-import fwj.futures.task.RealtimeHolder.UnitDataGroup;
 
 @RestController()
 @RequestMapping("/web/price")

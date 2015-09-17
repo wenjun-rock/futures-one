@@ -10,6 +10,8 @@ import fwj.futures.resource.entity.KLine;
 public interface KLineRepository extends JpaRepository<KLine, Integer> {
 
 	KLine findTopByCodeOrderByDtDesc(String code);
+	
+	List<KLine> findTop60ByCodeOrderByDtDesc(String code);
 
 	List<KLine> findByCodeAndDtBetween(String code, String startDt, String endDt);
 
