@@ -8,6 +8,7 @@ public class Futures {
 
 	private Product product;
 	private BigDecimal price;
+	private String priceTime;
 	private BigDecimal last1KIncPct;
 	private BigDecimal last5KIncPct;
 	private BigDecimal last10KIncPct;
@@ -33,6 +34,14 @@ public class Futures {
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public String getPriceTime() {
+		return priceTime;
+	}
+
+	public void setPriceTime(String priceTime) {
+		this.priceTime = priceTime;
 	}
 
 	public BigDecimal getLast1KIncPct() {

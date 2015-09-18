@@ -1,5 +1,6 @@
 package fwj.futures.resource.task;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.entity.Product;
@@ -30,6 +32,7 @@ public class RealtimeHolder {
 
 	private final static String URI_5M = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMiniKLine5m?symbol=%s0";
 	private final static String URI_RT = "http://hq.sinajs.cn/list=%s";
+	private final static String BAK_PATH = "/home/fwj/bak/davinci-realtime";
 
 	@Autowired
 	private ProductRepository productRepo;
@@ -121,37 +124,69 @@ public class RealtimeHolder {
 	}
 
 	private void init() throws Exception {
-		List<UnitData> list = new ArrayList<>();
-		for (Product prod : productRepo.findAllActive()) {
-			String result = Resources.toString(new URL(String.format(URI_5M, prod.getCode())), StandardCharsets.UTF_8);
-			JSONArray dailyKs = JSON.parseArray(result);
-			if (dailyKs == null) {
-				continue;
+		List<UnitDataGroup> resultList = loadRealtime();
+		log.info(resultList.size() + " UnitDataGroup was loaded from bak.");
+		if (resultList.isEmpty()) {
+			
+			List<UnitData> list = new ArrayList<>();
+			for (Product prod : productRepo.findAllActive()) {
+				String result = Resources.toString(new URL(String.format(URI_5M, prod.getCode())),
+						StandardCharsets.UTF_8);
+				JSONArray dailyKs = JSON.parseArray(result);
+				if (dailyKs == null) {
+					continue;
+				}
+				for (int i = 0; i < dailyKs.size(); i++) {
+					JSONArray ele = dailyKs.getJSONArray(i);
+					list.add(new UnitData(ele.getString(0), prod.getCode(), ele.getBigDecimal(4)));
+				}
 			}
-			for (int i = 0; i < dailyKs.size(); i++) {
-				JSONArray ele = dailyKs.getJSONArray(i);
-				list.add(new UnitData(ele.getString(0), prod.getCode(), ele.getBigDecimal(4)));
-			}
+
+			resultList = list.stream().collect(Collectors.groupingBy(UnitData::getDatetime, Collectors.toList()))
+					.entrySet().stream().map(entry -> new UnitDataGroup(entry.getKey(), entry.getValue()))
+					.collect(Collectors.toList());
+			Collections.sort(resultList);
+			int toIndex = resultList.size();
+			int fromIndex = Math.max(0, resultList.size() - 480);
+			resultList = resultList.subList(fromIndex, toIndex);
 		}
 
-		List<UnitDataGroup> resultList = list.stream()
-				.collect(Collectors.groupingBy(UnitData::getDatetime, Collectors.toList())).entrySet().stream()
-				.map(entry -> new UnitDataGroup(entry.getKey(), entry.getValue())).collect(Collectors.toList());
-		Collections.sort(resultList);
-		int toIndex = resultList.size();
-		int fromIndex = Math.max(0, resultList.size() - 480);
-		resultList = resultList.subList(fromIndex, toIndex);
-		loopCache = new UnitDataGroup[resultList.size()];
+		UnitDataGroup[] temp = new UnitDataGroup[resultList.size()];
 		for (int i = 0; i < resultList.size(); i++) {
-			loopCache[i] = resultList.get(i);
+			temp[i] = resultList.get(i);
 		}
-		log.info("init loopCache with the size of " + resultList.size());
+		loopCache = temp;
+
+		log.info("init loopCache with the size of " + loopCache.length);
 		first = false;
 	}
 
-	// public void addListener(Listener lis) {
-	//
-	// }
+	/**
+	 * 每1小时保存一次Realtime
+	 */
+	@Scheduled(cron = "0 15 */1 * * ?")
+	public void bakRealtime() {
+		try {
+			String data = JSON.toJSONString(getRealtime());
+			Files.asCharSink(new File(BAK_PATH), StandardCharsets.UTF_8).write(data);
+			log.info("success to save realtime data to " + BAK_PATH);
+		} catch (Exception e) {
+			log.error(e);
+		}
+	}
+
+	public List<UnitDataGroup> loadRealtime() {
+		try {
+			File bak = new File(BAK_PATH);
+			if (bak.exists()) {
+				String data = Files.asCharSource(bak, StandardCharsets.UTF_8).read();
+				return JSON.parseArray(data, UnitDataGroup.class);
+			}
+		} catch (Exception e) {
+			log.error(e);
+		}
+		return Collections.emptyList();
+	}
 
 	public class UnitData implements Comparable<UnitData> {
 
