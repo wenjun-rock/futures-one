@@ -164,7 +164,7 @@ public class RealtimeHolder {
 	/**
 	 * 每1小时保存一次Realtime
 	 */
-	@Scheduled(cron = "0 15 */1 * * ?")
+	@Scheduled(cron = "15 15 */1 * * ?")
 	public void bakRealtime() {
 		try {
 			String data = JSON.toJSONString(getRealtime());
