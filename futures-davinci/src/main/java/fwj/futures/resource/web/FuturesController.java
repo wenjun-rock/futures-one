@@ -71,7 +71,13 @@ public class FuturesController {
 				f.setLast10RIncPct(this.lastRIncPct(unitData, 10));
 				f.setLast30RIncPct(this.lastRIncPct(unitData, 30));
 				f.setLast60RIncPct(this.lastRIncPct(unitData, 60));
-				f.setPrice(unitData.isEmpty() ? BigDecimal.ZERO : unitData.get(0).getPrice());
+				if (unitData.isEmpty()) {
+					f.setPrice(BigDecimal.ZERO);
+					f.setPriceTime("");
+				} else {
+					f.setPrice(unitData.get(0).getPrice());
+					f.setPriceTime(unitData.get(0).getDatetime());
+				}
 				return f;
 			}
 		}).collect(Collectors.toList());
