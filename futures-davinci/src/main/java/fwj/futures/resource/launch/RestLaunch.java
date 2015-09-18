@@ -2,11 +2,13 @@ package fwj.futures.resource.launch;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class RestLaunch {
 
 	public static void main(String[] args) {
-		SpringApplication.run("classpath:applicationContext.xml", args);
+		ConfigurableApplicationContext cxt = SpringApplication.run("classpath:applicationContext.xml", args);
+		cxt.registerShutdownHook();
 	}
 }
