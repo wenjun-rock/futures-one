@@ -38,25 +38,24 @@ public class ProductController {
 	public List<ProductLabel> queryAllLabels() {
 		return productBuss.queryAllLabels();
 	}
+	
+	@RequestMapping("/base/code/{code}")
+	public ProductInfo queryInfoByCode(@PathVariable("code") String code) {
+		return productBuss.queryInfoByCode(code);
+	}
 
 	@RequestMapping("/price/label/{id}")
 	public List<ProductPrice> queryPriceByLabel(@PathVariable("id") Integer id) {
 		List<String> codes = id == 0 ? productBuss.queryAllCode() : productBuss.queryCodeByLabelId(id);
 		return queryPrice(codes);
 	}
-	
+
 	@RequestMapping("/price/code/{code}")
 	public ProductPrice queryPriceByCode(@PathVariable("code") String code) {
 		return queryPrice(Arrays.asList(code)).get(0);
 	}
 
-	@RequestMapping("/base/code/{code}")
-	public ProductInfo queryInfoByCode(@PathVariable("code") String code) {
-		return  productBuss.queryInfoByCode(code);
-	}
-	
 	private List<ProductPrice> queryPrice(List<String> codeList) {
-
 		return codeList.stream().map(code -> {
 			Futures futures = productBuss.queryFuturesByCode(code);
 			if (futures == null) {
