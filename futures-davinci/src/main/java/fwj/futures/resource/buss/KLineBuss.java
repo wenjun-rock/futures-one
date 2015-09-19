@@ -21,6 +21,11 @@ public class KLineBuss {
 	public List<KLine> queryLatest60ByCode(String code) {
 		return kLineRepository.findTop60ByCodeOrderByDtDesc(code);
 	}
+	
+	@Cacheable(value = "KLineBuss.findByCode")
+	public List<KLine> findByCode(String code) {
+		return kLineRepository.findByCode(code);
+	}
 
 	public List<KLineDtCodeGroup> queryEndPrice(List<String> codeList) {
 		Map<String, Map<String, KLine>> kLineMap = codeList.stream().map(code -> kLineRepository.findByCode(code))

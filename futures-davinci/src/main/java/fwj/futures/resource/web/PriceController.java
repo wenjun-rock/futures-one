@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fwj.futures.resource.entity.KLine;
+import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.entity.Futures;
+import fwj.futures.resource.entity.KLine;
 import fwj.futures.resource.repository.KLineRepository;
-import fwj.futures.resource.repository.FuturesRepository;
 import fwj.futures.resource.task.RealtimeHolder;
 import fwj.futures.resource.task.RealtimeHolder.UnitDataGroup;
 import fwj.futures.resource.web.vo.PriceLine;
@@ -30,7 +30,7 @@ public class PriceController {
 	private KLineRepository kLineRepo;
 
 	@Autowired
-	private FuturesRepository productRepo;
+	private ProductBuss productBuss;
 
 	@Autowired
 	private RealtimeHolder realtimeHolder;
@@ -40,7 +40,7 @@ public class PriceController {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		df.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return Stream.of(codes.split(",")).map(code -> {
-			Futures prod = productRepo.findByCode(code);
+			Futures prod = productBuss.queryFuturesByCode(code);
 			if (prod == null) {
 				return Series.EMPTY;
 			} else {
@@ -64,7 +64,7 @@ public class PriceController {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return Stream.of(codes.split(",")).map(code -> {
-			Futures prod = productRepo.findByCode(code);
+			Futures prod = productBuss.queryFuturesByCode(code);
 			if (prod == null) {
 				return Series.EMPTY;
 			} else {
