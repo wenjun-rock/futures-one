@@ -14,4 +14,5 @@ public interface LabelFuturesRepository extends JpaRepository<LabelFutures, Inte
 
 	List<LabelFutures> findByLabelName(String labelName);
 
+	List<LabelFutures> findByLabelIdOrderByFuturesCodeAsc(Integer labelId);
 }

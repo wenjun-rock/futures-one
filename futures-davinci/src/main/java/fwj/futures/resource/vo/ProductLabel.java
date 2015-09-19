@@ -1,4 +1,4 @@
-package fwj.futures.resource.web.vo;
+package fwj.futures.resource.vo;
 
 import java.util.List;
 

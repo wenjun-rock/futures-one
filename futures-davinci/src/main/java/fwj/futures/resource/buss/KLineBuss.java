@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.entity.KLine;
@@ -15,6 +16,11 @@ public class KLineBuss {
 
 	@Autowired
 	private KLineRepository kLineRepository;
+
+	@Cacheable(value = "KLineBuss.queryLatest60ByCode")
+	public List<KLine> queryLatest60ByCode(String code) {
+		return kLineRepository.findTop60ByCodeOrderByDtDesc(code);
+	}
 
 	public List<KLineDtCodeGroup> queryEndPrice(List<String> codeList) {
 		Map<String, Map<String, KLine>> kLineMap = codeList.stream().map(code -> kLineRepository.findByCode(code))
