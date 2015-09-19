@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.strategy.trend.donchian.struct.DonchianWave.Direction;
 
 public class DonchianTrend {
 
-	private Product product; // 产品
+	private ProdEnum product; // 产品
 	private int enterBreakout;
 	private int exitBreakout;
 
@@ -19,14 +19,14 @@ public class DonchianTrend {
 	private List<DonchianWave> histWave;
 	private DonchianPrepare prepare;
 
-	public DonchianTrend(Product product, int enterBreakout, int exitBreakout) {
+	public DonchianTrend(ProdEnum product, int enterBreakout, int exitBreakout) {
 		this.product = product;
 		this.enterBreakout = enterBreakout;
 		this.exitBreakout = exitBreakout;
 		this.histWave = new ArrayList<>();
 	}
 
-	public Product getProduct() {
+	public ProdEnum getProduct() {
 		return product;
 	}
 

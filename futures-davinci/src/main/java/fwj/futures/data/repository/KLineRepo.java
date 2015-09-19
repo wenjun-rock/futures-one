@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Files;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.struct.DailyK;
 import fwj.futures.data.struct.DailyKLine;
 
@@ -22,7 +22,7 @@ public class KLineRepo {
 
 	public List<DailyKLine> loadAllDailyKLines(boolean includeAll) throws IOException {
 		List<DailyKLine> dailyKLines = new ArrayList<>();
-		for (Product prod : Product.values()) {
+		for (ProdEnum prod : ProdEnum.values()) {
 			dailyKLines.add(loadDailyKLine(prod, includeAll));
 		}
 		return dailyKLines;
@@ -32,19 +32,19 @@ public class KLineRepo {
 		return loadAllDailyKLines(true);
 	}
 
-	public List<DailyKLine> loadDailyKLines(Product[] prods, boolean includeAll) throws IOException {
+	public List<DailyKLine> loadDailyKLines(ProdEnum[] prods, boolean includeAll) throws IOException {
 		List<DailyKLine> dailyKLines = new ArrayList<>();
-		for (Product prod : prods) {
+		for (ProdEnum prod : prods) {
 			dailyKLines.add(loadDailyKLine(prod, includeAll));
 		}
 		return dailyKLines;
 	}
 
-	public List<DailyKLine> loadDailyKLines(Product[] prods) throws IOException {
+	public List<DailyKLine> loadDailyKLines(ProdEnum[] prods) throws IOException {
 		return loadDailyKLines(prods, true);
 	}
 
-	public DailyKLine loadDailyKLine(Product prod, boolean includeAll) throws IOException {
+	public DailyKLine loadDailyKLine(ProdEnum prod, boolean includeAll) throws IOException {
 		String jsonStr = Files.asCharSource(this.getLatestDailyKLineFile(prod), StandardCharsets.UTF_8).read();
 		JSONArray dailyKs = JSON.parseArray(jsonStr);
 
@@ -65,11 +65,11 @@ public class KLineRepo {
 		return kLine;
 	}
 
-	public DailyKLine loadDailyKLine(Product prod) throws IOException {
+	public DailyKLine loadDailyKLine(ProdEnum prod) throws IOException {
 		return loadDailyKLine(prod, true);
 	}
 
-	private File getLatestDailyKLineFile(final Product prod) throws IOException {
+	private File getLatestDailyKLineFile(final ProdEnum prod) throws IOException {
 		File dir = new File(URIConstants.DATA_RAW_DIR);
 		File[] files = dir.listFiles(new FilenameFilter() {
 			public boolean accept(File dir, String name) {

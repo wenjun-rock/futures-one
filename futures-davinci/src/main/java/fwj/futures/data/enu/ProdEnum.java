@@ -1,6 +1,6 @@
 package fwj.futures.data.enu;
 
-public enum Product {
+public enum ProdEnum {
 	
 	/* 上海商品交易所  */
 	Baiyin("AG", "白银", Exchange.SH),
@@ -59,7 +59,7 @@ public enum Product {
 	private String name;
 	private Exchange exchange;
 
-	Product(String code, String name, Exchange exchange) {
+	ProdEnum(String code, String name, Exchange exchange) {
 		this.code = code;
 		this.name = name;
 		this.exchange = exchange;
@@ -75,6 +75,15 @@ public enum Product {
 
 	public Exchange getExchange() {
 		return exchange;
+	}
+	
+	public static ProdEnum codeOf(String code) {
+		for(ProdEnum ele : ProdEnum.values()){
+			if(ele.getCode().equals(code)) {
+				return ele;
+			}
+		}
+		return null;
 	}
 	
 	public String toString() {

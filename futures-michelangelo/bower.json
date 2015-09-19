@@ -1,0 +1,21 @@
+{
+  "name": "michelangelo",
+  "version": "0.0.0",
+  "homepage": "https://github.com/wenjun-rock/futures-one",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#~1.4.6",
+    "angular-route": "~1.4.6",
+    "bootstrap": "~3.3.5",
+    "datatables": "DataTables#~1.10.9",
+    "highcharts": "~4.1.8",
+    "jquery": "~2.1.4"
+  }
+}

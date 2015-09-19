@@ -1,22 +1,27 @@
 package fwj.futures.data.struct;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import fwj.futures.data.enu.Product;
+import com.alibaba.fastjson.JSON;
+
+import fwj.futures.data.enu.ProdEnum;
 
 public class Formula {
 
 	private BigDecimal constant;
-	private Map<Product, BigDecimal> multinomials = new HashMap<>();
+	private List<Multinomial> multinomials = new ArrayList<>();
 
-	private Formula() {
-
+	public Formula() {
 	}
 
 	public static Formula create() {
 		return new Formula();
+	}
+	
+	public static Formula parse(String json) {
+		return JSON.parseObject(json, Formula.class);
 	}
 
 	public Formula putConstant(BigDecimal constant) {
@@ -24,8 +29,11 @@ public class Formula {
 		return this;
 	}
 
-	public Formula putMultinomials(Product prod, BigDecimal coefficient) {
-		multinomials.put(prod, coefficient);
+	public Formula putMultinomial(String code, BigDecimal coefficient) {
+		Multinomial multinomial = new Multinomial();
+		multinomial.setCode(code);
+		multinomial.setCoefficient(coefficient);
+		multinomials.add(multinomial);
 		return this;
 	}
 
@@ -34,17 +42,58 @@ public class Formula {
 		return this;
 	}
 
-	public Formula putMultinomials(Product prod, String coefficient) {
-		multinomials.put(prod, new BigDecimal(coefficient));
+	public Formula putMultinomial(ProdEnum prod, String coefficient) {
+		putMultinomial(prod.getCode(), new BigDecimal(coefficient));
 		return this;
+	}
+
+	public BigDecimal findCoefficient(String code) {
+		for (Multinomial multinomial : multinomials) {
+			if (multinomial.getCode().equals(code)) {
+				return multinomial.getCoefficient();
+			}
+		}
+		return BigDecimal.ZERO;
 	}
 
 	public BigDecimal getConstant() {
 		return constant;
 	}
 
-	public Map<Product, BigDecimal> getMultinomials() {
+	public List<Multinomial> getMultinomials() {
 		return multinomials;
 	}
+
+	public void setConstant(BigDecimal constant) {
+		this.constant = constant;
+	}
+
+	public void setMultinomials(List<Multinomial> multinomials) {
+		this.multinomials = multinomials;
+	}
+
+	public static class Multinomial {
+
+		private String code;
+		private BigDecimal coefficient;
+
+		public String getCode() {
+			return code;
+		}
+
+		public BigDecimal getCoefficient() {
+			return coefficient;
+		}
+
+		public void setCode(String code) {
+			this.code = code;
+		}
+
+		public void setCoefficient(BigDecimal coefficient) {
+			this.coefficient = coefficient;
+		}
+	}
+	
+	
 
 }

@@ -2,10 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>cn.fwj.futures</groupId>
   <artifactId>futures-one</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
   	<module>futures-davinci</module>
   	<module>futures-gauss</module>
+  	<module>futures-michelangelo</module>
   </modules>
 </project>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="micheApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+  <title>Futures-明天，还有明天</title>
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bower_components/datatables/media/css/dataTables.bootstrap.min.css">
+  <!-- Custom styles for this template -->
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+  <!-- Static navbar -->
+  <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#/home">Futures</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#/products">产品</a></li>
+          <li><a href="#/hedging">套利</a></li>
+          <li><a href="#/trend">趋势</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div ng-view></div>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script type="text/javascript" charset="utf8" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/datatables/media/js/dataTables.bootstrap.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/highcharts/highcharts.src.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/highcharts/modules/exporting.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/angular-route/angular-route.js"></script>
+  <script type="text/javascript" charset="utf8" src="app.js"></script>
+  <script type="text/javascript" charset="utf8" src="home/home.js"></script>
+  <script type="text/javascript" charset="utf8" src="product/product-list.js"></script>
+  <script type="text/javascript" charset="utf8" src="product/product-single.js"></script>
+</body>
+
+</html>

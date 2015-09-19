@@ -3,7 +3,7 @@ package fwj.futures.data.strategy.hedging.monitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.data.enu.Product;
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.process.DataProcessor;
 import fwj.futures.data.struct.Formula;
@@ -16,8 +16,8 @@ public class JJMMonitor1  extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		Formula formula = Formula.create().putConstant("131.45166").putMultinomials(Product.JiaoTan, "1")
-				.putMultinomials(Product.JiaoMei, "-1.55585");
+		Formula formula = Formula.create().putConstant("131.45166").putMultinomial(ProdEnum.JiaoTan, "1")
+				.putMultinomial(ProdEnum.JiaoMei, "-1.55585");
 
 		dataProcessor.monitorEndPriceFormula("2015-01-01", formula);
 	}
