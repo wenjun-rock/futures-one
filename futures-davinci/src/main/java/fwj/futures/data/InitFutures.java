@@ -1,31 +1,26 @@
 package fwj.futures.data;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.Product;
-import fwj.futures.resource.repository.ProductRepository;
+import fwj.futures.resource.entity.Futures;
+import fwj.futures.resource.repository.FuturesRepository;
 
 @Component
-public class InitProduct extends AbstractBaseLaunch {
+public class InitFutures extends AbstractBaseLaunch {
 
 	@Autowired
-	private ProductRepository productRepository;
+	private FuturesRepository productRepository;
 
 	@Override
 	protected void execute() throws Exception {
 		
 		for(fwj.futures.data.enu.ProdEnum ele : fwj.futures.data.enu.ProdEnum.values()){
-			Product prod = productRepository.findByCode(ele.getCode());
+			Futures prod = productRepository.findByCode(ele.getCode());
 			if(prod == null) {
-				prod = new Product();
+				prod = new Futures();
 			}
-			System.out.println(ele.getExchange().toString());
 			prod.setCode(ele.getCode());
 			prod.setName(ele.getName());
 			prod.setExchange(ele.getExchange().toString());
@@ -33,12 +28,11 @@ public class InitProduct extends AbstractBaseLaunch {
 			productRepository.save(prod);
 		}
 		
-		List<Product> products = productRepository.findAll();
-		System.out.println(JSON.toJSONString(products));
+		System.out.println("done!");
 		
 	}
 
 	public static void main(String[] args) {
-		launch(InitProduct.class);
+		launch(InitFutures.class);
 	}
 }

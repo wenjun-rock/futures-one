@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import fwj.futures.resource.entity.Futures;
 import fwj.futures.resource.entity.KLine;
-import fwj.futures.resource.entity.Product;
 import fwj.futures.resource.repository.KLineRepository;
-import fwj.futures.resource.repository.ProductRepository;
+import fwj.futures.resource.repository.FuturesRepository;
 import fwj.futures.resource.task.RealtimeHolder;
 import fwj.futures.resource.task.RealtimeHolder.UnitData;
 import fwj.futures.resource.task.RealtimeHolder.UnitDataGroup;
-import fwj.futures.resource.web.vo.Futures;
+import fwj.futures.resource.web.vo.Product;
 
 @RestController()
 @RequestMapping("/web/futures")
@@ -29,56 +29,57 @@ public class FuturesController {
 	private KLineRepository kLineRepo;
 
 	@Autowired
-	private ProductRepository productRepo;
+	private FuturesRepository productRepo;
 
 	@Autowired
 	private RealtimeHolder realtimeHolder;
 
 	@RequestMapping("/all")
-	public List<Futures> queryAllFutures() {
-		String[] codes = productRepo.findAllActive().stream().map(Product::getCode).toArray(String[]::new);
+	public List<Product> queryAllFutures() {
+		String[] codes = productRepo.findAllActive().stream().map(Futures::getCode).toArray(String[]::new);
 		return queryFutures(codes);
 	}
 
 	@RequestMapping("/code/{codes}")
-	public List<Futures> queryFutures(@PathVariable("codes") String codes) {
+	public List<Product> queryFutures(@PathVariable("codes") String codes) {
 		return queryFutures(codes.split(","));
 	}
 
-	private List<Futures> queryFutures(String[] codes) {
+	private List<Product> queryFutures(String[] codes) {
 
 		List<UnitDataGroup> unitDataGroupList = realtimeHolder.getRealtime();
 
 		return Stream.of(codes).map(code -> {
-			Product prod = productRepo.findByCode(code);
-			if (prod == null) {
-				return new Futures();
+			Futures futures = productRepo.findByCode(code);
+			if (futures == null) {
+				return new Product();
 			} else {
-				Futures f = new Futures();
-				f.setProduct(prod);
+				Product prod = new Product();
+				prod.setCode(futures.getCode());
+				prod.setName(futures.getName());
 				List<KLine> kLineList = kLineRepo.findTop60ByCodeOrderByDtDesc(code);
-				f.setLast1KIncPct(this.lastKIncPct(kLineList, 1));
-				f.setLast5KIncPct(this.lastKIncPct(kLineList, 5));
-				f.setLast10KIncPct(this.lastKIncPct(kLineList, 10));
-				f.setLast30KIncPct(this.lastKIncPct(kLineList, 30));
-				f.setLast60KIncPct(this.lastKIncPct(kLineList, 60));
+				prod.setLast1KIncPct(this.lastKIncPct(kLineList, 1));
+				prod.setLast5KIncPct(this.lastKIncPct(kLineList, 5));
+				prod.setLast10KIncPct(this.lastKIncPct(kLineList, 10));
+				prod.setLast30KIncPct(this.lastKIncPct(kLineList, 30));
+				prod.setLast60KIncPct(this.lastKIncPct(kLineList, 60));
 
 				List<UnitData> unitData = unitDataGroupList.stream().flatMap(group -> group.getUnitDataList().stream())
 						.filter(unit -> code.equals(unit.getCode())).sorted().collect(Collectors.toList());
 				Collections.reverse(unitData);
-				f.setLast1RIncPct(this.lastRIncPct(unitData, 1));
-				f.setLast5RIncPct(this.lastRIncPct(unitData, 5));
-				f.setLast10RIncPct(this.lastRIncPct(unitData, 10));
-				f.setLast30RIncPct(this.lastRIncPct(unitData, 30));
-				f.setLast60RIncPct(this.lastRIncPct(unitData, 60));
+				prod.setLast1RIncPct(this.lastRIncPct(unitData, 1));
+				prod.setLast5RIncPct(this.lastRIncPct(unitData, 5));
+				prod.setLast10RIncPct(this.lastRIncPct(unitData, 10));
+				prod.setLast30RIncPct(this.lastRIncPct(unitData, 30));
+				prod.setLast60RIncPct(this.lastRIncPct(unitData, 60));
 				if (unitData.isEmpty()) {
-					f.setPrice(BigDecimal.ZERO);
-					f.setPriceTime("");
+					prod.setPrice(BigDecimal.ZERO);
+					prod.setPriceTime("");
 				} else {
-					f.setPrice(unitData.get(0).getPrice());
-					f.setPriceTime(unitData.get(0).getDatetime());
+					prod.setPrice(unitData.get(0).getPrice());
+					prod.setPriceTime(unitData.get(0).getDatetime());
 				}
-				return f;
+				return prod;
 			}
 		}).collect(Collectors.toList());
 

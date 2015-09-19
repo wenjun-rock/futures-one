@@ -2,11 +2,10 @@ package fwj.futures.resource.web.vo;
 
 import java.math.BigDecimal;
 
-import fwj.futures.resource.entity.Product;
+public class Product {
 
-public class Futures {
-
-	private Product product;
+	private String code;
+	private String name;
 	private BigDecimal price;
 	private String priceTime;
 	private BigDecimal last1KIncPct;
@@ -20,12 +19,20 @@ public class Futures {
 	private BigDecimal last30RIncPct;
 	private BigDecimal last60RIncPct;
 
-	public Product getProduct() {
-		return product;
+	public String getCode() {
+		return code;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public String getName() {
+		return name;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public BigDecimal getPrice() {

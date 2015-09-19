@@ -15,9 +15,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.entity.KLine;
-import fwj.futures.resource.entity.Product;
+import fwj.futures.resource.entity.Futures;
 import fwj.futures.resource.repository.KLineRepository;
-import fwj.futures.resource.repository.ProductRepository;
+import fwj.futures.resource.repository.FuturesRepository;
 
 @Component
 public class KLineRefresher {
@@ -30,14 +30,14 @@ public class KLineRefresher {
 	private KLineRepository kLineRepository;
 
 	@Autowired
-	private ProductRepository productRepository;
+	private FuturesRepository futuresRepository;
 
 	/**
 	 * 每天6时调度。
 	 */
 	@Scheduled(cron = "0 0 6 * * ?")
 	public void doTask() {
-		for (Product prod : productRepository.findAllActive()) {
+		for (Futures prod : futuresRepository.findAllActive()) {
 			log.info("Downloading " + prod.getCode());
 
 			KLine latest = kLineRepository.findTopByCodeOrderByDtDesc(prod.getCode());

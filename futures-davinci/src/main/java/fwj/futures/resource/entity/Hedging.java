@@ -28,7 +28,10 @@ public class Hedging extends AbstractPersistable<Integer> {
 	private BigDecimal downLimit;
 	
 	@Column(length = 10)
-	private String startDt;
+	private String modelStartDt;
+	
+	@Column(length = 10)
+	private String modelEndDt;
 
 	public String getName() {
 		return name;
@@ -70,11 +73,25 @@ public class Hedging extends AbstractPersistable<Integer> {
 		this.downLimit = downLimit;
 	}
 
-	public String getStartDt() {
-		return startDt;
+	public String getModelStartDt() {
+		return modelStartDt;
 	}
 
-	public void setStartDt(String startDt) {
-		this.startDt = startDt;
+	public String getModelEndDt() {
+		return modelEndDt;
 	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setModelStartDt(String modelStartDt) {
+		this.modelStartDt = modelStartDt;
+	}
+
+	public void setModelEndDt(String modelEndDt) {
+		this.modelEndDt = modelEndDt;
+	}
+
+
 }

@@ -1,17 +1,17 @@
 package fwj.futures.resource.web.vo;
 
-import fwj.futures.resource.entity.Product;
+import fwj.futures.resource.entity.Futures;
 
 public class ProductPrice {
-	private Product prod;
+	private Futures prod;
 	private Object[][] data;
 
-	public ProductPrice(Product prod, Object[][] data) {
+	public ProductPrice(Futures prod, Object[][] data) {
 		this.prod = prod;
 		this.data = data;
 	}
 
-	public Product getProd() {
+	public Futures getProd() {
 		return prod;
 	}
 
@@ -19,7 +19,7 @@ public class ProductPrice {
 		return data;
 	}
 
-	public void setProd(Product prod) {
+	public void setProd(Futures prod) {
 		this.prod = prod;
 	}
 

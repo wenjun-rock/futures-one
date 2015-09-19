@@ -1,22 +1,25 @@
 package fwj.futures.data.enu;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public enum ProdEnum {
 	
 	/* 上海商品交易所  */
 	Baiyin("AG", "白银", Exchange.SH),
-	Lv("AL", "铝", Exchange.SH),
+	Lv("AL", "沪铝", Exchange.SH),
 	HuangJin("AU", "黄金", Exchange.SH),
 	LiQing("BU", "沥青", Exchange.SH),
-	Tong("CU", "铜", Exchange.SH),
+	Tong("CU", "沪铜", Exchange.SH),
 //	RanYou("FU", "燃油", Exchange.SH),
 	ReJuan("HC", "热卷", Exchange.SH),
-	Nie("NI", "镍", Exchange.SH),
-	Qian("PB", "铅", Exchange.SH),
-	LuoWenGang("RB", "螺纹钢", Exchange.SH),
+	Nie("NI", "沪镍", Exchange.SH),
+	Qian("PB", "沪铅", Exchange.SH),
+	LuoWenGang("RB", "螺纹", Exchange.SH),
 	XiangJiao("RU", "橡胶", Exchange.SH),
-	Xi("SN", "锡", Exchange.SH),
+	Xi("SN", "沪锡", Exchange.SH),
 //	XianCai("WR", "线材", Exchange.SH),
-	Xin("ZN", "锌", Exchange.SH),
+	Xin("ZN", "沪锌", Exchange.SH),
 	
 	/* 大连商品交易所  */
 	DaDou1("A", "大豆",Exchange.DL),	
@@ -29,7 +32,7 @@ public enum ProdEnum {
 	JiaoTan("J", "焦炭", Exchange.DL), 
 	JiDan("JD", "鸡蛋", Exchange.DL), 
 	JiaoMei("JM", "焦煤", Exchange.DL), 
-	SuLiao("L", "L", Exchange.DL), 
+	SuLiao("L", "塑料", Exchange.DL), 
 	DouPo("M", "豆粕", Exchange.DL), 
 	ZongLvYou("P", "棕榈油", Exchange.DL), 
 	JuBinXi("PP", "PP", Exchange.DL), 
@@ -84,6 +87,11 @@ public enum ProdEnum {
 			}
 		}
 		return null;
+	}
+	
+	public static ProdEnum[] findByExchange(Exchange exch) {
+		return Stream.of(ProdEnum.values()).filter(prodEnum -> prodEnum.getExchange() == Exchange.SH)
+				.collect(Collectors.toList()).toArray(new ProdEnum[0]);
 	}
 	
 	public String toString() {

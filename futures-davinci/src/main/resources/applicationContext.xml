@@ -51,7 +51,7 @@
 
 	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/futures" />
+		<property name="url" value="jdbc:mysql://139.196.37.92:3306/futures" />
 		<property name="username" value="futures" />
 		<property name="password" value="futures" />
 	</bean>

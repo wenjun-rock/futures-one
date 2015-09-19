@@ -6,23 +6,26 @@ import javax.persistence.Entity;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity()
-public class Product extends AbstractPersistable<Integer> {
+public class Futures extends AbstractPersistable<Integer> {
 
 	private static final long serialVersionUID = 6047007431809346528L;
 
-	@Column(length = 2)
+	@Column(length = 4)
 	private String code;
 
-	@Column(length = 8)
+	@Column(length = 10)
 	private String name;
 
-	@Column(columnDefinition = "CHAR(2)")
+	@Column(length = 4)
 	private String exchange;
 
 	@Column(columnDefinition = "CHAR(1)")
 	private String active;
 
 	private int unit;
+
+	@Column(length = 10)
+	private String unitDesc;
 
 	public String getCode() {
 		return code;
@@ -62,6 +65,14 @@ public class Product extends AbstractPersistable<Integer> {
 
 	public void setUnit(int unit) {
 		this.unit = unit;
+	}
+
+	public String getUnitDesc() {
+		return unitDesc;
+	}
+
+	public void setUnitDesc(String unitDesc) {
+		this.unitDesc = unitDesc;
 	}
 
 }

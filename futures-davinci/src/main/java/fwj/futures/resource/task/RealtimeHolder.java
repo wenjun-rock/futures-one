@@ -22,8 +22,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
-import fwj.futures.resource.entity.Product;
-import fwj.futures.resource.repository.ProductRepository;
+import fwj.futures.resource.entity.Futures;
+import fwj.futures.resource.repository.FuturesRepository;
 
 @Component
 public class RealtimeHolder {
@@ -35,7 +35,7 @@ public class RealtimeHolder {
 	private final static String BAK_PATH = "/home/fwj/bak/davinci-realtime";
 
 	@Autowired
-	private ProductRepository productRepo;
+	private FuturesRepository futuresRepo;
 
 	private int index = 0;
 	private int rest = 0;
@@ -88,7 +88,7 @@ public class RealtimeHolder {
 		String datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
 		List<String> lines = new ArrayList<>();
-		List<Product> prodList = productRepo.findAllActive();
+		List<Futures> prodList = futuresRepo.findAllActive();
 		int from = 0;
 		while (from < prodList.size()) {
 			int to = Math.min(from + 10, prodList.size());
@@ -129,7 +129,7 @@ public class RealtimeHolder {
 		if (resultList.isEmpty()) {
 			
 			List<UnitData> list = new ArrayList<>();
-			for (Product prod : productRepo.findAllActive()) {
+			for (Futures prod : futuresRepo.findAllActive()) {
 				String result = Resources.toString(new URL(String.format(URI_5M, prod.getCode())),
 						StandardCharsets.UTF_8);
 				JSONArray dailyKs = JSON.parseArray(result);
@@ -147,7 +147,7 @@ public class RealtimeHolder {
 					.collect(Collectors.toList());
 			Collections.sort(resultList);
 			int toIndex = resultList.size();
-			int fromIndex = Math.max(0, resultList.size() - 480);
+			int fromIndex = Math.max(0, resultList.size() - 600);
 			resultList = resultList.subList(fromIndex, toIndex);
 		}
 

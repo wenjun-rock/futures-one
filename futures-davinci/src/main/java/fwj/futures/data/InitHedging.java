@@ -29,7 +29,6 @@ public class InitHedging extends AbstractBaseLaunch {
 		Hedging hedging1 = new Hedging();
 		hedging1.setName("豆油棕榈油套利1");
 		hedging1.setDesc("");
-		hedging1.setStartDt("2014-03-03");
 		hedging1.setUpLimit(new BigDecimal(100));
 		hedging1.setDownLimit(new BigDecimal(-100));
 		hedging1.setExpression(JSON.toJSONString(Formula.create().putConstant("-587.08732")
@@ -42,7 +41,6 @@ public class InitHedging extends AbstractBaseLaunch {
 		Hedging hedging3 = new Hedging();
 		hedging3.setName("焦炭焦煤套利1");
 		hedging3.setDesc("");
-		hedging3.setStartDt("2014-01-01");
 		hedging3.setUpLimit(new BigDecimal(40));
 		hedging3.setDownLimit(new BigDecimal(-40));
 		hedging3.setExpression(JSON.toJSONString(Formula.create().putConstant("162.31")
@@ -58,7 +56,6 @@ public class InitHedging extends AbstractBaseLaunch {
 			} else {
 				old.setName(ne.getName());
 				old.setDesc(ne.getDescription());
-				old.setStartDt(ne.getStartDt());
 				old.setUpLimit(ne.getUpLimit());
 				old.setDownLimit(ne.getDownLimit());
 				old.setExpression(ne.getExpression());
