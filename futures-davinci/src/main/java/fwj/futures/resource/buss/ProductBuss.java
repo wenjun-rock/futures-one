@@ -19,6 +19,7 @@ import fwj.futures.resource.repository.KLineRepository;
 import fwj.futures.resource.repository.LabelFuturesRepository;
 import fwj.futures.resource.repository.LabelRepository;
 import fwj.futures.resource.vo.ProductInfo;
+import fwj.futures.resource.vo.ProductInfo.InnerLabel;
 import fwj.futures.resource.vo.ProductLabel;
 import fwj.futures.resource.vo.ProductLabel.InnerProduct;
 
@@ -48,6 +49,7 @@ public class ProductBuss {
 		return this.queryLabel(labelRepository.findOne(labelId));
 	}
 
+	@Cacheable(value = "ProductLabelBuss.queryLabel")
 	private ProductLabel queryLabel(Label label) {
 		ProductLabel productLabel = new ProductLabel();
 		productLabel.setId(label.getId());
@@ -64,6 +66,23 @@ public class ProductBuss {
 			}).collect(Collectors.toList()));
 		}
 		return productLabel;
+	}
+	
+	@Cacheable(value = "ProductLabelBuss.queryLabel")
+	public ProductInfo queryInfoByCode(String code) {
+		ProductInfo info = new ProductInfo();
+		Futures futures = futuresRepo.findByCode(code);
+		info.setCode(futures.getCode());
+		info.setName(futures.getName());
+		info.setUnit(futures.getUnit());
+		info.setUnitDesc(futures.getUnitDesc());
+		info.setLabels(labelFuturesRepo.findByFuturesCodeOrderByLabelRankAsc(code).stream().map(label -> {
+			InnerLabel innerLabel = new InnerLabel();
+			innerLabel.setLabelId(label.getLabelId());
+			innerLabel.setLabelName(label.getLabelName());
+			return innerLabel;
+		}).collect(Collectors.toList()));
+		return info;
 	}
 
 	@Cacheable(value = "ProductLabelBuss.queryAllCode")
@@ -114,9 +133,6 @@ public class ProductBuss {
 		}
 	}
 
-	public ProductInfo queryInfoByCode(String code) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 }

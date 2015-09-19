@@ -52,7 +52,7 @@ public class ProductInfo {
 
 	public static class InnerLabel {
 		private Integer labelId;
-		private String name;
+		private String labelName;
 
 		public Integer getLabelId() {
 			return labelId;
@@ -62,14 +62,13 @@ public class ProductInfo {
 			this.labelId = labelId;
 		}
 
-		public String getName() {
-			return name;
+		public String getLabelName() {
+			return labelName;
 		}
 
-		public void setName(String name) {
-			this.name = name;
+		public void setLabelName(String labelName) {
+			this.labelName = labelName;
 		}
-
 	}
 
 }
