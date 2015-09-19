@@ -39,7 +39,7 @@ public class ProductController {
 		return productBuss.queryAllLabels();
 	}
 	
-	@RequestMapping("/base/code/{code}")
+	@RequestMapping("/info/code/{code}")
 	public ProductInfo queryInfoByCode(@PathVariable("code") String code) {
 		return productBuss.queryInfoByCode(code);
 	}
