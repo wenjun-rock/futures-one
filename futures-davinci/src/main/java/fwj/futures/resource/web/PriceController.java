@@ -19,7 +19,7 @@ import fwj.futures.resource.repository.KLineRepository;
 import fwj.futures.resource.repository.FuturesRepository;
 import fwj.futures.resource.task.RealtimeHolder;
 import fwj.futures.resource.task.RealtimeHolder.UnitDataGroup;
-import fwj.futures.resource.web.vo.ProductPrice;
+import fwj.futures.resource.web.vo.PriceLine;
 import fwj.futures.resource.web.vo.Series;
 
 @RestController()
@@ -54,7 +54,7 @@ public class PriceController {
 					BigDecimal price = kLine.getEndPrice();
 					return new Object[] { time, price };
 				}).collect(Collectors.toList());
-				return new ProductPrice(prod, data.toArray(new Object[0][2])).toSeries();
+				return new PriceLine(prod, data.toArray(new Object[0][2])).toSeries();
 			}
 		}).collect(Collectors.toList());
 	}
@@ -80,7 +80,7 @@ public class PriceController {
 					BigDecimal price = unitData.getPrice();
 					return new Object[] { time, price };
 				}).collect(Collectors.toList());
-				return new ProductPrice(prod, data.toArray(new Object[0][2])).toSeries();
+				return new PriceLine(prod, data.toArray(new Object[0][2])).toSeries();
 			}
 		}).collect(Collectors.toList());
 	}

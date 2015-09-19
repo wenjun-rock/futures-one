@@ -4,57 +4,98 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.resource.entity.Futures;
 import fwj.futures.resource.entity.KLine;
-import fwj.futures.resource.repository.KLineRepository;
+import fwj.futures.resource.entity.LabelFutures;
 import fwj.futures.resource.repository.FuturesRepository;
+import fwj.futures.resource.repository.KLineRepository;
+import fwj.futures.resource.repository.LabelFuturesRepository;
+import fwj.futures.resource.repository.LabelRepository;
 import fwj.futures.resource.task.RealtimeHolder;
 import fwj.futures.resource.task.RealtimeHolder.UnitData;
 import fwj.futures.resource.task.RealtimeHolder.UnitDataGroup;
-import fwj.futures.resource.web.vo.Product;
+import fwj.futures.resource.web.vo.ProductLabel;
+import fwj.futures.resource.web.vo.ProductLabel.InnerProduct;
+import fwj.futures.resource.web.vo.ProductPrice;
 
 @RestController()
-@RequestMapping("/web/futures")
-public class FuturesController {
+@RequestMapping("/web/product")
+public class ProductController {
 
 	@Autowired
 	private KLineRepository kLineRepo;
 
 	@Autowired
-	private FuturesRepository productRepo;
+	private FuturesRepository futuresRepo;
+
+	@Autowired
+	private LabelFuturesRepository labelFuturesRepo;
+
+	@Autowired
+	private LabelRepository labelRepository;
 
 	@Autowired
 	private RealtimeHolder realtimeHolder;
 
-	@RequestMapping("/all")
-	public List<Product> queryAllFutures() {
-		String[] codes = productRepo.findAllActive().stream().map(Futures::getCode).toArray(String[]::new);
-		return queryFutures(codes);
+	@RequestMapping("/labels")
+	public List<ProductLabel> queryAllLabels() {
+		Map<Integer, List<LabelFutures>> labelFuturesMap = labelFuturesRepo.findAll().stream()
+				.collect(Collectors.groupingBy(LabelFutures::getLabelId, Collectors.toList()));
+		return labelRepository.findAll(new Sort("rank")).stream().map(label -> {
+			ProductLabel productLabel = new ProductLabel();
+			productLabel.setId(label.getId());
+			productLabel.setName(label.getName());
+			List<LabelFutures> labelFuturesList = labelFuturesMap.get(label.getId());
+			if (labelFuturesList == null) {
+				productLabel.setProducts(Collections.emptyList());
+			} else {
+				productLabel.setProducts(labelFuturesList.stream().map(labelFutures -> {
+					InnerProduct innerProduct = new InnerProduct();
+					innerProduct.setCode(labelFutures.getFuturesCode());
+					innerProduct.setName(labelFutures.getFuturesName());
+					return innerProduct;
+				}).collect(Collectors.toList()));
+			}
+			return productLabel;
+		}).collect(Collectors.toList());
 	}
 
-	@RequestMapping("/code/{codes}")
-	public List<Product> queryFutures(@PathVariable("codes") String codes) {
-		return queryFutures(codes.split(","));
+	@RequestMapping("/price/label/{id}")
+	public List<ProductPrice> queryPriceByLabel(@PathVariable("id") Integer id) {
+		String[] codes = null;
+		if (id == 0) {
+			codes = futuresRepo.findAllActive().stream().map(Futures::getCode).toArray(String[]::new);
+		} else {
+			labelFuturesRepo.findByLabelId(id).stream().map(LabelFutures::getFuturesCode).toArray(String[]::new);
+		}
+		return queryPrice(codes);
 	}
 
-	private List<Product> queryFutures(String[] codes) {
+	@RequestMapping("/price/code/{code}")
+	public ProductPrice queryPriceByCode(@PathVariable("code") String code) {
+		return queryPrice(new String[] { code }).get(0);
+	}
+
+	private List<ProductPrice> queryPrice(String[] codes) {
 
 		List<UnitDataGroup> unitDataGroupList = realtimeHolder.getRealtime();
 
 		return Stream.of(codes).map(code -> {
-			Futures futures = productRepo.findByCode(code);
+			Futures futures = futuresRepo.findByCode(code);
 			if (futures == null) {
-				return new Product();
+				return new ProductPrice();
 			} else {
-				Product prod = new Product();
+				ProductPrice prod = new ProductPrice();
 				prod.setCode(futures.getCode());
 				prod.setName(futures.getName());
 				List<KLine> kLineList = kLineRepo.findTop60ByCodeOrderByDtDesc(code);
