@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "angular": "angularjs#~1.4.6",
+    "angular-route": "~1.4.6",
     "bootstrap": "~3.3.5",
     "datatables": "DataTables#~1.10.9",
     "highcharts": "~4.1.8",
