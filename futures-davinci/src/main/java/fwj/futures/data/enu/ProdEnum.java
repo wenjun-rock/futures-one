@@ -90,7 +90,7 @@ public enum ProdEnum {
 	}
 	
 	public static ProdEnum[] findByExchange(Exchange exch) {
-		return Stream.of(ProdEnum.values()).filter(prodEnum -> prodEnum.getExchange() == Exchange.SH)
+		return Stream.of(ProdEnum.values()).filter(prodEnum -> prodEnum.getExchange() == exch)
 				.collect(Collectors.toList()).toArray(new ProdEnum[0]);
 	}
 	
