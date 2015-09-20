@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.data.struct.Formula;
@@ -29,7 +30,7 @@ import fwj.futures.resource.web.vo.Series;
  *
  */
 @RestController()
-@RequestMapping("/web/hedging")
+@RequestMapping("/hedging")
 public class HedgingController {
 
 	@Autowired
@@ -37,11 +38,11 @@ public class HedgingController {
 
 	@Autowired
 	private HedgingBuss hedgingBuss;
-	
+
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
 
-	@RequestMapping("/realtime/{id}")
+	@RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
 	public List<Series> monitorRealtime(@PathVariable("id") Integer id) {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -65,7 +66,7 @@ public class HedgingController {
 		return new HedgingMonitor(hedging, data.toArray(new Object[0][2])).toSeries();
 	}
 
-	@RequestMapping("/daily/{id}")
+	@RequestMapping(value = "/daily/{id}", method = RequestMethod.GET)
 	public List<Series> monitorDaily(@PathVariable("id") Integer id) {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		df.setTimeZone(TimeZone.getTimeZone("UTC"));

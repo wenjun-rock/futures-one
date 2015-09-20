@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.resource.buss.DailyPriceBuss;
@@ -22,7 +23,7 @@ import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.web.vo.ProductPrice;
 
 @RestController()
-@RequestMapping("/web/product")
+@RequestMapping("/product")
 public class ProductController {
 
 	@Autowired
@@ -34,23 +35,23 @@ public class ProductController {
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
 
-	@RequestMapping("/labels")
+	@RequestMapping(value = "/labels", method = RequestMethod.GET)
 	public List<ProductLabel> queryAllLabels() {
 		return productBuss.queryAllLabels();
 	}
 	
-	@RequestMapping("/info/code/{code}")
+	@RequestMapping(value = "/info/{code}", method = RequestMethod.GET)
 	public ProductInfo queryInfoByCode(@PathVariable("code") String code) {
 		return productBuss.queryInfoByCode(code);
 	}
 
-	@RequestMapping("/price/label/{id}")
+	@RequestMapping(value = "/price/label/{id}", method = RequestMethod.GET)
 	public List<ProductPrice> queryPriceByLabel(@PathVariable("id") Integer id) {
 		List<String> codes = id == 0 ? productBuss.queryAllCode() : productBuss.queryCodeByLabelId(id);
 		return queryPrice(codes);
 	}
 
-	@RequestMapping("/price/code/{code}")
+	@RequestMapping(value = "/price/code/{code}", method = RequestMethod.GET)
 	public ProductPrice queryPriceByCode(@PathVariable("code") String code) {
 		return queryPrice(Arrays.asList(code)).get(0);
 	}

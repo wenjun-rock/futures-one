@@ -13,7 +13,7 @@ import fwj.futures.resource.buss.CommentBuss;
 import fwj.futures.resource.entity.Comment;
 
 @RestController()
-@RequestMapping("/web/comments")
+@RequestMapping("/comments")
 public class CommentController {
 
 	@Autowired
