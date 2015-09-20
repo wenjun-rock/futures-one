@@ -11,10 +11,17 @@ angular.module('miche.product.list', ['ngRoute'])
   });
 }])
 
-.controller('micheProductListCtrl', ['$scope', '$routeParams', function($scope, $routeParams) {
+.controller('micheProductListCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
 
   var preurl = 'http://139.196.37.92:8000/futures-api';
   var labelId = $routeParams.id;
+
+  $http.get(preurl + '/product/labels').success(function(labels){
+    $scope.ctrl={};
+    $scope.ctrl.id=labelId;
+    $scope.ctrl.labels=[{id:0, name:'全部'}].concat(labels);
+  });
+
 
   $.getJSON(preurl + '/product/price/label/' + labelId , function(data) {
     $('#example').dataTable({
