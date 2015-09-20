@@ -1,6 +1,7 @@
 package fwj.futures.resource.buss;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class HedgingBuss {
 				result = result.add(multinomial.getCoefficient().multiply(kLine.getEndPrice()));
 			}
 		}
-		return result;
+		return result.setScale(2, RoundingMode.FLOOR);
 	}
 
 	public BigDecimal calculate(Formula fomular, UnitDataGroup unitDataGroup) {
@@ -50,7 +51,7 @@ public class HedgingBuss {
 				result = result.add(multinomial.getCoefficient().multiply(map.get(multinomial.getCode())));
 			}
 		}
-		return result;
+		return result.setScale(2, RoundingMode.FLOOR);
 	}
 
 }
