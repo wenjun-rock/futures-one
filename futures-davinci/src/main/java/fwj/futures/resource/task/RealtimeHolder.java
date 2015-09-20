@@ -22,8 +22,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
+import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.entity.Futures;
-import fwj.futures.resource.repository.FuturesRepository;
+import fwj.futures.resource.vo.UnitData;
+import fwj.futures.resource.vo.UnitDataGroup;
 
 @Component
 public class RealtimeHolder {
@@ -35,7 +37,7 @@ public class RealtimeHolder {
 	private final static String BAK_PATH = "/home/fwj/bak/davinci-realtime";
 
 	@Autowired
-	private FuturesRepository futuresRepo;
+	private ProductBuss productBuss;
 
 	private int index = 0;
 	private int rest = 0;
@@ -88,7 +90,7 @@ public class RealtimeHolder {
 		String datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
 		List<String> lines = new ArrayList<>();
-		List<Futures> prodList = futuresRepo.findAllActive();
+		List<Futures> prodList = productBuss.queryAllFutures();
 		int from = 0;
 		while (from < prodList.size()) {
 			int to = Math.min(from + 10, prodList.size());
@@ -127,9 +129,8 @@ public class RealtimeHolder {
 		List<UnitDataGroup> resultList = loadRealtime();
 		log.info(resultList.size() + " UnitDataGroup was loaded from bak.");
 		if (resultList.isEmpty()) {
-			
 			List<UnitData> list = new ArrayList<>();
-			for (Futures prod : futuresRepo.findAllActive()) {
+			for (Futures prod : productBuss.queryAllFutures()) {
 				String result = Resources.toString(new URL(String.format(URI_5M, prod.getCode())),
 						StandardCharsets.UTF_8);
 				JSONArray dailyKs = JSON.parseArray(result);
@@ -143,9 +144,8 @@ public class RealtimeHolder {
 			}
 
 			resultList = list.stream().collect(Collectors.groupingBy(UnitData::getDatetime, Collectors.toList()))
-					.entrySet().stream().map(entry -> new UnitDataGroup(entry.getKey(), entry.getValue()))
+					.entrySet().stream().map(entry -> new UnitDataGroup(entry.getKey(), entry.getValue())).sorted()
 					.collect(Collectors.toList());
-			Collections.sort(resultList);
 			int toIndex = resultList.size();
 			int fromIndex = Math.max(0, resultList.size() - 600);
 			resultList = resultList.subList(fromIndex, toIndex);
@@ -175,7 +175,7 @@ public class RealtimeHolder {
 		}
 	}
 
-	public List<UnitDataGroup> loadRealtime() {
+	private List<UnitDataGroup> loadRealtime() {
 		try {
 			File bak = new File(BAK_PATH);
 			if (bak.exists()) {
@@ -188,79 +188,10 @@ public class RealtimeHolder {
 		return Collections.emptyList();
 	}
 
-	public class UnitData implements Comparable<UnitData> {
-
-		private String datetime;
-		private String code;
-		private BigDecimal price;
-
-		public UnitData(String datetime, String code, BigDecimal price) {
-			this.datetime = datetime;
-			this.code = code;
-			this.price = price;
-		}
-
-		public String getDatetime() {
-			return datetime;
-		}
-
-		public String getCode() {
-			return code;
-		}
-
-		public BigDecimal getPrice() {
-			return price;
-		}
-
-		@Override
-		public int compareTo(UnitData that) {
-			int cp = this.datetime.compareTo(that.datetime);
-			if (cp == 0) {
-				cp = this.code.compareTo(that.code);
-			}
-			return cp;
-		}
-
-	}
-
-	public class UnitDataGroup implements Comparable<UnitDataGroup> {
-
-		private String datetime;
-		private List<UnitData> unitDataList;
-
-		public UnitDataGroup(String datetime, List<UnitData> unitDataList) {
-			Collections.sort(unitDataList);
-			this.datetime = datetime;
-			this.unitDataList = unitDataList;
-		}
-
-		public String getDatetime() {
-			return datetime;
-		}
-
-		public List<UnitData> getUnitDataList() {
-			return unitDataList;
-		}
-
-		public UnitData getUnitData(String code) {
-			if (unitDataList == null) {
-				return null;
-			}
-			return unitDataList.stream().filter(unitData -> unitData.getCode().equals(code)).findAny().orElse(null);
-		}
-
-		@Override
-		public int compareTo(UnitDataGroup that) {
-			return this.datetime.compareTo(that.datetime);
-		}
-
-	}
-
 	public List<UnitDataGroup> getRealtime() {
 		if (loopCache == null) {
 			return Collections.emptyList();
 		}
-
 		UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
 		List<UnitDataGroup> list = Arrays.asList(copy);
 		Collections.sort(list);

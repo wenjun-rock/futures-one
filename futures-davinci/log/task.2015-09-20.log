@@ -1,0 +1,104 @@
+01:48:00.003 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - 0 UnitDataGroup was loaded from bak.
+01:48:07.342 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - init loopCache with the size of 600
+01:49:00.373 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - change! the product size from 2 to 34
+01:50:00.268 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - not change!
+01:51:00.003 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - skip refresh!
+01:52:00.002 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - skip refresh!
+01:53:00.002 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - 0 UnitDataGroup was loaded from bak.
+01:53:05.159 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - init loopCache with the size of 600
+01:55:00.002 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - 0 UnitDataGroup was loaded from bak.
+01:55:26.523 [pool-1-thread-1] ERROR fwj.futures.resource.task.RealtimeHolder - Wrong!
+java.net.ConnectException: Connection timed out: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method) ~[na:1.8.0_11]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79) ~[na:1.8.0_11]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:345) ~[na:1.8.0_11]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[na:1.8.0_11]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[na:1.8.0_11]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[na:1.8.0_11]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) ~[na:1.8.0_11]
+	at java.net.Socket.connect(Socket.java:589) ~[na:1.8.0_11]
+	at java.net.Socket.connect(Socket.java:538) ~[na:1.8.0_11]
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:180) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:1167) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1103) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:997) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:931) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1511) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1439) ~[na:1.8.0_11]
+	at java.net.URL.openStream(URL.java:1038) ~[na:1.8.0_11]
+	at com.google.common.io.Resources$UrlByteSource.openStream(Resources.java:72) ~[guava-18.0.jar:na]
+	at com.google.common.io.ByteSource$AsCharSource.openStream(ByteSource.java:420) ~[guava-18.0.jar:na]
+	at com.google.common.io.CharSource.read(CharSource.java:147) ~[guava-18.0.jar:na]
+	at com.google.common.io.Resources.toString(Resources.java:113) ~[guava-18.0.jar:na]
+	at fwj.futures.resource.task.RealtimeHolder.init(RealtimeHolder.java:133) ~[classes/:na]
+	at fwj.futures.resource.task.RealtimeHolder.refresh(RealtimeHolder.java:58) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_11]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_11]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_11]
+	at java.lang.reflect.Method.invoke(Method.java:483) ~[na:1.8.0_11]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:65) [spring-context-4.0.9.RELEASE.jar:4.0.9.RELEASE]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) [spring-context-4.0.9.RELEASE.jar:4.0.9.RELEASE]
+	at org.springframework.scheduling.concurrent.ReschedulingRunnable.run(ReschedulingRunnable.java:81) [spring-context-4.0.9.RELEASE.jar:4.0.9.RELEASE]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511) [na:1.8.0_11]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266) [na:1.8.0_11]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180) [na:1.8.0_11]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293) [na:1.8.0_11]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_11]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_11]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_11]
+01:56:00.002 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - 0 UnitDataGroup was loaded from bak.
+01:56:21.445 [pool-1-thread-1] ERROR fwj.futures.resource.task.RealtimeHolder - Wrong!
+java.net.ConnectException: Connection timed out: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method) ~[na:1.8.0_11]
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79) ~[na:1.8.0_11]
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:345) ~[na:1.8.0_11]
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206) ~[na:1.8.0_11]
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188) ~[na:1.8.0_11]
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172) ~[na:1.8.0_11]
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) ~[na:1.8.0_11]
+	at java.net.Socket.connect(Socket.java:589) ~[na:1.8.0_11]
+	at java.net.Socket.connect(Socket.java:538) ~[na:1.8.0_11]
+	at sun.net.NetworkClient.doConnect(NetworkClient.java:180) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:432) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.openServer(HttpClient.java:527) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.<init>(HttpClient.java:211) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.New(HttpClient.java:308) ~[na:1.8.0_11]
+	at sun.net.www.http.HttpClient.New(HttpClient.java:326) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.getNewHttpClient(HttpURLConnection.java:1167) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1103) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:997) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.connect(HttpURLConnection.java:931) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1511) ~[na:1.8.0_11]
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1439) ~[na:1.8.0_11]
+	at java.net.URL.openStream(URL.java:1038) ~[na:1.8.0_11]
+	at com.google.common.io.Resources$UrlByteSource.openStream(Resources.java:72) ~[guava-18.0.jar:na]
+	at com.google.common.io.ByteSource$AsCharSource.openStream(ByteSource.java:420) ~[guava-18.0.jar:na]
+	at com.google.common.io.CharSource.read(CharSource.java:147) ~[guava-18.0.jar:na]
+	at com.google.common.io.Resources.toString(Resources.java:113) ~[guava-18.0.jar:na]
+	at fwj.futures.resource.task.RealtimeHolder.init(RealtimeHolder.java:133) ~[classes/:na]
+	at fwj.futures.resource.task.RealtimeHolder.refresh(RealtimeHolder.java:58) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_11]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_11]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_11]
+	at java.lang.reflect.Method.invoke(Method.java:483) ~[na:1.8.0_11]
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:65) [spring-context-4.0.9.RELEASE.jar:4.0.9.RELEASE]
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54) [spring-context-4.0.9.RELEASE.jar:4.0.9.RELEASE]
+	at org.springframework.scheduling.concurrent.ReschedulingRunnable.run(ReschedulingRunnable.java:81) [spring-context-4.0.9.RELEASE.jar:4.0.9.RELEASE]
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511) [na:1.8.0_11]
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266) [na:1.8.0_11]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$201(ScheduledThreadPoolExecutor.java:180) [na:1.8.0_11]
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293) [na:1.8.0_11]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_11]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_11]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_11]
+01:57:00.002 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - 0 UnitDataGroup was loaded from bak.
+01:58:00.001 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - 0 UnitDataGroup was loaded from bak.
+01:58:04.759 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - init loopCache with the size of 600
+01:59:00.298 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - change! the product size from 2 to 34
+02:00:00.234 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - not change!
+02:01:00.003 [pool-1-thread-1] INFO  fwj.futures.resource.task.RealtimeHolder - skip refresh!

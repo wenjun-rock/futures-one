@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fwj.futures.resource.buss.KLineBuss;
+import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.entity.Futures;
 import fwj.futures.resource.entity.KLine;
-import fwj.futures.resource.task.RealtimeHolder.UnitData;
 import fwj.futures.resource.vo.ProductInfo;
 import fwj.futures.resource.vo.ProductLabel;
+import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.web.vo.ProductPrice;
 
 @RestController()
@@ -29,7 +29,7 @@ public class ProductController {
 	private ProductBuss productBuss;
 
 	@Autowired
-	private KLineBuss kLineBuss;
+	private DailyPriceBuss dailyPriceBuss;
 
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
@@ -64,13 +64,13 @@ public class ProductController {
 				ProductPrice prod = new ProductPrice();
 				prod.setCode(futures.getCode());
 				prod.setName(futures.getName());
-				List<KLine> kLineList = kLineBuss.queryLatest60ByCode(code);
+				List<KLine> kLineList = dailyPriceBuss.queryDescByCode(code);
 				prod.setLast1KIncPct(this.lastKIncPct(kLineList, 1));
 				prod.setLast5KIncPct(this.lastKIncPct(kLineList, 5));
 				prod.setLast10KIncPct(this.lastKIncPct(kLineList, 10));
 				prod.setLast30KIncPct(this.lastKIncPct(kLineList, 30));
 				prod.setLast60KIncPct(this.lastKIncPct(kLineList, 60));
-				List<UnitData> unitData = realTimePriceBuss.queryReverseByCode(code);
+				List<UnitData> unitData = realTimePriceBuss.queryDescByCode(code);
 				prod.setLast1RIncPct(this.lastRIncPct(unitData, 1));
 				prod.setLast5RIncPct(this.lastRIncPct(unitData, 5));
 				prod.setLast10RIncPct(this.lastRIncPct(unitData, 10));
