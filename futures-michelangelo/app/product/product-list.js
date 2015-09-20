@@ -3,24 +3,29 @@
 angular.module('miche.product.list', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/products', {
+  $routeProvider.when('/product/label/:id', {
     templateUrl: 'product/product-list.html',
     controller: 'micheProductListCtrl'
+  }).when('/products', {
+    redirectTo: '/product/label/0'
   });
 }])
 
-.controller('micheProductListCtrl', [function() {
+.controller('micheProductListCtrl', ['$scope', '$routeParams', function($scope, $routeParams) {
 
-  $.getJSON('http://139.196.37.92:8000/futures-api/web/futures/all', function(data) {
+  var preurl = 'http://139.196.37.92:8000/futures-api';
+  var labelId = $routeParams.id;
+
+  $.getJSON(preurl + '/product/price/label/' + labelId , function(data) {
     $('#example').dataTable({
       "data": data,
       "paging": false,
       "searching": false,
       "info": false,
       "columns": [{
-        "data": "product.code"
+        "data": "code"
       }, {
-        "data": "product.name"
+        "data": "name"
       }, {
         "data": "price"
       }, {
@@ -46,9 +51,9 @@ angular.module('miche.product.list', ['ngRoute'])
       }],
       "columnDefs": [{
         "render": function(data, type, row) {
-          return '<a href="#/product/' + row.product.code + '">' + data + '</a>';
+          return '<a href="#/product/code/' + row.code + '">' + data + '</a>';
         },
-        "targets": [0,1]
+        "targets": [0, 1]
       }, {
         "render": function(data, type, row) {
           return data.toLocaleString();

@@ -1,46 +1,54 @@
 <div class="container">
   <div class="row">
     <div class="col-md-2">
-      <div class="list-group" style="margin-right: -15px">
-        <button type="button" class="list-group-item">Cras justo odio</button>
-        <button type="button" class="list-group-item">Dapibus ac facilisis in</button>
-        <button type="button" class="list-group-item">Morbi leo risus</button>
-        <button type="button" class="list-group-item">Porta ac consectetur ac</button>
-        <button type="button" class="list-group-item">Vestibulum at eros</button>
+      <div class="row">
+        <accordion close-others="labelMenu.closeOthers">
+          <accordion-group panel-class="panel-primary" ng-repeat="label in labelMenu.labels">
+            <accordion-heading>
+              <div>{{label.name}}</div>
+            </accordion-heading>
+            <div style="margin: -16px">
+              <span type="button" class="list-group-item" ng-click="selectCode(product.code)" ng-repeat="product in label.products">
+                {{product.name}}
+                </span>
+            </div>
+          </accordion-group>
       </div>
     </div>
     <div class="col-md-10">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="col-md-3">
-            <h1>{{base.name}} <small>{{base.code}}</small></h1>
+            <h1>{{product.info.name}} <small>{{product.info.code}}</small></h1>
+            <h5>规格：{{product.info.unit}} {{product.info.unitDesc}}</h5>
+            <div ng-repeat="label in product.info.labels"><button type="button" ng-click="toLabel(label.labelId)" class="btn btn-primary" style="margin-right: 10px;margin-bottom: 5px" >{{label.labelName}}</button></div>
           </div>
           <div class="col-md-9">
-            <h3>{{price.price}} <small>{{price.priceTime}}</small></h3>
+            <h3>{{product.price.price | number}} <small>{{product.price.priceTime}}</small></h3>
             <table class="table table-condensed table-bordered">
               <tr>
                 <th>实时涨幅</th>
                 <th>日K涨幅</th>
               </tr>
               <tr>
-                <td>1分：{{price.last1RInc}}%</td>
-                <td>1日：{{price.last1KInc}}%</td>
+                <td>1分：<span ng-class="{'price-up':product.price.last1RIncPct>0,'price-down':product.price.last1RIncPct<0}">{{product.price.last1RIncPct | percentage }}</span></td>
+                <td>1日：<span ng-class="{'price-up':product.price.last1KIncPct>0,'price-down':product.price.last1KIncPct<0}">{{product.price.last1KIncPct | percentage }}</span></td>
               </tr>
               <tr>
-                <td>5分：{{price.last5RInc}}%</td>
-                <td>5日：{{price.last5KInc}}%</td>
+                <td>5分：<span ng-class="{'price-up':product.price.last5RIncPct>0,'price-down':product.price.last5RIncPct<0}">{{product.price.last5RIncPct | percentage }}</span></td>
+                <td>5日：<span ng-class="{'price-up':product.price.last5KIncPct>0,'price-down':product.price.last5KIncPct<0}">{{product.price.last5KIncPct | percentage }}</span></td>
               </tr>
               <tr>
-                <td>10分：{{price.last10RInc}}%</td>
-                <td>10日：{{price.last10KInc}}%</td>
+                <td>10分：<span ng-class="{'price-up':product.price.last10RIncPct>0,'price-down':product.price.last10RIncPct<0}">{{product.price.last10RIncPct | percentage }}</span></td>
+                <td>10日：<span ng-class="{'price-up':product.price.last10KIncPct>0,'price-down':product.price.last10KIncPct<0}">{{product.price.last10KIncPct | percentage }}</span></td>
               </tr>
               <tr>
-                <td>30分：{{price.last30RInc}}%</td>
-                <td>30日：{{price.last30KInc}}%</td>
+                <td>30分：<span ng-class="{'price-up':product.price.last30RIncPct>0,'price-down':product.price.last30RIncPct<0}">{{product.price.last30RIncPct | percentage }}</span></td>
+                <td>30日：<span ng-class="{'price-up':product.price.last30KIncPct>0,'price-down':product.price.last30KIncPct<0}">{{product.price.last30KIncPct | percentage }}</span></td>
               </tr>
               <tr>
-                <td>60分：{{price.last60RInc}}%</td>
-                <td>60日：{{price.last60KInc}}%</td>
+                <td>60分：<span ng-class="{'price-up':product.price.last60RIncPct>0,'price-down':product.price.last60RIncPct<0}">{{product.price.last60RIncPct | percentage }}</span></td>
+                <td>60日：<span ng-class="{'price-up':product.price.last60KIncPct>0,'price-down':product.price.last60KIncPct<0}">{{product.price.last60KIncPct | percentage }}</span></td>
               </tr>
             </table>
           </div>
