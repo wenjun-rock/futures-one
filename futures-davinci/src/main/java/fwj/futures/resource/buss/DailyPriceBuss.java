@@ -10,6 +10,7 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -67,6 +68,11 @@ public class DailyPriceBuss {
 			}).collect(Collectors.toList());
 			return new Series(prod.getName(), data.toArray(new Object[0][2]));
 		}
+	}
+
+	@CacheEvict(value = { "KLineBuss.queryDescByCode", "KLineBuss.queryAscByCode", "KLineBuss.queryAllGroup",
+			"KLineBuss.querySeriesByCode" }, allEntries = true)
+	public void reload() {
 	}
 
 }

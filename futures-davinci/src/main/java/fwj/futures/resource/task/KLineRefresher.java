@@ -14,10 +14,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Resources;
 
-import fwj.futures.resource.entity.KLine;
+import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.entity.Futures;
-import fwj.futures.resource.repository.KLineRepository;
+import fwj.futures.resource.entity.KLine;
 import fwj.futures.resource.repository.FuturesRepository;
+import fwj.futures.resource.repository.KLineRepository;
 
 @Component
 public class KLineRefresher {
@@ -31,6 +32,9 @@ public class KLineRefresher {
 
 	@Autowired
 	private FuturesRepository futuresRepository;
+	
+	@Autowired
+	private DailyPriceBuss dailyPriceBuss;
 
 	/**
 	 * 每天6时调度。
@@ -76,8 +80,10 @@ public class KLineRefresher {
 				}
 			}
 			kLineRepository.save(createList);
+			kLineRepository.flush();
 			log.info(String.format("Download %s of %s", createList.size(), prod.getCode()));
 		}
+		dailyPriceBuss.reload();
 		log.info("Done!");
 	}
 }
