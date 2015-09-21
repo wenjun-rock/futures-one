@@ -1,6 +1,0 @@
-01:47:03.176 [main]  INFO  fwj.futures.resource.launch.RestLaunch - Starting RestLaunch on Frank with PID 6996 (F:\phoenix\git\futures-one\futures-davinci\target\classes started by Administrator in F:\phoenix\git\futures-one\futures-davinci)
-01:47:15.388 [main]  INFO  fwj.futures.resource.launch.RestLaunch - Started RestLaunch in 13.046 seconds (JVM running for 14.435)
-01:54:15.569 [main]  INFO  fwj.futures.resource.launch.RestLaunch - Starting RestLaunch on Frank with PID 6756 (F:\phoenix\git\futures-one\futures-davinci\target\classes started by Administrator in F:\phoenix\git\futures-one\futures-davinci)
-01:54:26.409 [main]  INFO  fwj.futures.resource.launch.RestLaunch - Started RestLaunch in 11.182 seconds (JVM running for 11.928)
-01:57:26.391 [main]  INFO  fwj.futures.resource.launch.RestLaunch - Starting RestLaunch on Frank with PID 4336 (F:\phoenix\git\futures-one\futures-davinci\target\classes started by Administrator in F:\phoenix\git\futures-one\futures-davinci)
-01:57:37.039 [main]  INFO  fwj.futures.resource.launch.RestLaunch - Started RestLaunch in 10.977 seconds (JVM running for 11.746)
