@@ -79,10 +79,10 @@ public class ProductController {
 				prod.setLast60RIncPct(this.lastRIncPct(unitData, 60));
 				if (unitData.isEmpty()) {
 					prod.setPrice(BigDecimal.ZERO);
-					prod.setPriceTime("");
+					prod.setPriceTime(0);
 				} else {
 					prod.setPrice(unitData.get(0).getPrice());
-					prod.setPriceTime(unitData.get(0).getDatetime());
+					prod.setPriceTime(unitData.get(0).getDatetime().getTime());
 				}
 				return prod;
 			}

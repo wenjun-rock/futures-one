@@ -1,20 +1,21 @@
 package fwj.futures.resource.vo;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class UnitData implements Comparable<UnitData> {
 
-	private String datetime;
+	private Date datetime;
 	private String code;
 	private BigDecimal price;
 
-	public UnitData(String datetime, String code, BigDecimal price) {
+	public UnitData(Date datetime, String code, BigDecimal price) {
 		this.datetime = datetime;
 		this.code = code;
 		this.price = price;
 	}
 
-	public String getDatetime() {
+	public Date getDatetime() {
 		return datetime;
 	}
 

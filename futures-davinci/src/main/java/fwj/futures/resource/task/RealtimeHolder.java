@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,7 @@ public class RealtimeHolder {
 	private final static String URI_5M = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMiniKLine5m?symbol=%s0";
 	private final static String URI_RT = "http://hq.sinajs.cn/list=%s";
 	private final static String BAK_PATH = "/home/fwj/bak/davinci-realtime";
+	private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	@Autowired
 	private ProductBuss productBuss;
@@ -87,7 +89,7 @@ public class RealtimeHolder {
 	}
 
 	private void update() throws Exception {
-		String datetime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		Date datetime = new Date();
 
 		List<String> lines = new ArrayList<>();
 		List<Futures> prodList = productBuss.queryAllFutures();
@@ -126,12 +128,14 @@ public class RealtimeHolder {
 	}
 
 	private void init() throws Exception {
-		List<UnitDataGroup> resultList = loadRealtime();
+		// List<UnitDataGroup> resultList = loadRealtime();
+		List<UnitDataGroup> resultList = Collections.emptyList();
 		log.info(resultList.size() + " UnitDataGroup was loaded from bak.");
 		if (resultList.isEmpty()) {
+			DateFormat df = new SimpleDateFormat(DATE_FORMAT);
 			List<UnitData> list = new ArrayList<>();
-			for (Futures prod : productBuss.queryAllFutures()) {
-				String result = Resources.toString(new URL(String.format(URI_5M, prod.getCode())),
+			for (Futures futures : productBuss.queryAllFutures()) {
+				String result = Resources.toString(new URL(String.format(URI_5M, futures.getCode())),
 						StandardCharsets.UTF_8);
 				JSONArray dailyKs = JSON.parseArray(result);
 				if (dailyKs == null) {
@@ -139,7 +143,7 @@ public class RealtimeHolder {
 				}
 				for (int i = 0; i < dailyKs.size(); i++) {
 					JSONArray ele = dailyKs.getJSONArray(i);
-					list.add(new UnitData(ele.getString(0), prod.getCode(), ele.getBigDecimal(4)));
+					list.add(new UnitData(df.parse(ele.getString(0)), futures.getCode(), ele.getBigDecimal(4)));
 				}
 			}
 
@@ -175,7 +179,7 @@ public class RealtimeHolder {
 		}
 	}
 
-	private List<UnitDataGroup> loadRealtime() {
+	public List<UnitDataGroup> loadRealtime() {
 		try {
 			File bak = new File(BAK_PATH);
 			if (bak.exists()) {

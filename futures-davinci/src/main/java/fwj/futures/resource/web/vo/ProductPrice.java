@@ -7,7 +7,7 @@ public class ProductPrice {
 	private String code;
 	private String name;
 	private BigDecimal price;
-	private String priceTime;
+	private long priceTime;
 	private BigDecimal last1KIncPct;
 	private BigDecimal last5KIncPct;
 	private BigDecimal last10KIncPct;
@@ -43,11 +43,11 @@ public class ProductPrice {
 		this.price = price;
 	}
 
-	public String getPriceTime() {
+	public long getPriceTime() {
 		return priceTime;
 	}
 
-	public void setPriceTime(String priceTime) {
+	public void setPriceTime(long priceTime) {
 		this.priceTime = priceTime;
 	}
 

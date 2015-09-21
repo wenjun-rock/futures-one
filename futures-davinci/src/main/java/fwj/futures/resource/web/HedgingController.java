@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +43,6 @@ public class HedgingController {
 
 	@RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
 	public List<Series> monitorRealtime(@PathVariable("id") Integer id) {
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getTimeZone("UTC"));
-
 		Hedging hedging = hedgingBuss.getById(id);
 		Formula fomular = Formula.parse(hedging.getExpression());
 
@@ -57,7 +53,7 @@ public class HedgingController {
 				return new Object[0];
 			}
 			try {
-				long time = df.parse(unitDataGroup.getDatetime()).getTime();
+				long time = unitDataGroup.getDatetime().getTime();
 				return new Object[] { time, result };
 			} catch (Exception e) {
 				return new Object[0];
@@ -69,7 +65,6 @@ public class HedgingController {
 	@RequestMapping(value = "/daily/{id}", method = RequestMethod.GET)
 	public List<Series> monitorDaily(@PathVariable("id") Integer id) {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		df.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		Hedging hedging = hedgingBuss.getById(id);
 		Formula fomular = Formula.parse(hedging.getExpression());

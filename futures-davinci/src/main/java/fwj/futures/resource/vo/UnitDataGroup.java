@@ -1,20 +1,21 @@
 package fwj.futures.resource.vo;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class UnitDataGroup implements Comparable<UnitDataGroup> {
 
-	private String datetime;
+	private Date datetime;
 	private List<UnitData> unitDataList;
 
-	public UnitDataGroup(String datetime, List<UnitData> unitDataList) {
+	public UnitDataGroup(Date datetime, List<UnitData> unitDataList) {
 		Collections.sort(unitDataList);
 		this.datetime = datetime;
 		this.unitDataList = Collections.unmodifiableList(unitDataList);
 	}
 
-	public String getDatetime() {
+	public Date getDatetime() {
 		return datetime;
 	}
 
