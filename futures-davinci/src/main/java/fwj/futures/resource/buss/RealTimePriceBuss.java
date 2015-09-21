@@ -1,7 +1,6 @@
 package fwj.futures.resource.buss;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
@@ -94,7 +93,7 @@ public class RealTimePriceBuss {
 			System.out.println(code);
 			System.out.println(JSON.toJSONString(data, true));
 			return new Series(prod.getCode(), prod.getName(), data.toArray(new Object[0][2]));
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			log.error("", e);
 			return Series.EMPTY;
 		}
