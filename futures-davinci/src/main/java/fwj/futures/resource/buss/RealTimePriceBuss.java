@@ -12,8 +12,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-
 import fwj.futures.resource.entity.Futures;
 import fwj.futures.resource.task.RealtimeHolder;
 import fwj.futures.resource.vo.UnitData;
@@ -90,8 +88,6 @@ public class RealTimePriceBuss {
 			List<Object[]> data = fullList.subList(0, endIndex + 1).stream().sorted()
 					.map(unit -> new Object[] { unit.getDatetime().getTime(), unit.getPrice() })
 					.collect(Collectors.toList());
-			System.out.println(code);
-			System.out.println(JSON.toJSONString(data, true));
 			return new Series(prod.getCode(), prod.getName(), data.toArray(new Object[0][2]));
 		} catch (Exception e) {
 			log.error("", e);
