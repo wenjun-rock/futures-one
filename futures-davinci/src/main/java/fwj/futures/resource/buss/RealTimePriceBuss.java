@@ -1,12 +1,19 @@
 package fwj.futures.resource.buss;
 
-import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
 
 import fwj.futures.resource.entity.Futures;
 import fwj.futures.resource.task.RealtimeHolder;
@@ -16,6 +23,8 @@ import fwj.futures.resource.web.vo.Series;
 
 @Component
 public class RealTimePriceBuss {
+
+	private Logger log = Logger.getLogger(this.getClass());
 
 	@Autowired
 	private ProductBuss productBuss;
@@ -47,17 +56,52 @@ public class RealTimePriceBuss {
 		if (prod == null) {
 			return Series.EMPTY;
 		} else {
-			List<Object[]> data = this.queryAscByCode(code).stream().map(unit -> {
-				long time = 0;
-				try {
-					time = unit.getDatetime().getTime();
-				} catch (Exception e) {
-				}
-				BigDecimal price = unit.getPrice();
-				return new Object[] { time, price };
-			}).collect(Collectors.toList());
-			return new Series(prod.getName(), data.toArray(new Object[0][2]));
+			List<Object[]> data = this.queryAscByCode(code).stream()
+					.map(unit -> new Object[] { unit.getDatetime().getTime(), unit.getPrice() })
+					.collect(Collectors.toList());
+			return new Series(prod.getCode(), prod.getName(), data.toArray(new Object[0][2]));
 		}
+	}
+
+	public Series queryLastDaySeriesByCode(String code) {
+		Futures prod = productBuss.queryFuturesByCode(code);
+		if (prod == null) {
+			return Series.EMPTY;
+		}
+		try {
+			List<UnitData> fullList = this.queryDescByCode(code);
+			Date latest = fullList.get(0).getDatetime();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String day = df.format(latest).split(" ")[0];
+			Date startDt = df.parse(day + " 20:55:00");
+			if (startDt.after(latest)) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(startDt);
+				cal.add(Calendar.DATE, -1);
+				startDt = cal.getTime();
+			}
+			int endIndex = 0;
+			while (endIndex < (fullList.size() - 1)) {
+				Date tmp = fullList.get(endIndex).getDatetime();
+				if (tmp.before(startDt)) {
+					break;
+				}
+				endIndex ++;
+			}
+			List<Object[]> data = fullList.subList(0, endIndex + 1).stream().sorted()
+					.map(unit -> new Object[] { unit.getDatetime().getTime(), unit.getPrice() })
+					.collect(Collectors.toList());
+			System.out.println(code);
+			System.out.println(JSON.toJSONString(data, true));
+			return new Series(prod.getCode(), prod.getName(), data.toArray(new Object[0][2]));
+		} catch (ParseException e) {
+			log.error("", e);
+			return Series.EMPTY;
+		}
+	}
+
+	public UnitDataGroup queryLatest() {
+		return realtimeHolder.getLatest();
 	}
 
 }

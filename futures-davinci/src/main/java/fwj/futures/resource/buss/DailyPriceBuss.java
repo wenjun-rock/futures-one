@@ -66,7 +66,7 @@ public class DailyPriceBuss {
 				BigDecimal price = kLine.getEndPrice();
 				return new Object[] { time, price };
 			}).collect(Collectors.toList());
-			return new Series(prod.getName(), data.toArray(new Object[0][2]));
+			return new Series(prod.getCode(), prod.getName(), data.toArray(new Object[0][2]));
 		}
 	}
 

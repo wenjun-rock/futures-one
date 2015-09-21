@@ -23,6 +23,6 @@ public class HedgingMonitor {
 			downData[i][0] = data[i][0];
 			downData[i][1] = hedging.getDownLimit();
 		}
-		return Arrays.asList(new Series(hedging.getName(), data), new Series("上限", upData), new Series("下限", downData));
+		return Arrays.asList(new Series("", hedging.getName(), data), new Series("", "上限", upData), new Series("", "下限", downData));
 	}
 }

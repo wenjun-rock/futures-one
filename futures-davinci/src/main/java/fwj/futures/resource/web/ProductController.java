@@ -20,7 +20,9 @@ import fwj.futures.resource.entity.KLine;
 import fwj.futures.resource.vo.ProductInfo;
 import fwj.futures.resource.vo.ProductLabel;
 import fwj.futures.resource.vo.UnitData;
+import fwj.futures.resource.vo.UnitDataGroup;
 import fwj.futures.resource.web.vo.ProductPrice;
+import fwj.futures.resource.web.vo.Series;
 
 @RestController()
 @RequestMapping("/product")
@@ -39,7 +41,7 @@ public class ProductController {
 	public List<ProductLabel> queryAllLabels() {
 		return productBuss.queryAllLabels();
 	}
-	
+
 	@RequestMapping(value = "/info/{code}", method = RequestMethod.GET)
 	public ProductInfo queryInfoByCode(@PathVariable("code") String code) {
 		return productBuss.queryInfoByCode(code);
@@ -112,4 +114,17 @@ public class ProductController {
 		}
 		return newPrice.subtract(oldPrice).divide(oldPrice, 4, RoundingMode.DOWN);
 	}
+
+	@RequestMapping(value = "/lastday/label/{id}", method = RequestMethod.GET)
+	public List<Series> queryLastdayPriceByLabel(@PathVariable("id") Integer id) {
+		List<String> codes = id == 0 ? productBuss.queryAllCode() : productBuss.queryCodeByLabelId(id);
+		return codes.stream().map(code -> realTimePriceBuss.queryLastDaySeriesByCode(code))
+				.collect(Collectors.toList());
+	}
+
+	@RequestMapping(value = "/latest", method = RequestMethod.GET)
+	public UnitDataGroup queryLatestPrice() {
+		return realTimePriceBuss.queryLatest();
+	}
+
 }

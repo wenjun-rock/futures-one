@@ -2,14 +2,20 @@ package fwj.futures.resource.web.vo;
 
 public class Series {
 
-	public static Series EMPTY = new Series("", new Object[0][2]);
+	public static Series EMPTY = new Series("", "", new Object[0][2]);
 
+	private String code;
 	private String name;
 	private Object[][] data;
 
-	public Series(String name, Object[][] data) {
+	public Series(String code, String name, Object[][] data) {
+		this.code = code;
 		this.name = name;
 		this.data = data;
+	}
+
+	public String getCode() {
+		return code;
 	}
 
 	public String getName() {
