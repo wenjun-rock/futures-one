@@ -8,7 +8,7 @@
               <div>{{label.name}}</div>
             </accordion-heading>
             <div style="margin: -16px">
-              <span type="button" class="list-group-item" ng-click="selectCode(product.code)" ng-repeat="product in label.products">
+              <span type="button" class="list-group-item" style="cursor: pointer;" ng-click="selectCode(product.code)" ng-repeat="product in label.products">
                 {{product.name}}
                 </span>
             </div>
@@ -21,7 +21,9 @@
           <div class="col-md-3">
             <h1>{{product.info.name}} <small>{{product.info.code}}</small></h1>
             <h5>规格：{{product.info.unit}} {{product.info.unitDesc}}</h5>
-            <div ng-repeat="label in product.info.labels"><button type="button" ng-click="toLabel(label.labelId)" class="btn btn-primary" style="margin-right: 10px;margin-bottom: 5px" >{{label.labelName}}</button></div>
+            <div ng-repeat="label in product.info.labels">
+              <button type="button" ng-click="toLabel(label.labelId)" class="btn btn-primary" style="margin-right: 10px;margin-bottom: 5px">{{label.labelName}}</button>
+            </div>
           </div>
           <div class="col-md-9">
             <h3>{{product.price.price | number}} <small>{{product.price.priceTime}}</small></h3>
@@ -62,9 +64,13 @@
         <div class="col-md-4">
           <div class="panel panel-primary" style="margin-left: -15px">
             <div class="panel-heading">备注列表</div>
-            <div class="panel-body">
-              备注内容
-            </div>
+            <ul class="list-group">
+              <li class="list-group-item">Cras justo odio</li>
+              <li class="list-group-item">Dapibus ac facilisis in</li>
+              <li class="list-group-item">Morbi leo risus</li>
+              <li class="list-group-item">Porta ac consectetur ac</li>
+              <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
           </div>
         </div>
       </div>
