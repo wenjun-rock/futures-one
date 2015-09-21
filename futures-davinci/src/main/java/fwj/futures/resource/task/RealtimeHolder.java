@@ -89,7 +89,9 @@ public class RealtimeHolder {
 	}
 
 	private void update() throws Exception {
-		Date datetime = new Date();
+		long mills = System.currentTimeMillis();
+		mills = (mills / 1000) * 1000;
+		Date datetime = new Date(mills);
 
 		List<String> lines = new ArrayList<>();
 		List<Futures> prodList = productBuss.queryAllFutures();
