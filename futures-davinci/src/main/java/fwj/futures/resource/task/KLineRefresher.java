@@ -37,9 +37,9 @@ public class KLineRefresher {
 	private DailyPriceBuss dailyPriceBuss;
 
 	/**
-	 * 每天6时调度。
+	 * 每天15时10分调度。
 	 */
-	@Scheduled(cron = "0 0 6 * * ?")
+	@Scheduled(cron = "0 10 15 * * ?")
 	public void doTask() {
 		for (Futures prod : futuresRepository.findAllActive()) {
 			log.info("Downloading " + prod.getCode());
