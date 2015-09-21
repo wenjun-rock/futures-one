@@ -5,7 +5,7 @@
         <accordion close-others="labelMenu.closeOthers">
           <accordion-group panel-class="panel-primary" ng-repeat="label in labelMenu.labels">
             <accordion-heading>
-              <div>{{label.name}}</div>
+              <div>{{label.name}}<span class="badge" style="float: right">{{label.products.length}}</span></div>
             </accordion-heading>
             <div style="margin: -16px">
               <span type="button" class="list-group-item" style="cursor: pointer;" ng-click="selectCode(product.code)" ng-repeat="product in label.products">
@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="col-md-9">
-            <h3>{{product.price.price | number}} <small>{{product.price.priceTime}}</small></h3>
+            <h3>{{product.price.price | number}} <small>{{product.price.priceTime | date:"yyyy-MM-dd HH:mm:ss"}}</small></h3>
             <table class="table table-condensed table-bordered">
               <tr>
                 <th>实时涨幅</th>
@@ -64,12 +64,12 @@
         <div class="col-md-4">
           <div class="panel panel-primary" style="margin-left: -15px">
             <div class="panel-heading">备注列表</div>
+            <div class="panel-body">空空如也 {{product.comments | json}}</div>
             <ul class="list-group">
-              <li class="list-group-item">Cras justo odio</li>
-              <li class="list-group-item">Dapibus ac facilisis in</li>
-              <li class="list-group-item">Morbi leo risus</li>
-              <li class="list-group-item">Porta ac consectetur ac</li>
-              <li class="list-group-item">Vestibulum at eros</li>
+              <li class="list-group-item" ng-repeat="comment in product.comments">
+                <div style="margin-bottom: 30px">{{comment.content}}fff fffffff fffff fffffeee eee eeeee eefeeeeeefeeee eeefe eeeeee eee</div>
+                <span style="float: right; font-size: 10px"> {{comment.commitTime | date:"yyyy-MM-dd HH:mm:ss"}} </span>
+              </li>
             </ul>
           </div>
         </div>

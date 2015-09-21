@@ -28,6 +28,9 @@ angular.module('miche.product.single', ['ngRoute'])
     $http.get(preurl + '/product/price/code/' + code).success(function(price) {
       $scope.product.price = price;
     });
+    $http.get(preurl + '/comments').success(function(comments) {
+      $scope.product.comments = comments;
+    });
 
     $.getJSON(preurl + '/price/realtime?codes=' + code, function(realtime) {
       $('#realtimeChart').highcharts({
