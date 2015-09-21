@@ -41,7 +41,7 @@ public class RealtimeHolder {
 	@Autowired
 	private ProductBuss productBuss;
 
-	private int index = 0;
+	private int index = -1;
 	private int rest = 0;
 	private boolean first = true;
 	private boolean running = false;
@@ -118,10 +118,10 @@ public class RealtimeHolder {
 			}
 		}
 		UnitDataGroup current = new UnitDataGroup(datetime, list);
-		int lastIndex = (loopCache.length + index - 1) % loopCache.length;
-		if (diff(current, loopCache[lastIndex])) {
-			loopCache[index] = current;
-			index++;
+		if (diff(current, loopCache[index])) {
+			int nextIndex = (index + 1) % loopCache.length;
+			loopCache[nextIndex] = current;
+			index = nextIndex;
 		} else {
 			rest = 5;
 		}
@@ -160,7 +160,7 @@ public class RealtimeHolder {
 			temp[i] = resultList.get(i);
 		}
 		loopCache = temp;
-
+		index = loopCache.length - 1;
 		log.info("init loopCache with the size of " + loopCache.length);
 		first = false;
 	}
@@ -193,12 +193,16 @@ public class RealtimeHolder {
 	}
 
 	public List<UnitDataGroup> getRealtime() {
-		if (loopCache == null) {
+		if (loopCache == null || index == -1) {
 			return Collections.emptyList();
 		}
 		UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
 		List<UnitDataGroup> list = Arrays.asList(copy);
 		Collections.sort(list);
 		return list;
+	}
+
+	public UnitDataGroup getLatest() {
+		return loopCache[index];
 	}
 }
