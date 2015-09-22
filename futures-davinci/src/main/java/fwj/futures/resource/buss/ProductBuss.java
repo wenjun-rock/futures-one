@@ -111,4 +111,9 @@ public class ProductBuss {
 		return tradeTimeRepo.findByCodeOrderByStartTimeAsc(code);
 	}
 	
+	@Cacheable(value = "ProductBuss.queryAllTradeTimes")
+	public List<FuturesTradeTime> queryAllTradeTimes() {
+		return tradeTimeRepo.findAll();
+	}
+	
 }

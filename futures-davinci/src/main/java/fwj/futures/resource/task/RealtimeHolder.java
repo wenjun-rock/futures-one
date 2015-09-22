@@ -24,7 +24,10 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.buss.ProductBuss;
+import fwj.futures.resource.entity.price.RealtimeStore;
 import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.entity.prod.FuturesTradeTime;
+import fwj.futures.resource.repository.price.RealtimeRepository;
 import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.vo.UnitDataGroup;
 
@@ -41,6 +44,9 @@ public class RealtimeHolder {
 
 	@Autowired
 	private ProductBuss productBuss;
+
+	@Autowired
+	private RealtimeRepository realtimeRepository;
 
 	private int tick = -1;
 	private boolean first = true;
@@ -69,52 +75,74 @@ public class RealtimeHolder {
 		}
 	}
 
-	// private boolean diff(UnitDataGroup current, UnitDataGroup last) {
-	// List<UnitData> currentList = current.getUnitDataList();
-	// List<UnitData> lastList = last.getUnitDataList();
-	// if (currentList.size() != lastList.size()) {
-	// log.info(String.format("change! the product size from %s to %s",
-	// lastList.size(), currentList.size()));
-	// return true;
-	// }
-	// for (int i = 0; i < currentList.size(); i++) {
-	// if (!currentList.get(i).getPrice().equals(lastList.get(i).getPrice())) {
-	// log.info(String.format("change! %s %s changed to %s %s",
-	// lastList.get(i).getCode(),
-	// lastList.get(i).getPrice(), currentList.get(i).getCode(),
-	// currentList.get(i).getPrice()));
-	// return true;
-	// }
-	// }
-	// log.info("not change!");
-	// return false;
-	// }
-
 	private void update() throws Exception {
 
-		List<String> codes = this.getTradingCodes();
-		if (codes.isEmpty()) {
+		List<String> codeList = this.getTradingCodes();
+		if (codeList.isEmpty()) {
 			log.info("colsed!");
 		} else {
-			update(codes);
+			long mills = System.currentTimeMillis();
+			mills = (mills / 1000) * 1000;
+			Date datetime = new Date(mills);
+
+			List<String> lines = new ArrayList<>();
+			int from = 0;
+			while (from < codeList.size()) {
+				int to = Math.min(from + 10, codeList.size());
+				String params = codeList.subList(from, to).stream().map(code -> code + "0")
+						.reduce((l, r) -> l + "," + r).get();
+				try {
+					lines.addAll(Resources.readLines(new URL(String.format(URI_RT, params)), StandardCharsets.UTF_8));
+				} catch (Exception ex) {
+					log.error("error when access " + String.format(URI_RT, params));
+					return;
+				}
+				from += 10;
+			}
+
+			Map<String, UnitData> map = new HashMap<>();
+			for (int i = 0; i < codeList.size(); i++) {
+				String line = lines.get(i);
+				int beg = line.indexOf("\"");
+				int end = line.lastIndexOf("\"");
+				if (end - beg > 1) {
+					String data = line.substring(beg + 1, end);
+					BigDecimal price = new BigDecimal(data.split(",")[8]);
+					String code = codeList.get(i);
+					map.put(code, new UnitData(datetime, code, price));
+					RealtimeStore rt = new RealtimeStore();
+					rt.setPriceTime(datetime);
+					rt.setCode(code);
+					rt.setData(data);
+					realtimeRepository.save(rt);
+				}
+			}
+			realtimeRepository.flush();
+			UnitDataGroup current = new UnitDataGroup(datetime, map);
+			int nextIndex = (tick + 1) % loopCache.length;
+			loopCache[nextIndex] = current;
+			tick++;
 		}
 
 	}
 
 	private List<String> getTradingCodes() {
-		String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
-		if ((time.compareTo("02:30:00") > 0 && time.compareTo("09:00:00") < 0)
-				|| (time.compareTo("11:00:00") > 0 && time.compareTo("13:30:00") < 0)
-				|| (time.compareTo("15:00:00") > 0 && time.compareTo("21:00:00") < 0)
-				|| time.compareTo("21:00:00") >= 0) {
-
-		}
-		return null;
+		String time = new SimpleDateFormat("HHmm").format(new Date());
+		return productBuss.queryAllTradeTimes().stream().filter(tradeTime -> {
+			return tradeTime.getStartTime().compareTo(time) <= 0 && tradeTime.getEndTime().compareTo(time) >= 0;
+		}).map(FuturesTradeTime::getCode).collect(Collectors.toList());
 	}
 
 	private void init() throws Exception {
 		first = false;
-		// List<UnitDataGroup> resultList = loadRealtime();
+		List<RealtimeStore> storeList = realtimeRepository.findTop20000OrderByPriceTimeDesc();
+		Map<Date, Map<String, UnitData>> map = storeList.stream()
+				.map(store -> new UnitData(store.getPriceTime(), store.getCode(),
+						new BigDecimal(store.getData().split(",")[8])))
+				.collect(Collectors.groupingBy(UnitData::getDatetime, Collectors.toMap(UnitData::getCode, o -> o)));
+		List<UnitDataGroup> groupList = map.entrySet().stream().map(entry -> new UnitDataGroup(entry.getKey(), entry.getValue())).sorted()
+				.collect(Collectors.toList());
+
 		List<UnitDataGroup> resultList = Collections.emptyList();
 		log.info(resultList.size() + " UnitDataGroup was loaded from bak.");
 		if (resultList.isEmpty()) {
