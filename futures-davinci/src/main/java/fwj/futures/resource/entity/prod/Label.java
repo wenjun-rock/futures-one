@@ -1,11 +1,13 @@
-package fwj.futures.resource.entity;
+package fwj.futures.resource.entity.prod;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
+@Table(name="prod_label")
 public class Label extends AbstractPersistable<Integer> {
 
 	private static final long serialVersionUID = 8016274632220644218L;

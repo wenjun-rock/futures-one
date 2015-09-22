@@ -1,11 +1,11 @@
-package fwj.futures.data;
+package fwj.futures.data.init.prod;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.Futures;
-import fwj.futures.resource.repository.FuturesRepository;
+import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.repository.prod.FuturesRepository;
 
 @Component
 public class InitFutures extends AbstractBaseLaunch {
@@ -26,7 +26,7 @@ public class InitFutures extends AbstractBaseLaunch {
 			prod.setUnit(ele.getUnit());
 			prod.setUnitDesc(ele.getUnitDesc());
 			prod.setExchange(ele.getExchange().toString());
-			prod.setActive("1");
+			prod.setActive(1);
 			productRepository.save(prod);
 		}
 

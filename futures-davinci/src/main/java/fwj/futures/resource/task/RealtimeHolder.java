@@ -24,7 +24,7 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.buss.ProductBuss;
-import fwj.futures.resource.entity.Futures;
+import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.vo.UnitDataGroup;
 

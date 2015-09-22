@@ -1,11 +1,13 @@
-package fwj.futures.resource.entity;
+package fwj.futures.resource.entity.prod;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity()
+@Table(name="prod_futures")
 public class Futures extends AbstractPersistable<Integer> {
 
 	private static final long serialVersionUID = 6047007431809346528L;
@@ -19,8 +21,8 @@ public class Futures extends AbstractPersistable<Integer> {
 	@Column(length = 4)
 	private String exchange;
 
-	@Column(columnDefinition = "CHAR(1)")
-	private String active;
+	@Column(columnDefinition = "TINYINT")
+	private int active;
 
 	private int unit;
 
@@ -39,10 +41,6 @@ public class Futures extends AbstractPersistable<Integer> {
 		return exchange;
 	}
 
-	public String getActive() {
-		return active;
-	}
-
 	public int getUnit() {
 		return unit;
 	}
@@ -59,10 +57,6 @@ public class Futures extends AbstractPersistable<Integer> {
 		this.exchange = exchange;
 	}
 
-	public void setActive(String active) {
-		this.active = active;
-	}
-
 	public void setUnit(int unit) {
 		this.unit = unit;
 	}
@@ -73,6 +67,14 @@ public class Futures extends AbstractPersistable<Integer> {
 
 	public void setUnitDesc(String unitDesc) {
 		this.unitDesc = unitDesc;
+	}
+
+	public int getActive() {
+		return active;
+	}
+
+	public void setActive(int active) {
+		this.active = active;
 	}
 
 }

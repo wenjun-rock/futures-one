@@ -1,4 +1,4 @@
-package fwj.futures.data;
+package fwj.futures.data.init.prod;
 
 import java.util.stream.Stream;
 
@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.Label;
-import fwj.futures.resource.repository.LabelRepository;
+import fwj.futures.resource.entity.prod.Label;
+import fwj.futures.resource.repository.prod.LabelRepository;
 
 @Component
 public class InitLabel extends AbstractBaseLaunch {

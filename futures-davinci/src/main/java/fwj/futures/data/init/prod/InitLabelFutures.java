@@ -1,4 +1,4 @@
-package fwj.futures.data;
+package fwj.futures.data.init.prod;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 import fwj.futures.data.enu.Exchange;
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.Label;
-import fwj.futures.resource.entity.LabelFutures;
-import fwj.futures.resource.repository.LabelFuturesRepository;
-import fwj.futures.resource.repository.LabelRepository;
+import fwj.futures.resource.entity.prod.Label;
+import fwj.futures.resource.entity.prod.LabelFutures;
+import fwj.futures.resource.repository.prod.LabelFuturesRepository;
+import fwj.futures.resource.repository.prod.LabelRepository;
 
 @Component
 public class InitLabelFutures extends AbstractBaseLaunch {
@@ -33,7 +33,7 @@ public class InitLabelFutures extends AbstractBaseLaunch {
 				new Input("金属", ProdEnum.HuangJin, ProdEnum.Baiyin, ProdEnum.Tong, ProdEnum.Lv, ProdEnum.Xin,
 						ProdEnum.Qian, ProdEnum.Xi, ProdEnum.Nie), //
 				new Input("黑色", ProdEnum.LuoWenGang, ProdEnum.ReJuan, ProdEnum.JiaoTan, ProdEnum.JiaoMei,
-						ProdEnum.TieKuangShi, ProdEnum.DongLiMei), //
+						ProdEnum.TieKuangShi, ProdEnum.DongLiMeiZC), //
 				new Input("农产", ProdEnum.DaDou1, ProdEnum.YuMi, ProdEnum.DouPo, ProdEnum.DouYou, ProdEnum.JiDan,
 						ProdEnum.YuDian, ProdEnum.QiangMai, ProdEnum.BaiTang, ProdEnum.MianHua, ProdEnum.CaiYou,
 						ProdEnum.CaiPo, ProdEnum.ZongLvYou), //
@@ -43,17 +43,7 @@ public class InitLabelFutures extends AbstractBaseLaunch {
 				new Input("油脂套利", ProdEnum.DouYou, ProdEnum.ZongLvYou, ProdEnum.CaiYou), //
 				new Input("饲料套利", ProdEnum.DouPo, ProdEnum.CaiPo, ProdEnum.YuMi, ProdEnum.JiDan), //
 				new Input("油粕套利", ProdEnum.DouYou, ProdEnum.DouPo, ProdEnum.CaiYou, ProdEnum.CaiPo), //
-				new Input("煤炭套利", ProdEnum.JiaoTan, ProdEnum.JiaoMei, ProdEnum.DongLiMei) //
-				// new Input("大连", 2, true), //
-				// new Input("郑州", 3, true), //
-				// new Input("金属", 10, true), //
-				// new Input("黑色", 20, true), //
-				// new Input("农产", 30, true), //
-				// new Input("化工", 40, true), //
-				// new Input("油脂套利", 110, false), //
-				// new Input("饲料套利", 120, false), //
-				// new Input("油粕套利", 130, false), //
-				// new Input("煤炭套利", 140, false) //
+				new Input("煤炭套利", ProdEnum.JiaoTan, ProdEnum.JiaoMei, ProdEnum.DongLiMeiZC) //
 		};
 
 		Stream.of(define).forEach(input -> {

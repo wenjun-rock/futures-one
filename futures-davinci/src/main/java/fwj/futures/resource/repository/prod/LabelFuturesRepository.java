@@ -1,11 +1,11 @@
-package fwj.futures.resource.repository;
+package fwj.futures.resource.repository.prod;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import fwj.futures.resource.entity.LabelFutures;
+import fwj.futures.resource.entity.prod.LabelFutures;
 
 @RepositoryRestResource(exported = false)
 public interface LabelFuturesRepository extends JpaRepository<LabelFutures, Integer> {

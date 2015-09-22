@@ -15,10 +15,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.buss.DailyPriceBuss;
-import fwj.futures.resource.entity.Futures;
 import fwj.futures.resource.entity.KLine;
-import fwj.futures.resource.repository.FuturesRepository;
+import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.repository.KLineRepository;
+import fwj.futures.resource.repository.prod.FuturesRepository;
 
 @Component
 public class KLineRefresher {

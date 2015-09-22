@@ -9,12 +9,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.Futures;
-import fwj.futures.resource.entity.Label;
-import fwj.futures.resource.entity.LabelFutures;
-import fwj.futures.resource.repository.FuturesRepository;
-import fwj.futures.resource.repository.LabelFuturesRepository;
-import fwj.futures.resource.repository.LabelRepository;
+import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.entity.prod.Label;
+import fwj.futures.resource.entity.prod.LabelFutures;
+import fwj.futures.resource.repository.prod.FuturesRepository;
+import fwj.futures.resource.repository.prod.LabelFuturesRepository;
+import fwj.futures.resource.repository.prod.LabelRepository;
 import fwj.futures.resource.vo.ProductInfo;
 import fwj.futures.resource.vo.ProductInfo.InnerLabel;
 import fwj.futures.resource.vo.ProductLabel;
