@@ -49,13 +49,13 @@ public enum ProdEnum {
 	// PuMai("PM", "普麦", Exchange.ZZ), //
 	// ZaoXianDao("RI", "早籼稻", Exchange.ZZ), //
 	CaiPo("RM", "菜粕", 10, "吨/手", Exchange.ZZ), //
-	YouCai("RS", "菜籽", 10, "吨/手", Exchange.ZZ), //
+//	YouCai("RS", "菜籽", 10, "吨/手", Exchange.ZZ), //
 	// GuiTie("SF", "硅铁", Exchange.ZZ), //
 	// MengGui("SM", "锰硅", Exchange.ZZ), //
 	BaiTang("SR", "白糖", 10, "吨/手", Exchange.ZZ), //
 	PTA("TA", "PTA", 5, "吨/手", Exchange.ZZ), //
-	DongLiMei("TC", "动力煤", 200, "吨/手", Exchange.ZZ), //
-	// DongLiMeiZC("ZC", "动力煤ZC", 100, "吨/手", Exchange.ZZ), //
+//	DongLiMei("TC", "动力煤", 200, "吨/手", Exchange.ZZ), //
+	 DongLiMeiZC("ZC", "动力煤", 100, "吨/手", Exchange.ZZ), //
 	QiangMai("WH", "强麦", 20, "吨/手", Exchange.ZZ); //
 
 	private String code;
