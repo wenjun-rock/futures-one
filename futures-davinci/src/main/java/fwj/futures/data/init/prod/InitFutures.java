@@ -3,6 +3,7 @@ package fwj.futures.data.init.prod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.repository.prod.FuturesRepository;
@@ -16,7 +17,7 @@ public class InitFutures extends AbstractBaseLaunch {
 	@Override
 	protected void execute() throws Exception {
 
-		for (fwj.futures.data.enu.ProdEnum ele : fwj.futures.data.enu.ProdEnum.values()) {
+		for (ProdEnum ele : ProdEnum.values()) {
 			Futures prod = productRepository.findByCode(ele.getCode());
 			if (prod == null) {
 				prod = new Futures();
