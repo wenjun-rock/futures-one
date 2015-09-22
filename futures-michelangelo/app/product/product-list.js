@@ -46,7 +46,7 @@ angular.module('miche.product.list', ['ngRoute'])
           data: input.data.filter(function(element) {
             return element[1] > 0;
           }).map(function(element) {
-            return [element[0], parseFloat(((element[1] - basePrice) / basePrice).toFixed(4))];
+            return [element[0], parseFloat(((element[1] - basePrice) / basePrice * 100).toFixed(2))];
           })
         };
       });
@@ -57,6 +57,9 @@ angular.module('miche.product.list', ['ngRoute'])
         },
         title: {
           text: '实时价格走势'
+        },
+        credits: {
+          enabled: false
         },
         xAxis: {
           type: "datetime"
@@ -83,7 +86,7 @@ angular.module('miche.product.list', ['ngRoute'])
                 point;
               latest.unitDataList.some(function(unitData) {
                 if (unitData.code == info.code) {
-                  point = [latest.datetime, parseFloat(((unitData.price - info.basePrice) / info.basePrice).toFixed(4))];
+                  point = [latest.datetime, parseFloat(((unitData.price - info.basePrice) / info.basePrice * 100).toFixed(2))];
                   return true;
                 } else {
                   return false;
