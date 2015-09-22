@@ -2,8 +2,6 @@ package fwj.futures.resource.buss;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,13 +40,12 @@ public class HedgingBuss {
 
 	public BigDecimal calculate(Formula fomular, UnitDataGroup unitDataGroup) {
 		BigDecimal result = fomular.getConstant();
-		Map<String, BigDecimal> map = unitDataGroup.getUnitDataList().stream()
-				.collect(Collectors.toMap(UnitData::getCode, UnitData::getPrice));
 		for (Multinomial multinomial : fomular.getMultinomials()) {
-			if (map.get(multinomial.getCode()) == null) {
+			UnitData unit = unitDataGroup.getUnitData(multinomial.getCode());
+			if (unit == UnitData.DUMMY) {
 				return null;
 			} else {
-				result = result.add(multinomial.getCoefficient().multiply(map.get(multinomial.getCode())));
+				result = result.add(multinomial.getCoefficient().multiply(unit.getPrice()));
 			}
 		}
 		return result.setScale(2, RoundingMode.FLOOR);

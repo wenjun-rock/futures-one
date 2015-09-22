@@ -2,7 +2,7 @@ package fwj.futures.resource.web.vo;
 
 public class Series {
 
-	public static Series EMPTY = new Series("", "", new Object[0][2]);
+	final public static Series EMPTY = new Series("", "", new Object[0][2]);
 
 	private String code;
 	private String name;

@@ -4,13 +4,14 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -19,7 +20,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
@@ -33,36 +33,35 @@ public class RealtimeHolder {
 
 	private Logger log = Logger.getLogger(this.getClass());
 
-	private final static String URI_5M = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMiniKLine5m?symbol=%s0";
+	// private final static String URI_5M =
+	// "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMiniKLine5m?symbol=%s0";
 	private final static String URI_RT = "http://hq.sinajs.cn/list=%s";
 	private final static String BAK_PATH = "/home/fwj/bak/davinci-realtime";
-	private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	// private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	@Autowired
 	private ProductBuss productBuss;
 
-	private int index = -1;
-	private int rest = 0;
+	private int tick = -1;
 	private boolean first = true;
 	private boolean running = false;
-	private UnitDataGroup[] loopCache = null;
+	private UnitDataGroup[] loopCache = new UnitDataGroup[900];
 
 	/**
 	 * 间隔1分钟调度
 	 */
 	@Scheduled(cron = "0 */1 * * * ?")
 	public void refresh() {
-		if (--rest > 0 || running) {
-			log.info("skip refresh!");
+		if (running) {
+			log.info("Busy!");
 			return;
 		}
 		try {
 			running = true;
 			if (first) {
 				init();
-			} else {
-				update();
 			}
+			update();
 		} catch (Exception e) {
 			log.error("Wrong!", e);
 		} finally {
@@ -70,101 +69,100 @@ public class RealtimeHolder {
 		}
 	}
 
-	private boolean diff(UnitDataGroup current, UnitDataGroup last) {
-		List<UnitData> currentList = current.getUnitDataList();
-		List<UnitData> lastList = last.getUnitDataList();
-		if (currentList.size() != lastList.size()) {
-			log.info(String.format("change! the product size from %s to %s", lastList.size(), currentList.size()));
-			return true;
-		}
-		for (int i = 0; i < currentList.size(); i++) {
-			if (!currentList.get(i).getPrice().equals(lastList.get(i).getPrice())) {
-				log.info(String.format("change! %s %s changed to %s %s", lastList.get(i).getCode(),
-						lastList.get(i).getPrice(), currentList.get(i).getCode(), currentList.get(i).getPrice()));
-				return true;
-			}
-		}
-		log.info("not change!");
-		return false;
-	}
+	// private boolean diff(UnitDataGroup current, UnitDataGroup last) {
+	// List<UnitData> currentList = current.getUnitDataList();
+	// List<UnitData> lastList = last.getUnitDataList();
+	// if (currentList.size() != lastList.size()) {
+	// log.info(String.format("change! the product size from %s to %s",
+	// lastList.size(), currentList.size()));
+	// return true;
+	// }
+	// for (int i = 0; i < currentList.size(); i++) {
+	// if (!currentList.get(i).getPrice().equals(lastList.get(i).getPrice())) {
+	// log.info(String.format("change! %s %s changed to %s %s",
+	// lastList.get(i).getCode(),
+	// lastList.get(i).getPrice(), currentList.get(i).getCode(),
+	// currentList.get(i).getPrice()));
+	// return true;
+	// }
+	// }
+	// log.info("not change!");
+	// return false;
+	// }
 
 	private void update() throws Exception {
+
+		List<String> codes = this.getTradingCodes();
+		if (codes.isEmpty()) {
+			log.info("colsed!");
+		} else {
+			update(codes);
+		}
+
+	}
+
+	private List<String> getTradingCodes() {
+		String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+		if ((time.compareTo("02:30:00") > 0 && time.compareTo("09:00:00") < 0)
+				|| (time.compareTo("11:00:00") > 0 && time.compareTo("13:30:00") < 0)
+				|| (time.compareTo("15:00:00") > 0 && time.compareTo("21:00:00") < 0)
+				|| time.compareTo("21:00:00") >= 0) {
+
+		}
+		return null;
+	}
+
+	private void init() throws Exception {
+		first = false;
+		// List<UnitDataGroup> resultList = loadRealtime();
+		List<UnitDataGroup> resultList = Collections.emptyList();
+		log.info(resultList.size() + " UnitDataGroup was loaded from bak.");
+		if (resultList.isEmpty()) {
+			List<String> codes = productBuss.queryAllFutures().stream().map(Futures::getCode)
+					.collect(Collectors.toList());
+			update(codes);
+		} else {
+			for (int i = 0; i < resultList.size(); i++) {
+				loopCache[i] = resultList.get(i);
+			}
+			tick = resultList.size() - 1;
+			update();
+		}
+	}
+
+	private void update(List<String> codeList) {
 		long mills = System.currentTimeMillis();
 		mills = (mills / 1000) * 1000;
 		Date datetime = new Date(mills);
 
 		List<String> lines = new ArrayList<>();
-		List<Futures> prodList = productBuss.queryAllFutures();
 		int from = 0;
-		while (from < prodList.size()) {
-			int to = Math.min(from + 10, prodList.size());
-			String params = prodList.subList(from, to).stream().map(prod -> prod.getCode() + "0")
-					.reduce((l, r) -> l + "," + r).get();
+		while (from < codeList.size()) {
+			int to = Math.min(from + 10, codeList.size());
+			String params = codeList.subList(from, to).stream().map(code -> code + "0").reduce((l, r) -> l + "," + r)
+					.get();
 			try {
 				lines.addAll(Resources.readLines(new URL(String.format(URI_RT, params)), StandardCharsets.UTF_8));
 			} catch (Exception ex) {
 				log.error("error when access " + String.format(URI_RT, params));
-				rest = 10;
 				return;
 			}
 			from += 10;
 		}
 
-		List<UnitData> list = new ArrayList<>();
-		for (int i = 0; i < prodList.size(); i++) {
+		Map<String, UnitData> map = new HashMap<>();
+		for (int i = 0; i < codeList.size(); i++) {
 			String line = lines.get(i);
 			if (line.indexOf(",") > -1) {
 				BigDecimal price = new BigDecimal(line.split(",")[8]);
-				String code = prodList.get(i).getCode();
-				list.add(new UnitData(datetime, code, price));
+				String code = codeList.get(i);
+				map.put(code, new UnitData(datetime, code, price));
 			}
 		}
-		UnitDataGroup current = new UnitDataGroup(datetime, list);
-		if (diff(current, loopCache[index])) {
-			int nextIndex = (index + 1) % loopCache.length;
-			loopCache[nextIndex] = current;
-			index = nextIndex;
-		} else {
-			rest = 5;
-		}
-	}
-
-	private void init() throws Exception {
-		// List<UnitDataGroup> resultList = loadRealtime();
-		List<UnitDataGroup> resultList = Collections.emptyList();
-		log.info(resultList.size() + " UnitDataGroup was loaded from bak.");
-		if (resultList.isEmpty()) {
-			DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-			List<UnitData> list = new ArrayList<>();
-			for (Futures futures : productBuss.queryAllFutures()) {
-				String result = Resources.toString(new URL(String.format(URI_5M, futures.getCode())),
-						StandardCharsets.UTF_8);
-				JSONArray dailyKs = JSON.parseArray(result);
-				if (dailyKs == null) {
-					continue;
-				}
-				for (int i = 0; i < dailyKs.size(); i++) {
-					JSONArray ele = dailyKs.getJSONArray(i);
-					list.add(new UnitData(df.parse(ele.getString(0)), futures.getCode(), ele.getBigDecimal(4)));
-				}
-			}
-
-			resultList = list.stream().collect(Collectors.groupingBy(UnitData::getDatetime, Collectors.toList()))
-					.entrySet().stream().map(entry -> new UnitDataGroup(entry.getKey(), entry.getValue())).sorted()
-					.collect(Collectors.toList());
-			int toIndex = resultList.size();
-			int fromIndex = Math.max(0, resultList.size() - 600);
-			resultList = resultList.subList(fromIndex, toIndex);
-		}
-
-		UnitDataGroup[] temp = new UnitDataGroup[resultList.size()];
-		for (int i = 0; i < resultList.size(); i++) {
-			temp[i] = resultList.get(i);
-		}
-		loopCache = temp;
-		index = loopCache.length - 1;
-		log.info("init loopCache with the size of " + loopCache.length);
-		first = false;
+		UnitDataGroup current = new UnitDataGroup(datetime, map);
+		int nextIndex = (tick + 1) % loopCache.length;
+		loopCache[nextIndex] = current;
+		tick++;
 	}
 
 	/**
@@ -195,16 +193,23 @@ public class RealtimeHolder {
 	}
 
 	public List<UnitDataGroup> getRealtime() {
-		if (loopCache == null || index == -1) {
+		if (tick < 0) {
 			return Collections.emptyList();
+		} else if (tick + 1 < loopCache.length) {
+			return Arrays.asList(Arrays.copyOf(loopCache, tick + 1));
+		} else {
+			UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
+			List<UnitDataGroup> list = Arrays.asList(copy);
+			Collections.sort(list);
+			return list;
 		}
-		UnitDataGroup[] copy = Arrays.copyOf(loopCache, loopCache.length);
-		List<UnitDataGroup> list = Arrays.asList(copy);
-		Collections.sort(list);
-		return list;
 	}
 
 	public UnitDataGroup getLatest() {
-		return loopCache[index];
+		if (tick < 0) {
+			return null;
+		} else {
+			return loopCache[tick % loopCache.length];
+		}
 	}
 }

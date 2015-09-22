@@ -2,32 +2,29 @@ package fwj.futures.resource.vo;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 public class UnitDataGroup implements Comparable<UnitDataGroup> {
 
 	private Date datetime;
-	private List<UnitData> unitDataList;
+	private Map<String, UnitData> unitDataMap;
 
-	public UnitDataGroup(Date datetime, List<UnitData> unitDataList) {
-		Collections.sort(unitDataList);
+	public UnitDataGroup(Date datetime, Map<String, UnitData> unitDataMap) {
 		this.datetime = datetime;
-		this.unitDataList = Collections.unmodifiableList(unitDataList);
+		this.unitDataMap = Collections.unmodifiableMap(unitDataMap);
 	}
 
 	public Date getDatetime() {
 		return datetime;
 	}
 
-	public List<UnitData> getUnitDataList() {
-		return unitDataList;
+	public Map<String, UnitData> getUnitDataMap() {
+		return unitDataMap;
 	}
 
 	public UnitData getUnitData(String code) {
-		if (unitDataList == null) {
-			return null;
-		}
-		return unitDataList.stream().filter(unitData -> unitData.getCode().equals(code)).findAny().orElse(null);
+		UnitData result = unitDataMap.get(code);
+		return result == null ? UnitData.DUMMY : result;
 	}
 
 	@Override

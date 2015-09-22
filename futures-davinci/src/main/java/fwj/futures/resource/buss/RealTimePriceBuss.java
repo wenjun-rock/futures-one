@@ -34,18 +34,15 @@ public class RealTimePriceBuss {
 	}
 
 	public List<UnitData> queryDescByCode(String code) {
-		List<UnitData> unitDatas = realtimeHolder.getRealtime().stream()
-				.flatMap(group -> group.getUnitDataList().stream()).filter(unit -> code.equals(unit.getCode())).sorted()
-				.collect(Collectors.toList());
+		List<UnitData> unitDatas = realtimeHolder.getRealtime().stream().map(group -> group.getUnitData(code))
+				.filter(unit -> unit != UnitData.DUMMY).collect(Collectors.toList());
 		Collections.reverse(unitDatas);
 		return unitDatas;
 	}
 
 	public List<UnitData> queryAscByCode(String code) {
-		List<UnitData> unitDatas = realtimeHolder.getRealtime().stream()
-				.flatMap(group -> group.getUnitDataList().stream()).filter(unit -> code.equals(unit.getCode())).sorted()
-				.collect(Collectors.toList());
-		return unitDatas;
+		return realtimeHolder.getRealtime().stream().map(group -> group.getUnitData(code))
+				.filter(unit -> unit != UnitData.DUMMY).collect(Collectors.toList());
 	}
 
 	public Series querySeriesByCode(String code) {
@@ -70,7 +67,7 @@ public class RealTimePriceBuss {
 			Date latest = fullList.get(0).getDatetime();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String day = df.format(latest).split(" ")[0];
-			Date startDt = df.parse(day + " 20:55:00");
+			Date startDt = df.parse(day + " 21:00:00");
 			if (startDt.after(latest)) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(startDt);
@@ -83,7 +80,7 @@ public class RealTimePriceBuss {
 				if (tmp.before(startDt)) {
 					break;
 				}
-				endIndex ++;
+				endIndex++;
 			}
 			List<Object[]> data = fullList.subList(0, endIndex + 1).stream().sorted()
 					.map(unit -> new Object[] { unit.getDatetime().getTime(), unit.getPrice() })

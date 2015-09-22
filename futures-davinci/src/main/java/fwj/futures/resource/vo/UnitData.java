@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class UnitData implements Comparable<UnitData> {
 
+	final public static UnitData DUMMY = new UnitData(null, null, null);
+
 	private Date datetime;
 	private String code;
 	private BigDecimal price;
