@@ -69,7 +69,6 @@ angular.module('miche.product.list', ['ngRoute'])
 
       setInterval(function() {
         $http.get(preurl + '/product/latest').success(function(latest) {
-          latest.datetime = new Date().getTime();
           if (latest.datetime > $scope.ctrl.latestTime) {
             $scope.ctrl.latestTime = latest.datetime;
             var chart = $('#realtimeChart').highcharts();
