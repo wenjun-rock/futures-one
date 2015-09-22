@@ -16,7 +16,7 @@ import fwj.futures.data.struct.Formula;
 import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.HedgingBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
-import fwj.futures.resource.entity.Hedging;
+import fwj.futures.resource.entity.hedging.Hedging;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitDataGroup;
 import fwj.futures.resource.web.vo.HedgingMonitor;

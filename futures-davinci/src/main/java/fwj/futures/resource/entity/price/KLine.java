@@ -1,4 +1,4 @@
-package fwj.futures.resource.entity;
+package fwj.futures.resource.entity.price;
 
 import java.math.BigDecimal;
 
@@ -10,7 +10,7 @@ import javax.persistence.UniqueConstraint;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(name = "kline_uni", columnNames = { "dt", "code" }) })
+@Table(name="price_kline", uniqueConstraints = { @UniqueConstraint(name = "kline_uni", columnNames = { "dt", "code" }) })
 public class KLine extends AbstractPersistable<Integer> implements Comparable<KLine> {
 
 	private static final long serialVersionUID = -2830714212177779485L;

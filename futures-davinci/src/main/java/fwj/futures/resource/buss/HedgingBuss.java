@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 import fwj.futures.data.struct.Formula;
 import fwj.futures.data.struct.Formula.Multinomial;
-import fwj.futures.resource.entity.Hedging;
-import fwj.futures.resource.entity.KLine;
-import fwj.futures.resource.repository.HedgingRepository;
+import fwj.futures.resource.entity.hedging.Hedging;
+import fwj.futures.resource.entity.price.KLine;
+import fwj.futures.resource.repository.hedging.HedgingRepository;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.vo.UnitDataGroup;

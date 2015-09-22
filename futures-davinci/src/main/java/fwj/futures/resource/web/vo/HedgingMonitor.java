@@ -3,7 +3,7 @@ package fwj.futures.resource.web.vo;
 import java.util.Arrays;
 import java.util.List;
 
-import fwj.futures.resource.entity.Hedging;
+import fwj.futures.resource.entity.hedging.Hedging;
 
 public class HedgingMonitor {
 	private Hedging hedging;

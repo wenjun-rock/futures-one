@@ -15,8 +15,8 @@ import com.google.common.io.Files;
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.process.DataURI;
-import fwj.futures.resource.entity.KLine;
-import fwj.futures.resource.repository.KLineRepository;
+import fwj.futures.resource.entity.price.KLine;
+import fwj.futures.resource.repository.price.KLineRepository;
 
 @Component
 public class ExportOrigin extends AbstractBaseLaunch {

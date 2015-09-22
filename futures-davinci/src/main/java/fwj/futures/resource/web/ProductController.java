@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
-import fwj.futures.resource.entity.KLine;
+import fwj.futures.resource.entity.price.KLine;
 import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.vo.ProductInfo;
 import fwj.futures.resource.vo.ProductLabel;

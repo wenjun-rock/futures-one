@@ -1,13 +1,15 @@
-package fwj.futures.resource.entity;
+package fwj.futures.resource.entity.com;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
+@Table(name="com_comment")
 public class Comment extends AbstractPersistable<Integer> {
 
 	private static final long serialVersionUID = 4785485505130102439L;

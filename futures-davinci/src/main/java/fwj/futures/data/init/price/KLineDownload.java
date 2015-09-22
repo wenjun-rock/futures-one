@@ -1,4 +1,4 @@
-package fwj.futures.data;
+package fwj.futures.data.init.price;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

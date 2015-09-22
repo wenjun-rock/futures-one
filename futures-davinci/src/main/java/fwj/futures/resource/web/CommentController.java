@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.resource.buss.CommentBuss;
-import fwj.futures.resource.entity.Comment;
+import fwj.futures.resource.entity.com.Comment;
 
 @RestController()
 @RequestMapping("/comments")

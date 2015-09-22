@@ -1,4 +1,4 @@
-package fwj.futures.resource.entity;
+package fwj.futures.resource.entity.hedging;
 
 import java.math.BigDecimal;
 

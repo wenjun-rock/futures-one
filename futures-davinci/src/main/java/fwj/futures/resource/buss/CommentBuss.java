@@ -11,8 +11,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.Comment;
-import fwj.futures.resource.repository.CommentRepository;
+import fwj.futures.resource.entity.com.Comment;
+import fwj.futures.resource.repository.com.CommentRepository;
 
 @Component
 public class CommentBuss {
