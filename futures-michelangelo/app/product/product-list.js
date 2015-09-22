@@ -22,6 +22,10 @@ angular.module('miche.product.list', ['ngRoute'])
   $scope.initChart = function() {
     $http.get(preurl + '/product/lastday/label/' + $scope.ctrl.id).success(function(lastDayLine) {
 
+      lastDayLine = lastDayLine.filter(function(ele) {
+        return ele.data.length > 0
+      });
+
       $scope.ctrl.latestTime = lastDayLine.map(function(ele) {
         return ele.data[ele.data.length - 1][0];
       }).reduce(function(prev, next) {
@@ -39,7 +43,9 @@ angular.module('miche.product.list', ['ngRoute'])
         input.data.splice(0, 1);
         return {
           name: input.name,
-          data: input.data.map(function(element) {
+          data: input.data.filter(function(element) {
+            return element[1] > 0;
+          }).map(function(element) {
             return [element[0], parseFloat(((element[1] - basePrice) / basePrice).toFixed(4))];
           })
         };
