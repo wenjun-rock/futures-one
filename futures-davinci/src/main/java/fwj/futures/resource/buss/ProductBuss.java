@@ -13,6 +13,7 @@ import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.entity.prod.Label;
 import fwj.futures.resource.entity.prod.LabelFutures;
 import fwj.futures.resource.repository.prod.FuturesRepository;
+import fwj.futures.resource.repository.prod.FuturesTradeTimeRepository;
 import fwj.futures.resource.repository.prod.LabelFuturesRepository;
 import fwj.futures.resource.repository.prod.LabelRepository;
 import fwj.futures.resource.vo.ProductInfo;
@@ -31,6 +32,9 @@ public class ProductBuss {
 
 	@Autowired
 	private LabelRepository labelRepository;
+	
+	@Autowired
+	private FuturesTradeTimeRepository tradeTimeRepo;
 
 	@Cacheable(value = "ProductLabelBuss.queryAllLabels")
 	public List<ProductLabel> queryAllLabels() {
@@ -76,6 +80,7 @@ public class ProductBuss {
 			innerLabel.setLabelName(label.getLabelName());
 			return innerLabel;
 		}).collect(Collectors.toList()));
+		info.setTradeTimes(tradeTimeRepo.findByCodeOrderByStartTimeAsc(code));
 		return info;
 	}
 

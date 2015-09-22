@@ -2,6 +2,8 @@ package fwj.futures.resource.vo;
 
 import java.util.List;
 
+import fwj.futures.resource.entity.prod.FuturesTradeTime;
+
 public class ProductInfo {
 
 	private String code;
@@ -9,6 +11,7 @@ public class ProductInfo {
 	private int unit;
 	private String unitDesc;
 	private List<InnerLabel> labels;
+	private List<FuturesTradeTime> tradeTimes;
 
 	public String getCode() {
 		return code;
@@ -48,6 +51,14 @@ public class ProductInfo {
 
 	public void setLabels(List<InnerLabel> labels) {
 		this.labels = labels;
+	}
+
+	public List<FuturesTradeTime> getTradeTimes() {
+		return tradeTimes;
+	}
+
+	public void setTradeTimes(List<FuturesTradeTime> tradeTimes) {
+		this.tradeTimes = tradeTimes;
 	}
 
 	public static class InnerLabel {
