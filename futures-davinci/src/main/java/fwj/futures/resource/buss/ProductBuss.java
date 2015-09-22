@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.entity.prod.FuturesTradeTime;
 import fwj.futures.resource.entity.prod.Label;
 import fwj.futures.resource.entity.prod.LabelFutures;
 import fwj.futures.resource.repository.prod.FuturesRepository;
@@ -36,18 +37,18 @@ public class ProductBuss {
 	@Autowired
 	private FuturesTradeTimeRepository tradeTimeRepo;
 
-	@Cacheable(value = "ProductLabelBuss.queryAllLabels")
+	@Cacheable(value = "ProductBuss.queryAllLabels")
 	public List<ProductLabel> queryAllLabels() {
 		return labelRepository.findAll(new Sort("rank")).stream().map(label -> this.queryLabel(label))
 				.collect(Collectors.toList());
 	}
 
-	@Cacheable(value = "ProductLabelBuss.queryLabel")
+	@Cacheable(value = "ProductBuss.queryLabel")
 	public ProductLabel queryLabel(Integer labelId) {
 		return this.queryLabel(labelRepository.findOne(labelId));
 	}
 
-	@Cacheable(value = "ProductLabelBuss.queryLabel")
+	@Cacheable(value = "ProductBuss.queryLabel", key="#label.id")
 	private ProductLabel queryLabel(Label label) {
 		ProductLabel productLabel = new ProductLabel();
 		productLabel.setId(label.getId());
@@ -66,7 +67,7 @@ public class ProductBuss {
 		return productLabel;
 	}
 	
-	@Cacheable(value = "ProductLabelBuss.queryLabel")
+	@Cacheable(value = "ProductBuss.queryInfoByCode")
 	public ProductInfo queryInfoByCode(String code) {
 		ProductInfo info = new ProductInfo();
 		Futures futures = futuresRepo.findByCode(code);
@@ -84,25 +85,30 @@ public class ProductBuss {
 		return info;
 	}
 
-	@Cacheable(value = "ProductLabelBuss.queryAllCode")
+	@Cacheable(value = "ProductBuss.queryAllCode")
 	public List<String> queryAllCode() {
 		return futuresRepo.findAllActive().stream().map(Futures::getCode).collect(Collectors.toList());
 	}
 	
-	@Cacheable(value = "ProductLabelBuss.queryAllFutures")
+	@Cacheable(value = "ProductBuss.queryAllFutures")
 	public List<Futures> queryAllFutures() {
 		return futuresRepo.findAllActive();
 	}
 
-	@Cacheable(value = "ProductLabelBuss.queryCodeByLabelId")
+	@Cacheable(value = "ProductBuss.queryCodeByLabelId")
 	public List<String> queryCodeByLabelId(Integer id) {
 		return labelFuturesRepo.findByLabelId(id).stream().map(LabelFutures::getFuturesCode)
 				.collect(Collectors.toList());
 	}
 
-	@Cacheable(value = "ProductLabelBuss.queryFuturesByCode")
+	@Cacheable(value = "ProductBuss.queryFuturesByCode")
 	public Futures queryFuturesByCode(String code) {
 		return futuresRepo.findByCode(code);
+	}
+	
+	@Cacheable(value = "ProductBuss.queryTradeTimesByCode")
+	public List<FuturesTradeTime> queryTradeTimesByCode(String code) {
+		return tradeTimeRepo.findByCodeOrderByStartTimeAsc(code);
 	}
 	
 }
