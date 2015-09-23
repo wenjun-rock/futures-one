@@ -7,8 +7,8 @@ echo $lib1
 echo $lib2
 cp1=`ls $lib1/*.jar | xargs | sed "s/ /:/g"`
 cp2=`ls $lib2/*.jar | xargs | sed "s/ /:/g"`
-cp=$cp1:$cp2
+cp=$base/conf:$cp1:$cp2
 echo $cp
 
-nohup java -cp $cp fwj.futures.resource.launch.RestLaunch >> log/davinci.log 2>&1 &
+nohup java -cp $cp fwj.futures.resource.RestLaunch >> log/davinci.log 2>&1 &
 
