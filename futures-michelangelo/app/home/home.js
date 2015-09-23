@@ -17,18 +17,14 @@ angular.module('miche.home', ['ngRoute'])
         zoomType: 'x'
       },
       title: {
-        text: 'USD to EUR exchange rate over time'
-      },
-      subtitle: {
-        text: document.ontouchstart === undefined ?
-          'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        text: data[0].name + '实时'
       },
       xAxis: {
         type: "datetime"
       },
       yAxis: {
         title: {
-          text: 'Exchange rate'
+          text: '钻石点'
         }
       },
       tooltip: {
@@ -45,18 +41,14 @@ angular.module('miche.home', ['ngRoute'])
         zoomType: 'x'
       },
       title: {
-        text: 'USD to EUR exchange rate over time'
-      },
-      subtitle: {
-        text: document.ontouchstart === undefined ?
-          'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        text: data[0].name + '实时'
       },
       xAxis: {
         type: "datetime"
       },
       yAxis: {
         title: {
-          text: 'Exchange rate'
+          text: '钻石点'
         }
       },
       tooltip: {
@@ -73,18 +65,14 @@ angular.module('miche.home', ['ngRoute'])
         zoomType: 'x'
       },
       title: {
-        text: 'USD to EUR exchange rate over time'
-      },
-      subtitle: {
-        text: document.ontouchstart === undefined ?
-          'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        text: data[0].name + '日线'
       },
       xAxis: {
         type: "datetime"
       },
       yAxis: {
         title: {
-          text: 'Exchange rate'
+          text: '钻石点'
         }
       },
       tooltip: {
@@ -101,18 +89,14 @@ angular.module('miche.home', ['ngRoute'])
         zoomType: 'x'
       },
       title: {
-        text: 'USD to EUR exchange rate over time'
-      },
-      subtitle: {
-        text: document.ontouchstart === undefined ?
-          'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        text: data[0].name + '日线'
       },
       xAxis: {
         type: "datetime"
       },
       yAxis: {
         title: {
-          text: 'Exchange rate'
+          text: '钻石点'
         }
       },
       tooltip: {
