@@ -3,3 +3,4 @@
 .project
 .classpath
 /log/
+/src/main/resources/dataScource.xml
