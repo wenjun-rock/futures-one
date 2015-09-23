@@ -1,4 +1,4 @@
-package fwj.futures.resource.web;
+package fwj.futures.resource.web.ctrl;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +14,7 @@ import fwj.futures.resource.entity.com.Comment;
 
 @RestController()
 @RequestMapping("/comments")
-public class CommentController {
+public class CommentCtrl {
 
 	@Autowired
 	private CommentBuss commentBuss;

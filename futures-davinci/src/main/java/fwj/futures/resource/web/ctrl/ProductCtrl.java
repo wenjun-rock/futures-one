@@ -1,4 +1,4 @@
-package fwj.futures.resource.web;
+package fwj.futures.resource.web.ctrl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,7 +26,7 @@ import fwj.futures.resource.web.vo.Series;
 
 @RestController()
 @RequestMapping("/product")
-public class ProductController {
+public class ProductCtrl {
 
 	@Autowired
 	private ProductBuss productBuss;

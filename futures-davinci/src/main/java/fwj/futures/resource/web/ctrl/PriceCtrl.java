@@ -1,4 +1,4 @@
-package fwj.futures.resource.web;
+package fwj.futures.resource.web.ctrl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ import fwj.futures.resource.web.vo.Series;
 
 @RestController()
 @RequestMapping("/price")
-public class PriceController {
+public class PriceCtrl {
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;

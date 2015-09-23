@@ -1,4 +1,4 @@
-package fwj.futures.resource.web;
+package fwj.futures.resource.web.ctrl;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -30,7 +30,7 @@ import fwj.futures.resource.web.vo.Series;
  */
 @RestController()
 @RequestMapping("/hedging")
-public class HedgingController {
+public class HedgingCtrl {
 
 	@Autowired
 	private DailyPriceBuss kLineBuss;
