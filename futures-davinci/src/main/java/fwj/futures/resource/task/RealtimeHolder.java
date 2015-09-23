@@ -79,10 +79,17 @@ public class RealtimeHolder {
 	}
 
 	private void update() throws Exception {
+		if (isWeekend()){
+			log.info("on the weekend!");
+			return;
+		} else if(isHoliday()) {
+			log.info("on holiday!");
+			return;
+		}
 
 		List<String> codeList = this.getTradingCodes();
 		if (codeList.isEmpty()) {
-			log.info("colsed!");
+			log.info("in the rest!");
 		} else {
 			long mills = System.currentTimeMillis();
 			mills = (mills / 1000) * 1000;
