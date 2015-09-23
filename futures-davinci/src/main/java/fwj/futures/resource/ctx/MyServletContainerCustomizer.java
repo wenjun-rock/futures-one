@@ -1,4 +1,4 @@
-package fwj.futures.resource.config;
+package fwj.futures.resource.ctx;
 
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;

@@ -1,4 +1,4 @@
-package fwj.futures.resource.web;
+package fwj.futures.resource.ctx;
 
 import java.io.IOException;
 import javax.servlet.Filter;
