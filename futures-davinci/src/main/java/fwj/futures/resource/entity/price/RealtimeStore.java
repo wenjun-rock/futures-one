@@ -16,6 +16,7 @@ public class RealtimeStore extends AbstractPersistable<Integer>implements Compar
 
 	private static final long serialVersionUID = -708505925599299652L;
 
+	@Column(columnDefinition = "TIMESTAMP")
 	private Date priceTime;
 
 	@Column(length = 4)
