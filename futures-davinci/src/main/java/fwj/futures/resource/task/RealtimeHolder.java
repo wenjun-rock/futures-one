@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.io.Resources;
 
+import fwj.futures.resource.buss.HolidayBuss;
 import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.entity.price.RealtimeStore;
 import fwj.futures.resource.entity.prod.FuturesTradeTime;
@@ -42,6 +44,9 @@ public class RealtimeHolder {
 
 	@Autowired
 	private ProductBuss productBuss;
+
+	@Autowired
+	private HolidayBuss holidayBuss;
 
 	@Autowired
 	private RealtimeRepository realtimeRepository;
@@ -126,10 +131,31 @@ public class RealtimeHolder {
 	}
 
 	private List<String> getTradingCodes() {
+		if (isWeekend() || isHoliday()) {
+			return Collections.emptyList();
+		}
+
 		String time = new SimpleDateFormat("HHmm").format(new Date());
 		return productBuss.queryAllTradeTimes().stream().filter(tradeTime -> {
 			return tradeTime.getStartTime().compareTo(time) <= 0 && tradeTime.getEndTime().compareTo(time) >= 0;
 		}).map(FuturesTradeTime::getCode).collect(Collectors.toList());
+	}
+
+	private boolean isHoliday() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.HOUR, +3);
+		Date datetime = cal.getTime();
+		return holidayBuss.queryAll().stream().filter(holiday -> {
+			return datetime.compareTo(holiday.getStartDateTime()) >= 0
+					&& datetime.compareTo(holiday.getEndDateTime()) <= 0;
+		}).findAny().isPresent();
+	}
+
+	private boolean isWeekend() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.HOUR, -9);
+		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+		return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
 	}
 
 	private void init() throws Exception {
