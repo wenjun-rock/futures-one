@@ -138,13 +138,18 @@ public class RealtimeHolder {
 	}
 
 	private List<String> getTradingCodes() {
-		if (isWeekend() || isHoliday()) {
-			return Collections.emptyList();
-		}
-
 		String time = new SimpleDateFormat("HHmm").format(new Date());
 		return productBuss.queryAllTradeTimes().stream().filter(tradeTime -> {
-			return tradeTime.getStartTime().compareTo(time) <= 0 && tradeTime.getEndTime().compareTo(time) >= 0;
+			String startTime = tradeTime.getStartTime();
+			String endTime = tradeTime.getEndTime();
+			if(startTime.compareTo(endTime) < 0) {
+				// 未跨日
+				return startTime.compareTo(time) <= 0 && endTime.compareTo(time) >= 0;
+			} else {
+				// 跨日
+				return startTime.compareTo(time) <= 0 || endTime.compareTo(time) >= 0;
+			}
+			
 		}).map(FuturesTradeTime::getCode).collect(Collectors.toList());
 	}
 
