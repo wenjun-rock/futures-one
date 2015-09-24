@@ -97,7 +97,7 @@ public class ProductCtrl {
 		}
 		BigDecimal newPrice = unitDataList.get(0).getPrice();
 		BigDecimal oldPrice = unitDataList.get(Math.min(unitDataList.size(), i + 1) - 1).getPrice();
-		if (oldPrice.equals(BigDecimal.ZERO)) {
+		if (oldPrice.compareTo(BigDecimal.ZERO) == 0) {
 			return BigDecimal.ZERO;
 		}
 		return newPrice.subtract(oldPrice).divide(oldPrice, 4, RoundingMode.DOWN);
@@ -109,7 +109,7 @@ public class ProductCtrl {
 		}
 		BigDecimal newPrice = kLineList.get(0).getEndPrice();
 		BigDecimal oldPrice = kLineList.get(Math.min(kLineList.size(), i) - 1).getOpenPrice();
-		if (oldPrice.equals(BigDecimal.ZERO)) {
+		if (oldPrice.compareTo(BigDecimal.ZERO) == 0) {
 			return BigDecimal.ZERO;
 		}
 		return newPrice.subtract(oldPrice).divide(oldPrice, 4, RoundingMode.DOWN);
