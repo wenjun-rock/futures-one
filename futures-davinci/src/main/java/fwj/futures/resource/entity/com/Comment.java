@@ -18,10 +18,13 @@ public class Comment extends AbstractPersistable<Integer> {
 	private String content;
 
 	@Column(columnDefinition = "TINYINT")
-	private int relativeType;
+	private int type;
 
 	@Column(length = 10)
-	private String relativeKey;
+	private String rltKey;
+	
+	@Column(length = 20)
+	private String rltName;
 
 	@Column(columnDefinition = "TIMESTAMP")
 	private Date commitTime;
@@ -30,28 +33,36 @@ public class Comment extends AbstractPersistable<Integer> {
 		return content;
 	}
 
-	public int getRelativeType() {
-		return relativeType;
-	}
-
-	public String getRelativeKey() {
-		return relativeKey;
-	}
-
-	public Date getCommitTime() {
-		return commitTime;
-	}
-
 	public void setContent(String content) {
 		this.content = content;
 	}
 
-	public void setRelativeType(int relativeType) {
-		this.relativeType = relativeType;
+	public int getType() {
+		return type;
 	}
 
-	public void setRelativeKey(String relativeKey) {
-		this.relativeKey = relativeKey;
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public String getRltKey() {
+		return rltKey;
+	}
+
+	public void setRltKey(String rltKey) {
+		this.rltKey = rltKey;
+	}
+
+	public String getRltName() {
+		return rltName;
+	}
+
+	public void setRltName(String rltName) {
+		this.rltName = rltName;
+	}
+
+	public Date getCommitTime() {
+		return commitTime;
 	}
 
 	public void setCommitTime(Date commitTime) {

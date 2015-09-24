@@ -12,14 +12,18 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.entity.com.Comment;
+import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.repository.com.CommentRepository;
 
 @Component
 public class CommentBuss {
-	
+
 	private Logger log = Logger.getLogger(this.getClass());
-	
+
 	private long lastCommitTime = 0;
+
+	@Autowired
+	private ProductBuss productBuss;
 
 	@Autowired
 	private CommentRepository commentRepository;
@@ -42,17 +46,31 @@ public class CommentBuss {
 	@CacheEvict(value = { "CommentBuss.queryAll", "CommentBuss.queryByType",
 			"CommentBuss.queryByTypeAndKey" }, allEntries = true)
 	synchronized public Comment commitComment(Integer type, String key, String content) {
-		
+
 		Date now = new Date();
-		if(now.getTime() < lastCommitTime + 1000){
+		if (now.getTime() < lastCommitTime + 1000) {
 			log.warn("It's too hot! last commit was on " + lastCommitTime);
 			return null;
 		} else {
 			lastCommitTime = now.getTime();
 		}
+
+		String name = null;
+		if (type == 1) {
+			Futures futures = productBuss.queryFuturesByCode(key);
+			if (futures == null) {
+				return null;
+			} else {
+				name = futures.getName();
+			}
+		} else {
+			name = "";
+		}
+
 		Comment comment = new Comment();
-		comment.setRelativeType(type);
-		comment.setRelativeKey(key);
+		comment.setType(type);
+		comment.setRltKey(key);
+		comment.setRltName(name);
 		comment.setContent(content);
 		comment.setCommitTime(now);
 		return commentRepository.saveAndFlush(comment);

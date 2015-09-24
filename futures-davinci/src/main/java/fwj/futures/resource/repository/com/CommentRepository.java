@@ -12,14 +12,10 @@ import fwj.futures.resource.entity.com.Comment;
 @RepositoryRestResource(exported = false)
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
-	// List<Comment>
-	// findByRelativeTypeAndRelativeKeyOrderByCommitTimeDesc(String
-	// relativeType, String relativeId);
-
-	@Query("select o from Comment o where o.relativeType=:type and o.relativeKey=:key order by commitTime desc")
+	@Query("select o from Comment o where o.type=:type and o.rltKey=:key order by commitTime desc")
 	List<Comment> findByTypeAndKey(@Param("type") Integer type, @Param("key") String key);
 
-	@Query("select o from Comment o where o.relativeType=:type order by commitTime desc")
+	@Query("select o from Comment o where o.type=:type order by commitTime desc")
 	List<Comment> findByType(@Param("type") Integer type);
 
 }
