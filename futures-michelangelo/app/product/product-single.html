@@ -1,19 +1,16 @@
-<div class="container">
+<div>
   <div class="row">
     <div class="col-md-2">
-      <div class="row">
-        <accordion close-others="labelMenu.closeOthers">
-          <accordion-group panel-class="panel-primary" ng-repeat="label in labelMenu.labels">
-            <accordion-heading>
-              <div>{{label.name}}<span class="badge" style="float: right">{{label.products.length}}</span></div>
-            </accordion-heading>
-            <div style="margin: -16px">
-              <span type="button" class="list-group-item" style="cursor: pointer;" ng-click="selectCode(product.code)" ng-repeat="product in label.products">
-                {{product.name}}
-                </span>
-            </div>
-          </accordion-group>
-      </div>
+      <accordion close-others="labelMenu.closeOthers">
+        <accordion-group panel-class="panel-primary" ng-repeat="label in labelMenu.labels">
+          <accordion-heading>
+            <div>{{label.name}}<span class="badge" style="float: right">{{label.products.length}}</span></div>
+          </accordion-heading>
+          <div style="margin: -16px">
+            <span type="button" class="list-group-item" style="cursor: pointer;" ng-click="selectCode(product.code)" ng-repeat="product in label.products">{{product.name}}</span>
+          </div>
+        </accordion-group>
+      </accordion>
     </div>
     <div class="col-md-10">
       <div class="panel panel-default">
