@@ -21,7 +21,7 @@
     <div class="col-md-3">
       <div class="panel panel-primary">
         <div class="panel-heading">备注列表</div>
-        <div class="panel-body">空空如也 {{comments || json}}</div>
+        <div class="panel-body" ng-hide="hasComments()">空空如也</div>
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="comment in comments">
             <div style="margin-bottom: 20px">{{comment.content}}</div>

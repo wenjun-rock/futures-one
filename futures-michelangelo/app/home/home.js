@@ -9,12 +9,10 @@ angular.module('miche.home', ['ngRoute'])
   });
 }])
 
-.controller('micheHomeCtrl', ['$scope', '$http',
-  function($scope, $http) {
+.controller('micheHomeCtrl', ['$scope', '$http', 'CF',
+  function($scope, $http, CF) {
 
-    var preurl = 'http://localhost:8000/futures-api';
-
-    $http.get(preurl + '/comments').success(function(comments) {
+    $http.get(CF.preurl + '/comments').success(function(comments) {
       $scope.comments = comments;
     });
 

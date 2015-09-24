@@ -64,7 +64,7 @@ angular.module('miche.product.list', ['ngRoute'])
             zoomType: 'x'
           },
           title: {
-            text: '实时价格走势'
+            text: '实时走势'
           },
           credits: {
             enabled: false
@@ -74,7 +74,7 @@ angular.module('miche.product.list', ['ngRoute'])
           },
           yAxis: {
             title: {
-              text: '价格'
+              text: '涨幅(%)'
             }
           },
           tooltip: {

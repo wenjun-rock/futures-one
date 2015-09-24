@@ -14,6 +14,10 @@ angular.module('micheApp', [
   });
 }])
 
+.constant('CF', {
+  preurl: 'http://139.196.37.92:8000/futures-api'
+})
+
 .filter('percentage', function() {
   return function(input) {
     if (input) {
