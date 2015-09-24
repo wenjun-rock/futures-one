@@ -12,8 +12,8 @@ angular.module('miche.home', ['ngRoute'])
 .controller('micheHomeCtrl', ['$scope', '$http',
   function($scope, $http) {
 
-    var preurl = 'http://139.196.37.92:8000/futures-api';
-    
+    var preurl = 'http://localhost:8000/futures-api';
+
     $http.get(preurl + '/comments').success(function(comments) {
       $scope.comments = comments;
     });
