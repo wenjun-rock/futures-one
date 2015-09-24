@@ -28,7 +28,7 @@ angular.module('miche.product.single', ['ngRoute'])
     $http.get(preurl + '/product/price/code/' + code).success(function(price) {
       $scope.product.price = price;
     });
-    $http.get(preurl + '/comments').success(function(comments) {
+    $http.get(preurl + '/comments?type=1&key=' + code).success(function(comments) {
       $scope.product.comments = comments;
     });
 
@@ -89,6 +89,9 @@ angular.module('miche.product.single', ['ngRoute'])
 
   $scope.selectCode($routeParams.code);
 
+  $scope.hasComments = function() {
+    return $scope.product.comments && $scope.product.comments.length > 0;
+  }
 
   $scope.toLabel = function(labelId) {
     $location.path('/product/label/' + labelId);

@@ -59,13 +59,13 @@
           <div class="panel panel-default" style="height: 300px" id="dailyChart"></div>
         </div>
         <div class="col-md-4">
-          <div class="panel panel-primary" style="margin-left: -15px">
+          <div class="panel panel-primary">
             <div class="panel-heading">备注列表</div>
-            <div class="panel-body">空空如也 {{product.comments | json}}</div>
+            <div class="panel-body" ng-hide="hasComments()">空空如也</div>
             <ul class="list-group">
               <li class="list-group-item" ng-repeat="comment in product.comments">
-                <div style="margin-bottom: 30px">{{comment.content}}fff fffffff fffff fffffeee eee eeeee eefeeeeeefeeee eeefe eeeeee eee</div>
-                <span style="float: right; font-size: 10px"> {{comment.commitTime | date:"yyyy-MM-dd HH:mm:ss"}} </span>
+                <div style="margin-bottom: 20px">{{comment.content}}</div>
+                <span style="float: right; font-size: 10px; margin-top: -15px"> {{comment.commitTime | date:"yyyy-MM-dd HH:mm:ss"}} </span>
               </li>
             </ul>
           </div>
