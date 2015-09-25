@@ -9,10 +9,11 @@ angular.module('miche.product.single', ['ngRoute'])
   });
 }])
 
-.controller('micheProductSingleCtrl', ['$scope', '$routeParams', '$http', '$location', '$modal',
-  function($scope, $routeParams, $http, $location, $modal) {
+.controller('micheProductSingleCtrl', ['$scope', '$routeParams', '$http', '$location', '$modal', 'CF',
 
-    var preurl = 'http://139.196.37.92:8000/futures-api';
+  function($scope, $routeParams, $http, $location, $modal, CF) {
+
+    var preurl = CF.preurl;
 
     $http.get(preurl + '/product/labels').success(function(labels) {
       $scope.labelMenu = {
@@ -92,11 +93,11 @@ angular.module('miche.product.single', ['ngRoute'])
 
     $scope.hasComments = function() {
       return $scope.product.comments && $scope.product.comments.length > 0;
-    }
+    };
 
     $scope.toLabel = function(labelId) {
       $location.path('/product/label/' + labelId);
-    }
+    };
 
     $scope.openModal = function() {
       var modalInstance = $modal.open({
@@ -111,25 +112,36 @@ angular.module('miche.product.single', ['ngRoute'])
           }
         }
       });
-
-      modalInstance.result.then(function(selectedItem) {
-        $scope.selected = selectedItem;
+      modalInstance.result.then(function(comment) {
+        $scope.product.comments.unshift(comment);
       });
-    }
+    };
 
   }
 ])
 
 .controller('micheProductSingleModalCtrl',
-  function($scope, $http, $modalInstance, params) {
+  function($scope, $http, CF, $modalInstance, params) {
 
     $scope.params = params;
+    $scope.content = '';
 
     $scope.ok = function() {
-      $modalInstance.close($scope.selected.item);
+      $http.post(CF.preurl + '/comments', {
+        type: $scope.params.type,
+        key: $scope.params.key,
+        content: $scope.content
+      }).success(function(comment) {
+        if (comment) {
+          $modalInstance.close(comment);
+        } else {
+          alert('Error!');
+        }
+      });
     };
 
     $scope.cancel = function() {
       $modalInstance.dismiss('cancel');
     };
+
   });
