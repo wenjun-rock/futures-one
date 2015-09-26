@@ -3,6 +3,7 @@ package fwj.futures.resource.task;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +41,6 @@ public class RealtimeHolder {
 	// "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesMiniKLine5m?symbol=%s0";
 	private final static String URI_RT = "http://hq.sinajs.cn/list=%s";
 	private final static int CACHE_SIZE = 900;
-	// private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	@Autowired
 	private ProductBuss productBuss;
@@ -79,10 +79,10 @@ public class RealtimeHolder {
 	}
 
 	private void update() throws Exception {
-		if (isWeekend()){
-			log.info("on the weekend!");
+		if (inWeekend()) {
+			log.info("in the weekend!");
 			return;
-		} else if(isHoliday()) {
+		} else if (onHoliday()) {
 			log.info("on holiday!");
 			return;
 		}
@@ -138,32 +138,33 @@ public class RealtimeHolder {
 	}
 
 	private List<String> getTradingCodes() {
-		String time = new SimpleDateFormat("HHmm").format(new Date());
+		DateFormat df = new SimpleDateFormat("HHmm");
+		Calendar cal = Calendar.getInstance();
+		String now = df.format(cal.getTime());
+		cal.add(Calendar.MINUTE, -1); // 闭市延后1秒
+		String prev = df.format(cal.getTime());
 		return productBuss.queryAllTradeTimes().stream().filter(tradeTime -> {
 			String startTime = tradeTime.getStartTime();
 			String endTime = tradeTime.getEndTime();
-			if(startTime.compareTo(endTime) < 0) {
+			if (startTime.compareTo(endTime) < 0) {
 				// 未跨日
-				return startTime.compareTo(time) <= 0 && endTime.compareTo(time) >= 0;
+				return startTime.compareTo(now) <= 0 && endTime.compareTo(prev) >= 0;
 			} else {
 				// 跨日
-				return startTime.compareTo(time) <= 0 || endTime.compareTo(time) >= 0;
+				return startTime.compareTo(now) <= 0 || endTime.compareTo(now) >= 0 || endTime.compareTo(prev) >= 0;
 			}
-			
+
 		}).map(FuturesTradeTime::getCode).collect(Collectors.toList());
 	}
 
-	private boolean isHoliday() {
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.HOUR, +3);
-		Date datetime = cal.getTime();
+	private boolean onHoliday() {
+		Date now = new Date();
 		return holidayBuss.queryAll().stream().filter(holiday -> {
-			return datetime.compareTo(holiday.getStartDateTime()) >= 0
-					&& datetime.compareTo(holiday.getEndDateTime()) <= 0;
+			return now.compareTo(holiday.getActualStartTime()) >= 0 && now.compareTo(holiday.getActualEndTime()) < 0;
 		}).findAny().isPresent();
 	}
 
-	private boolean isWeekend() {
+	private boolean inWeekend() {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.HOUR, -9);
 		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);

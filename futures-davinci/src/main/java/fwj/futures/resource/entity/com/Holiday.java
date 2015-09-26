@@ -12,39 +12,61 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Table(name = "com_holiday")
 public class Holiday extends AbstractPersistable<Integer> {
 
-	private static final long serialVersionUID = -2898454756527694681L;
+	private static final long serialVersionUID = 5095227873434116887L;
 
 	@Column(length = 10)
-	private String desc2;
+	private String description;
+
+	@Column(length = 10)
+	private String startDate;
+
+	@Column(length = 10)
+	private String endDate;
 
 	@Column(columnDefinition = "TIMESTAMP")
-	private Date startDateTime;
+	private Date actualStartTime;
 
 	@Column(columnDefinition = "TIMESTAMP")
-	private Date endDateTime;
+	private Date actualEndTime;
 
-	public String getDesc2() {
-		return desc2;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setDesc2(String desc2) {
-		this.desc2 = desc2;
+	public String getStartDate() {
+		return startDate;
 	}
 
-	public Date getStartDateTime() {
-		return startDateTime;
+	public String getEndDate() {
+		return endDate;
 	}
 
-	public void setStartDateTime(Date startDateTime) {
-		this.startDateTime = startDateTime;
+	public Date getActualStartTime() {
+		return actualStartTime;
 	}
 
-	public Date getEndDateTime() {
-		return endDateTime;
+	public Date getActualEndTime() {
+		return actualEndTime;
 	}
 
-	public void setEndDateTime(Date endDateTime) {
-		this.endDateTime = endDateTime;
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public void setActualStartTime(Date actualStartTime) {
+		this.actualStartTime = actualStartTime;
+	}
+
+	public void setActualEndTime(Date actualEndTime) {
+		this.actualEndTime = actualEndTime;
 	}
 
 }
