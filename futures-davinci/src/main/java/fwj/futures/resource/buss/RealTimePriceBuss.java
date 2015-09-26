@@ -64,11 +64,11 @@ public class RealTimePriceBuss {
 		}
 		try {
 			List<UnitData> fullList = this.queryDescByCode(code);
-			Date now = new Date();
+			Date latest = fullList.get(0).getDatetime();
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String[] datetime = df.format(now).split(" ");
+			String[] datetime = df.format(latest).split(" ");
 			Date startDt = df.parse(datetime[0] + " 21:00:00");
-			if (startDt.after(now)) {
+			if (startDt.after(latest)) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(startDt);
 				cal.add(Calendar.DATE, -1);

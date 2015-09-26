@@ -11,10 +11,10 @@ angular.module('miche.product.list', ['ngRoute'])
   });
 }])
 
-.controller('micheProductListCtrl', ['$scope', '$routeParams', '$http', '$interval',
-  function($scope, $routeParams, $http, $interval) {
+.controller('micheProductListCtrl', ['$scope', '$routeParams', '$http', '$interval', 'CF', 
+  function($scope, $routeParams, $http, $interval, CF) {
 
-    var preurl = 'http://139.196.37.92:8000/futures-api';
+    var preurl = CF.preurl;
 
     $scope.ctrl = {
       id: Number($routeParams.id)
@@ -28,7 +28,7 @@ angular.module('miche.product.list', ['ngRoute'])
         $interval.cancel(re);
       }
 
-      $http.get(preurl + '/product/lastday/label/' + $scope.ctrl.id).success(function(lastDayLine) {
+      $http.get(preurl + '/product/price-label-lastday?id=' + $scope.ctrl.id).success(function(lastDayLine) {
 
         lastDayLine = lastDayLine.filter(function(ele) {
           return ele.data.length > 0
@@ -85,7 +85,7 @@ angular.module('miche.product.list', ['ngRoute'])
         });
 
         $scope.ctrl.refresh = $interval(function() {
-          $http.get(preurl + '/product/latest').success(function(latest) {
+          $http.get(preurl + '/product/price-latest').success(function(latest) {
             if (latest.datetime > $scope.ctrl.latestTime) {
               $scope.ctrl.latestTime = latest.datetime;
               var chart = $('#realtimeChart').highcharts();
@@ -112,7 +112,7 @@ angular.module('miche.product.list', ['ngRoute'])
     });
 
     $scope.initTable = function() {
-      $http.get(preurl + '/product/price/label/' + $scope.ctrl.id).success(function(data) {
+      $http.get(preurl + '/product/price-label-aggre?id=' + $scope.ctrl.id).success(function(data) {
 
         $('#example').dataTable({
           "data": data,
@@ -172,9 +172,6 @@ angular.module('miche.product.list', ['ngRoute'])
             "targets": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
           }]
         });
-      });
-      $.getJSON(preurl + '/product/price/label/' + $scope.ctrl.id, function(data) {
-
       });
     };
 

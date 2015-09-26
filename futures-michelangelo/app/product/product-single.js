@@ -24,17 +24,17 @@ angular.module('miche.product.single', ['ngRoute'])
 
     $scope.selectCode = function(code) {
       $scope.product = {};
-      $http.get(preurl + '/product/info/' + code).success(function(info) {
+      $http.get(preurl + '/product/prod-info?code=' + code).success(function(info) {
         $scope.product.info = info;
       });
-      $http.get(preurl + '/product/price/code/' + code).success(function(price) {
+      $http.get(preurl + '/product/price-prod-aggre?code=' + code).success(function(price) {
         $scope.product.price = price;
       });
       $http.get(preurl + '/comments?type=1&key=' + code).success(function(comments) {
         $scope.product.comments = comments;
       });
 
-      $.getJSON(preurl + '/price/realtime?codes=' + code, function(realtime) {
+      $.getJSON(preurl + '/product/price-prod-realtime?codes=' + code, function(realtime) {
         $('#realtimeChart').highcharts({
           chart: {
             zoomType: 'x'
@@ -61,7 +61,7 @@ angular.module('miche.product.single', ['ngRoute'])
         });
       });
 
-      $.getJSON(preurl + '/price/daily?codes=' + code, function(daily) {
+      $.getJSON(preurl + '/product/price-prod-daily?codes=' + code, function(daily) {
         $('#dailyChart').highcharts({
           chart: {
             zoomType: 'x'
