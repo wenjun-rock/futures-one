@@ -79,11 +79,11 @@ public class RealtimeHolder {
 	}
 
 	private void update() throws Exception {
-		if (inWeekend()) {
-			log.info("in the weekend!");
-			return;
-		} else if (onHoliday()) {
+		if (onHoliday()) {
 			log.info("on holiday!");
+			return;
+		} else if (inWeekend()) {
+			log.info("in the weekend!");
 			return;
 		}
 
