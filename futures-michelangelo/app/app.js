@@ -4,8 +4,9 @@ angular.module('micheApp', [
   'ngRoute',
   'ui.bootstrap',
   'miche.home',
-  'miche.product.list',
-  'miche.product.single'
+  'miche.label',
+  'miche.product',
+  'miche.label.wall'
 ])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -15,8 +16,8 @@ angular.module('micheApp', [
 }])
 
 .constant('CF', {
-  preurl2: 'http://139.196.37.92:8000/futures-api',
-  preurl: 'http://localhost:8000/futures-api'
+  preurl: 'http://139.196.37.92:8000/futures-api',
+  preurl2: 'http://localhost:8000/futures-api'
 })
 
 .filter('percentage', function() {

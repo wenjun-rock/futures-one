@@ -1,0 +1,28 @@
+<div>
+  <div class="row">
+    <ol class="breadcrumb">
+      <li class="active">产品</li>
+    </ol>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="label-wall-head-toolbox">
+        <select ng-model="imax.id" ng-options="label.id as label.name for label in imax.labels" ng-change="drawImaxChart()" class="label-wall-head-select"></select>
+        <span class="label-wall-head-time"><strong>最新时间：{{imax.latestTime | date:"yyyy-MM-dd HH:mm:ss" }}</strong></span>
+      </div>
+      <div class="label-wall-imax-chart" id="chart-label-imax"></div>
+      <div class="label-wall-imax-chart-toolbox">
+        <button type="button" class="btn btn-info label-wall-btn" ng-click="toLabel(imax.id)">详情</button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4" ng-repeat="label in labels">
+      <div class="label-wall-chart" id="chart-label-{{label.id}}"></div>
+      <div class="label-wall-chart-toolbox">
+        <button type="button" class="btn btn-success label-wall-btn" ng-click="toTop(label.id)">置顶</button>
+        <button type="button" class="btn btn-info label-wall-btn" ng-click="toLabel(label.id)">详情</button>
+      </div>
+    </div>
+  </div>
+</div>

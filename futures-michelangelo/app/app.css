@@ -1,8 +1,7 @@
 body {
-  padding-top: 20px;
   padding-bottom: 20px;
   color: #505050;
-  background: #f0f0f0;
+  background: #eee;
   position: relative;
   font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
 }
@@ -20,4 +19,44 @@ body {
 
 .price-down {
   color: #008000;
+}
+
+.label-wall-chart {
+  height: 400px;
+  background-color: #ffffff;
+}
+
+.label-wall-chart-toolbox {
+  position: relative;
+  float: left;
+  top: -390px;
+  left: 10px;
+}
+
+.label-wall-btn {
+  padding: 1px 6px;
+}
+
+.label-wall-imax-chart {
+  height: 600px;
+  background-color: #ffffff;
+}
+
+.label-wall-imax-chart-toolbox {
+  position: relative;
+  float: left;
+  top: -590px;
+  left: 10px;
+}
+
+.label-wall-head-toolbox {
+  padding-bottom: 5px;
+}
+
+.label-wall-head-select {
+  width: 100px;
+}
+
+.label-wall-head-time {
+  padding-left: 50px;
 }
