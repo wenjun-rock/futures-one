@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.resource.buss.CommentBuss;
 import fwj.futures.resource.entity.com.Comment;
+import fwj.futures.resource.web.vo.CommitComment;
 
 @RestController()
 @RequestMapping("/comments")
@@ -42,9 +44,11 @@ public class CommentCtrl {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public Comment commitComment(@RequestParam("type") Integer type, @RequestParam("key") String key,
-			@RequestParam("content") String content) {
-		return commentBuss.commitComment(type, key, content);
+	public Comment commitComment(@RequestBody CommitComment body) {
+		if (body.getType() == null || body.getKey() == null || body.getContent() == null) {
+			return null;
+		}
+		return commentBuss.commitComment(body.getType(), body.getKey(), body.getContent());
 	}
 
 }
