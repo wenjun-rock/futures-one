@@ -3,4 +3,4 @@
 .project
 .classpath
 /log/
-/src/main/resources/dataSource.xml
+/src/main/resources/jdbc.properties

@@ -9,8 +9,7 @@ public class RestLaunch {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext cxt = SpringApplication //
-				.run(new String[] { "classpath:applicationContext.xml", //
-						"classpath:dataSource.xml" }, args);
+				.run(new String[] { "classpath:applicationContext.xml" }, args);
 		cxt.registerShutdownHook();
 	}
 }

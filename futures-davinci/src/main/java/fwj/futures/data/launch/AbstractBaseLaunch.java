@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public abstract class AbstractBaseLaunch {
-	
+
 	protected Logger log = Logger.getLogger(this.getClass());
 
 	protected static void launch(Class<? extends AbstractBaseLaunch> runClass) {
