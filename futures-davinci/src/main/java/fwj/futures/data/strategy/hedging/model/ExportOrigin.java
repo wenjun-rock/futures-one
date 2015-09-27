@@ -1,7 +1,10 @@
 package fwj.futures.data.strategy.hedging.model;
 
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,7 +26,7 @@ public class ExportOrigin extends AbstractBaseLaunch {
 
 	@Autowired
 	private KLineRepository kLineRepository;
-	
+
 	@Autowired
 	private DataURI dataURI;
 
@@ -37,24 +40,26 @@ public class ExportOrigin extends AbstractBaseLaunch {
 	}
 
 	public void exportEndPrice(String startDt, String endDt, ProdEnum... prods) throws Exception {
-		exportEndPrice(startDt, endDt, Stream.of(prods).map(prod -> prod.getCode()).collect(Collectors.toList()));
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		exportEndPrice(df.parse(startDt), df.parse(endDt),
+				Stream.of(prods).map(prod -> prod.getCode()).collect(Collectors.toList()));
 	}
 
-	public void exportEndPrice(String startDt, String endDt, List<String> codeList) throws Exception {
+	public void exportEndPrice(Date startDt, Date endDt, List<String> codeList) throws Exception {
 		Collections.sort(codeList);
 
 		String head = codeList.stream().reduce("DATE", (l, r) -> l + "," + r);
-		Map<String, List<KLine>> kLineMap = codeList.stream()
+		Map<Date, List<KLine>> kLineMap = codeList.stream()
 				.map(code -> kLineRepository.findByCodeAndDtBetween(code, startDt, endDt))
 				.flatMap(kLineList -> kLineList.stream())
 				.collect(Collectors.groupingBy(KLine::getDt, Collectors.toList()));
 		String content = kLineMap.entrySet().stream().filter(entry -> entry.getValue().size() == codeList.size())
 				.sorted((l, r) -> l.getKey().compareTo(r.getKey())).map(entry -> {
-					String dt = entry.getKey();
+					String dt = String.valueOf(entry.getKey().getTime());
 					return entry.getValue().stream().sorted((l, r) -> l.getCode().compareTo(r.getCode()))
 							.map(kLine -> kLine.getEndPrice().toString()).reduce(dt, (l, r) -> l + "," + r);
 				}).reduce(head, (l, r) -> l + "\n" + r);
-		
+
 		String fileName = startDt + "_" + endDt + "_" + String.join("_", codeList);
 		Files.asCharSink(dataURI.getModelFile(fileName), StandardCharsets.UTF_8).write(content);
 	}

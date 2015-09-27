@@ -1,5 +1,6 @@
 package fwj.futures.resource.vo;
 
+import java.util.Date;
 import java.util.Map;
 
 import fwj.futures.resource.entity.price.KLine;
@@ -13,19 +14,19 @@ public class KLineGroup implements Comparable<KLineGroup> {
 	/**
 	 * pattern: yyyy-MM-dd
 	 */
-	private String dt;
+	private Date dt;
 
 	/**
 	 * key:code
 	 */
 	private Map<String, KLine> kLineMap;
 
-	public KLineGroup(String dt, Map<String, KLine> kLineMap) {
+	public KLineGroup(Date dt, Map<String, KLine> kLineMap) {
 		this.dt = dt;
 		this.kLineMap = kLineMap;
 	}
 
-	public String getDt() {
+	public Date getDt() {
 		return dt;
 	}
 

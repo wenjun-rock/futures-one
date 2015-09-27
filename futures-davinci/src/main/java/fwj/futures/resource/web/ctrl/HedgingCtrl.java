@@ -1,8 +1,6 @@
 package fwj.futures.resource.web.ctrl;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,8 +62,6 @@ public class HedgingCtrl {
 
 	@RequestMapping(value = "/daily/{id}", method = RequestMethod.GET)
 	public List<Series> monitorDaily(@PathVariable("id") Integer id) {
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
 		Hedging hedging = hedgingBuss.getById(id);
 		Formula fomular = Formula.parse(hedging.getExpression());
 
@@ -75,12 +71,8 @@ public class HedgingCtrl {
 			if (result == null) {
 				return new Object[0];
 			}
-			try {
-				long time = df.parse(group.getDt()).getTime();
-				return new Object[] { time, result };
-			} catch (Exception e) {
-				return new Object[0];
-			}
+			long time = group.getDt().getTime();
+			return new Object[] { time, result };
 		}).filter(ele -> ele.length > 0).collect(Collectors.toList());
 		return new HedgingMonitor(hedging, data.toArray(new Object[0][2])).toSeries();
 	}

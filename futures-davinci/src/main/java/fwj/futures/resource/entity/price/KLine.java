@@ -1,6 +1,7 @@
 package fwj.futures.resource.entity.price;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,8 +17,8 @@ public class KLine extends AbstractPersistable<Integer>implements Comparable<KLi
 
 	private static final long serialVersionUID = -2830714212177779485L;
 
-	@Column(length = 10)
-	private String dt;
+	@Column(columnDefinition = "DATE")
+	private Date dt;
 
 	@Column(length = 2)
 	private String code;
@@ -35,10 +36,6 @@ public class KLine extends AbstractPersistable<Integer>implements Comparable<KLi
 
 	@Column(precision = 10, scale = 2)
 	private BigDecimal minPrice;
-
-	public String getDt() {
-		return dt;
-	}
 
 	public String getCode() {
 		return code;
@@ -64,10 +61,6 @@ public class KLine extends AbstractPersistable<Integer>implements Comparable<KLi
 		return minPrice;
 	}
 
-	public void setDt(String dt) {
-		this.dt = dt;
-	}
-
 	public void setCode(String code) {
 		this.code = code;
 	}
@@ -90,6 +83,14 @@ public class KLine extends AbstractPersistable<Integer>implements Comparable<KLi
 
 	public void setMinPrice(BigDecimal minPrice) {
 		this.minPrice = minPrice;
+	}
+
+	public Date getDt() {
+		return dt;
+	}
+
+	public void setDt(Date dt) {
+		this.dt = dt;
 	}
 
 	/*

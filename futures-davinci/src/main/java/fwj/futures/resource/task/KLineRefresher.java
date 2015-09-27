@@ -123,6 +123,7 @@ public class KLineRefresher {
 	}
 
 	public void refreshKLine() {
+		DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
 		for (Futures prod : futuresRepository.findAllActive()) {
 			log.info("Downloading " + prod.getCode());
 
@@ -146,19 +147,24 @@ public class KLineRefresher {
 					// 过滤交易为0的日K
 					continue;
 				}
-				if (latest == null || latest.getDt().compareTo(ele.getString(0)) <= 0) {
-					KLine daily = new KLine();
-					if (latest != null && latest.getDt().equals(ele.getString(0))) {
-						daily = latest;
+				try {
+					Date dt = yyyyMMdd.parse(ele.getString(0));
+					if (latest == null || latest.getDt().compareTo(dt) <= 0) {
+						KLine daily = new KLine();
+						if (latest != null && latest.getDt().equals(ele.getString(0))) {
+							daily = latest;
+						}
+						daily.setCode(prod.getCode());
+						daily.setDt(dt);
+						daily.setOpenPrice(ele.getBigDecimal(1));
+						daily.setMaxPrice(ele.getBigDecimal(2));
+						daily.setMinPrice(ele.getBigDecimal(3));
+						daily.setEndPrice(ele.getBigDecimal(4));
+						daily.setTradeVol(ele.getInteger(5));
+						createList.add(daily);
 					}
-					daily.setCode(prod.getCode());
-					daily.setDt(ele.getString(0));
-					daily.setOpenPrice(ele.getBigDecimal(1));
-					daily.setMaxPrice(ele.getBigDecimal(2));
-					daily.setMinPrice(ele.getBigDecimal(3));
-					daily.setEndPrice(ele.getBigDecimal(4));
-					daily.setTradeVol(ele.getInteger(5));
-					createList.add(daily);
+				} catch (ParseException e) {
+					log.error("oops", e);
 				}
 			}
 			kLineRepository.save(createList);

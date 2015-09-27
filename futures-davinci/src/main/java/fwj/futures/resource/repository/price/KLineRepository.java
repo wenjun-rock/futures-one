@@ -1,5 +1,6 @@
 package fwj.futures.resource.repository.price;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,9 +13,7 @@ public interface KLineRepository extends JpaRepository<KLine, Integer> {
 
 	KLine findTopByCodeOrderByDtDesc(String code);
 	
-	List<KLine> findTop60ByCodeOrderByDtDesc(String code);
-
-	List<KLine> findByCodeAndDtBetween(String code, String startDt, String endDt);
+	List<KLine> findByCodeAndDtBetween(String code, Date startDt, Date endDt);
 
 	List<KLine> findByCodeOrderByDtAsc(String code);
 	

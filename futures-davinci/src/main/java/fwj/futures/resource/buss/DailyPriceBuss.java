@@ -1,12 +1,10 @@
 package fwj.futures.resource.buss;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +39,7 @@ public class DailyPriceBuss {
 
 	@Cacheable(value = "KLineBuss.queryAllGroup")
 	public List<KLineGroup> queryAllGroup() {
-		Map<String, Map<String, KLine>> kLineMap = kLineRepository.findAll().stream()
+		Map<Date, Map<String, KLine>> kLineMap = kLineRepository.findAll().stream()
 				.collect(Collectors.groupingBy(KLine::getDt, Collectors.toMap(KLine::getCode, kLine -> kLine)));
 		List<KLineGroup> list = kLineMap.entrySet().stream()
 				.map(entry -> new KLineGroup(entry.getKey(), entry.getValue())).sorted().collect(Collectors.toList());
@@ -50,19 +48,13 @@ public class DailyPriceBuss {
 
 	@Cacheable(value = "KLineBuss.querySeriesByCode")
 	public Series querySeriesByCode(String code) {
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		df.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Futures prod = productBuss.queryFuturesByCode(code);
 		if (prod == null) {
 			return Series.EMPTY;
 		} else {
 			List<KLine> kLineList = this.queryAscByCode(code);
 			List<Object[]> data = kLineList.stream().map(kLine -> {
-				long time = 0;
-				try {
-					time = df.parse(kLine.getDt()).getTime();
-				} catch (Exception e) {
-				}
+				long time = kLine.getDt().getTime();
 				BigDecimal price = kLine.getEndPrice();
 				return new Object[] { time, price };
 			}).collect(Collectors.toList());
