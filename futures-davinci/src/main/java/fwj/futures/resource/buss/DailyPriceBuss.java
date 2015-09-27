@@ -1,6 +1,5 @@
 package fwj.futures.resource.buss;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -17,6 +16,7 @@ import fwj.futures.resource.entity.price.KLine;
 import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.repository.price.KLineRepository;
 import fwj.futures.resource.vo.KLineGroup;
+import fwj.futures.resource.web.vo.Price;
 import fwj.futures.resource.web.vo.Series;
 
 @Component
@@ -63,12 +63,10 @@ public class DailyPriceBuss {
 				Date startDt = cal.getTime();
 				kLineList = kLineRepository.findByCodeAndDtBetweenOrderByDtAsc(code, startDt, endDt);
 			}
-			List<Object[]> data = kLineList.stream().map(kLine -> {
-				long time = kLine.getDt().getTime();
-				BigDecimal price = kLine.getEndPrice();
-				return new Object[] { time, price };
+			List<Price> prices = kLineList.stream().map(kLine -> {
+				return new Price(kLine.getDt(), kLine.getEndPrice());
 			}).collect(Collectors.toList());
-			return new Series(prod.getCode(), prod.getName(), data.toArray(new Object[0][2]));
+			return new Series(prod.getCode(), prod.getName(), prices);
 		}
 	}
 

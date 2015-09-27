@@ -16,6 +16,7 @@ import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.task.RealtimeHolder;
 import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.vo.UnitDataGroup;
+import fwj.futures.resource.web.vo.Price;
 import fwj.futures.resource.web.vo.Series;
 
 @Component
@@ -50,10 +51,9 @@ public class RealTimePriceBuss {
 		if (prod == null) {
 			return Series.EMPTY;
 		} else {
-			List<Object[]> data = this.queryAscByCode(code).stream()
-					.map(unit -> new Object[] { unit.getDatetime().getTime(), unit.getPrice() })
-					.collect(Collectors.toList());
-			return new Series(prod.getCode(), prod.getName(), data.toArray(new Object[0][2]));
+			List<Price> prices = this.queryAscByCode(code).stream()
+					.map(unit -> new Price(unit.getDatetime(), unit.getPrice())).collect(Collectors.toList());
+			return new Series(prod.getCode(), prod.getName(), prices);
 		}
 	}
 
@@ -75,17 +75,16 @@ public class RealTimePriceBuss {
 				startDt = cal.getTime();
 			}
 			int endIndex = 0;
-			while (endIndex < (fullList.size() -1 )) {
+			while (endIndex < (fullList.size() - 1)) {
 				Date tmp = fullList.get(endIndex).getDatetime();
 				if (tmp.before(startDt)) {
 					break;
 				}
 				endIndex++;
 			}
-			List<Object[]> data = fullList.subList(0, endIndex + 1).stream().sorted()
-					.map(unit -> new Object[] { unit.getDatetime().getTime(), unit.getPrice() })
-					.collect(Collectors.toList());
-			return new Series(prod.getCode(), prod.getName(), data.toArray(new Object[0][2]));
+			List<Price> prices = fullList.subList(0, endIndex + 1).stream().sorted()
+					.map(unit -> new Price(unit.getDatetime(), unit.getPrice())).collect(Collectors.toList());
+			return new Series(prod.getCode(), prod.getName(), prices);
 		} catch (Exception e) {
 			log.error("", e);
 			return Series.EMPTY;

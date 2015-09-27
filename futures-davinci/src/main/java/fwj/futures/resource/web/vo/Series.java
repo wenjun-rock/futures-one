@@ -1,17 +1,19 @@
 package fwj.futures.resource.web.vo;
 
+import java.util.List;
+
 public class Series {
 
-	final public static Series EMPTY = new Series("", "", new Object[0][2]);
+	final public static Series EMPTY = new Series("", "", null);
 
 	private String code;
 	private String name;
-	private Object[][] data;
+	private List<Price> prices;
 
-	public Series(String code, String name, Object[][] data) {
+	public Series(String code, String name, List<Price> prices) {
 		this.code = code;
 		this.name = name;
-		this.data = data;
+		this.prices = prices;
 	}
 
 	public String getCode() {
@@ -22,15 +24,8 @@ public class Series {
 		return name;
 	}
 
-	public Object[][] getData() {
-		return data;
+	public List<Price> getPrices() {
+		return prices;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setData(Object[][] data) {
-		this.data = data;
-	}
 }

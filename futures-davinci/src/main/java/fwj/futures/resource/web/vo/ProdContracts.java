@@ -1,7 +1,5 @@
 package fwj.futures.resource.web.vo;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 public class ProdContracts {
@@ -38,29 +36,6 @@ public class ProdContracts {
 
 	public List<Contract> getContracts() {
 		return contracts;
-	}
-
-	public static class Price implements Comparable<Price> {
-		private Date d;
-		private BigDecimal p;
-
-		public Price(Date dt, BigDecimal price) {
-			d = dt;
-			p = price;
-		}
-
-		public Date getD() {
-			return d;
-		}
-
-		public BigDecimal getP() {
-			return p;
-		}
-
-		@Override
-		public int compareTo(Price that) {
-			return this.d.compareTo(that.d);
-		}
 	}
 
 	public static class Contract implements Comparable<Contract> {

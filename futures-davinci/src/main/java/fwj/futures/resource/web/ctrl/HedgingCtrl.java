@@ -1,6 +1,5 @@
 package fwj.futures.resource.web.ctrl;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,7 @@ import fwj.futures.resource.entity.hedging.Hedging;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitDataGroup;
 import fwj.futures.resource.web.vo.HedgingMonitor;
-import fwj.futures.resource.web.vo.Series;
+import fwj.futures.resource.web.vo.Price;
 
 /**
  * 对冲套利相关WEB服务
@@ -40,41 +39,25 @@ public class HedgingCtrl {
 	private RealTimePriceBuss realTimePriceBuss;
 
 	@RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
-	public List<Series> monitorRealtime(@PathVariable("id") Integer id) {
+	public HedgingMonitor monitorRealtime(@PathVariable("id") Integer id) {
 		Hedging hedging = hedgingBuss.getById(id);
 		Formula fomular = Formula.parse(hedging.getExpression());
-
 		List<UnitDataGroup> unitDataGroupList = realTimePriceBuss.queryAllAsc();
-		List<Object[]> data = unitDataGroupList.stream().map(unitDataGroup -> {
-			BigDecimal result = hedgingBuss.calculate(fomular, unitDataGroup);
-			if (result == null) {
-				return new Object[0];
-			}
-			try {
-				long time = unitDataGroup.getDatetime().getTime();
-				return new Object[] { time, result };
-			} catch (Exception e) {
-				return new Object[0];
-			}
-		}).filter(ele -> ele.length > 0).collect(Collectors.toList());
-		return new HedgingMonitor(hedging, data.toArray(new Object[0][2])).toSeries();
+		List<Price> prices = unitDataGroupList.stream()
+				.map(group -> new Price(group.getDatetime(), hedgingBuss.calculate(fomular, group)))
+				.filter(price -> price.getP() != null).collect(Collectors.toList());
+		return new HedgingMonitor(hedging, prices);
 	}
 
 	@RequestMapping(value = "/daily/{id}", method = RequestMethod.GET)
-	public List<Series> monitorDaily(@PathVariable("id") Integer id) {
+	public HedgingMonitor monitorDaily(@PathVariable("id") Integer id) {
 		Hedging hedging = hedgingBuss.getById(id);
 		Formula fomular = Formula.parse(hedging.getExpression());
-
 		List<KLineGroup> groupList = kLineBuss.queryAllGroup();
-		List<Object[]> data = groupList.stream().map(group -> {
-			BigDecimal result = hedgingBuss.calculate(fomular, group);
-			if (result == null) {
-				return new Object[0];
-			}
-			long time = group.getDt().getTime();
-			return new Object[] { time, result };
-		}).filter(ele -> ele.length > 0).collect(Collectors.toList());
-		return new HedgingMonitor(hedging, data.toArray(new Object[0][2])).toSeries();
+		List<Price> prices = groupList.stream()
+				.map(group -> new Price(group.getDt(), hedgingBuss.calculate(fomular, group)))
+				.filter(price -> price.getP() != null).collect(Collectors.toList());
+		return new HedgingMonitor(hedging, prices);
 	}
 
 }

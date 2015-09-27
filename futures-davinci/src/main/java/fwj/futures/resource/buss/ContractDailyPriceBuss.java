@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.entity.price.ContractKLine;
 import fwj.futures.resource.repository.price.ContractKLineRepository;
+import fwj.futures.resource.web.vo.Price;
 import fwj.futures.resource.web.vo.ProdContracts;
 import fwj.futures.resource.web.vo.ProdContracts.Contract;
-import fwj.futures.resource.web.vo.ProdContracts.Price;
 
 @Component
 public class ContractDailyPriceBuss {
