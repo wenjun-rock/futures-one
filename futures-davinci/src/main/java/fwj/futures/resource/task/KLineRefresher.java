@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Resources;
 
+import fwj.futures.resource.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.entity.price.ContractKLine;
 import fwj.futures.resource.entity.price.KLine;
@@ -46,6 +47,9 @@ public class KLineRefresher {
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;
+
+	@Autowired
+	private ContractDailyPriceBuss contractDailyPriceBuss;
 
 	/**
 	 * 每天15时10分调度。
@@ -119,7 +123,7 @@ public class KLineRefresher {
 			}
 
 		}
-		dailyPriceBuss.reload();
+		contractDailyPriceBuss.reload();
 	}
 
 	public void refreshKLine() {
