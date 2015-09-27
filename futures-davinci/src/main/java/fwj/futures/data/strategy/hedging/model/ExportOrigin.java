@@ -50,7 +50,7 @@ public class ExportOrigin extends AbstractBaseLaunch {
 
 		String head = codeList.stream().reduce("DATE", (l, r) -> l + "," + r);
 		Map<Date, List<KLine>> kLineMap = codeList.stream()
-				.map(code -> kLineRepository.findByCodeAndDtBetween(code, startDt, endDt))
+				.map(code -> kLineRepository.findByCodeAndDtBetweenOrderByDtAsc(code, startDt, endDt))
 				.flatMap(kLineList -> kLineList.stream())
 				.collect(Collectors.groupingBy(KLine::getDt, Collectors.toList()));
 		String content = kLineMap.entrySet().stream().filter(entry -> entry.getValue().size() == codeList.size())

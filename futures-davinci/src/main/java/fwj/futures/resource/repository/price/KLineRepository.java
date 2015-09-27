@@ -13,7 +13,7 @@ public interface KLineRepository extends JpaRepository<KLine, Integer> {
 
 	KLine findTopByCodeOrderByDtDesc(String code);
 	
-	List<KLine> findByCodeAndDtBetween(String code, Date startDt, Date endDt);
+	List<KLine> findByCodeAndDtBetweenOrderByDtAsc(String code, Date startDt, Date endDt);
 
 	List<KLine> findByCodeOrderByDtAsc(String code);
 	

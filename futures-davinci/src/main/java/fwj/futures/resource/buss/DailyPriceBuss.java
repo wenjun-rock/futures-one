@@ -1,6 +1,7 @@
 package fwj.futures.resource.buss;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -47,12 +48,21 @@ public class DailyPriceBuss {
 	}
 
 	@Cacheable(value = "KLineBuss.querySeriesByCode")
-	public Series querySeriesByCode(String code) {
+	public Series querySeriesByCode(String code, int month) {
 		Futures prod = productBuss.queryFuturesByCode(code);
 		if (prod == null) {
 			return Series.EMPTY;
 		} else {
-			List<KLine> kLineList = this.queryAscByCode(code);
+			List<KLine> kLineList = null;
+			if (month < 0) {
+				kLineList = this.queryAscByCode(code);
+			} else {
+				Calendar cal = Calendar.getInstance();
+				Date endDt = cal.getTime();
+				cal.add(Calendar.MONTH, -month);
+				Date startDt = cal.getTime();
+				kLineList = kLineRepository.findByCodeAndDtBetweenOrderByDtAsc(code, startDt, endDt);
+			}
 			List<Object[]> data = kLineList.stream().map(kLine -> {
 				long time = kLine.getDt().getTime();
 				BigDecimal price = kLine.getEndPrice();

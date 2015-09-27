@@ -78,8 +78,9 @@ public class ProductCtrl {
 	}
 
 	@RequestMapping(value = "/price-prod-daily", method = RequestMethod.GET)
-	public List<Series> findDailyByCodes(@RequestParam("codes") String codes) {
-		return Stream.of(codes.split(",")).map(code -> dailyPriceBuss.querySeriesByCode(code))
+	public List<Series> findDailyByCodes(@RequestParam("codes") String codes,
+			@RequestParam(value = "month", defaultValue = "-1") int month) {
+		return Stream.of(codes.split(",")).map(code -> dailyPriceBuss.querySeriesByCode(code, month))
 				.collect(Collectors.toList());
 	}
 
