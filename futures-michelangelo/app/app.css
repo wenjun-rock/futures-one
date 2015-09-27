@@ -60,3 +60,10 @@ body {
 .label-wall-head-time {
   padding-left: 50px;
 }
+
+.product-chart-toolbox {
+  position: relative;
+  float: left;
+  top: -310px;
+  left: 10px;
+}

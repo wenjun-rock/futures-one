@@ -1,20 +1,33 @@
 <div>
   <div class="row">
+    <ol class="breadcrumb">
+      <li class="active">首页</li>
+    </ol>
+  </div>
+  <div class="row">
     <div class="col-md-9">
+      <div class="panel panel-primary">
+        <div class="panel-heading">产品列表</div>
+        <div class="panel-body">
+          <ul class="list-inline">
+            <li ng-repeat="prod in prods"><a ng-href="#/product/code/{{prod.code}}">{{prod.name}}</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel panel-primary">
+        <div class="panel-heading">标签列表</div>
+        <div class="panel-body">
+          <ul class="list-inline">
+            <li ng-repeat="label in labels"><a ng-href="#/product/label/{{label.id}}">{{label.name}}</a></li>
+          </ul>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-6">
           <div class="panel panel-default" id="container1"></div>
         </div>
         <div class="col-md-6">
           <div class="panel panel-default" id="container2"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="panel panel-default" id="container3"></div>
-        </div>
-        <div class="col-md-6">
-          <div class="panel panel-default" id="container4"></div>
         </div>
       </div>
     </div>

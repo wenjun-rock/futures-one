@@ -8,12 +8,12 @@
   <div class="row">
     <div class="col-md-2">
       <accordion close-others="labelMenu.closeOthers">
-        <accordion-group panel-class="panel-primary" ng-repeat="label in labelMenu.labels">
+        <accordion-group panel-class="panel-primary" is-open="label.open" ng-repeat="label in labelMenu.labels">
           <accordion-heading>
-            <div>{{label.name}}<span class="badge" style="float: right">{{label.products.length}}</span></div>
+            <div ng-dblclick="toLabel(label.id)">{{label.name}}<span class="badge" style="float: right">{{label.products.length}}</span></div>
           </accordion-heading>
           <div style="margin: -16px">
-            <span type="button" class="list-group-item" style="cursor: pointer;" ng-click="selectCode(product.code)" ng-repeat="product in label.products">{{product.name}}</span>
+            <span type="button" class="list-group-item" style="cursor: pointer;" ng-click="toCode(product.code,label.id)" ng-repeat="product in label.products">{{product.name}}</span>
           </div>
         </accordion-group>
       </accordion>
@@ -21,14 +21,15 @@
     <div class="col-md-10">
       <div class="panel panel-default">
         <div class="panel-body">
-          <div class="col-md-3">
+          <div class="col-md-4">
             <h1>{{product.info.name}} <small>{{product.info.code}}</small></h1>
             <h5>规格：{{product.info.unit}} {{product.info.unitDesc}}</h5>
-            <div ng-repeat="label in product.info.labels">
-              <button type="button" ng-click="toLabel(label.labelId)" class="btn btn-primary" style="margin-right: 10px;margin-bottom: 5px">{{label.labelName}}</button>
-            </div>
+            <h3>
+            <span class="label label-warning" style="margin: 3px;display: inline-block;" ng-repeat="label in product.info.labels">
+            {{label.labelName}}
+            </span></h3>
           </div>
-          <div class="col-md-9">
+          <div class="col-md-8">
             <h3>{{product.price.price | number}} <small>{{product.price.priceTime | date:"yyyy-MM-dd HH:mm:ss"}}</small></h3>
             <table class="table table-condensed table-bordered">
               <tr>
@@ -63,9 +64,20 @@
         <div class="col-md-8">
           <div class="panel panel-default" style="height: 300px" id="realtimeChart"></div>
           <div class="panel panel-default" style="height: 300px" id="dailyChart"></div>
+          <div class="product-chart-toolbox">
+            <button type="button" class="btn btn-success label-wall-btn" ng-click="dailyK(-1)">全部</button>
+            <button type="button" class="btn btn-info label-wall-btn" ng-click="dailyK(12)">近1年</button>
+            <button type="button" class="btn btn-warning label-wall-btn" ng-click="dailyK(3)">近3月</button>
+          </div>
+          <div class="panel panel-default" style="height: 300px" id="contractPriceChart"></div>
+          <div class="product-chart-toolbox">
+            <button type="button" class="btn btn-success label-wall-btn" ng-click="showAllContract()">显示全部</button>
+            <button type="button" class="btn btn-info label-wall-btn" ng-click="showMainContract()">仅主力</button>
+          </div>
+          <div class="panel panel-default" style="height: 300px" id="contractVolChart"></div>
         </div>
         <div class="col-md-4">
-          <div class="panel panel-primary">
+          <div class="panel panel-danger">
             <div class="panel-heading" style="height: 55px;">
               <span style="font-size: 20px">备注列表</span>
               <span style="float: right;">

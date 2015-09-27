@@ -29,30 +29,34 @@ angular.module('miche.label', ['ngRoute'])
       $http.get(preurl + '/product/price-label-lastday?id=' + $scope.ctrl.id).success(function(lastDayLine) {
 
         lastDayLine = lastDayLine.filter(function(ele) {
-          return ele.data.length > 0
+          if (ele.prices) {
+            return true;
+          } else {
+            return false;
+          }
         });
 
         $scope.ctrl.latestTime = lastDayLine.map(function(ele) {
-          return ele.data[ele.data.length - 1][0];
+          return ele.prices[ele.prices.length - 1].d;
         }).reduce(function(prev, next) {
           return prev < next ? next : prev;
         }, 0);
 
         $scope.chartinfo = [];
         var seriesLine = lastDayLine.map(function(input) {
-          var basePrice = input.data[0][1];
+          var basePrice = input.prices[0].p;
           $scope.chartinfo.push({
             code: input.code,
             name: input.name,
             basePrice: basePrice
           });
-          input.data.splice(0, 1);
+          input.prices.splice(0, 1);
           return {
             name: input.name,
-            data: input.data.filter(function(element) {
-              return element[1] > 0;
+            data: input.prices.filter(function(element) {
+              return element.p > 0;
             }).map(function(element) {
-              return [element[0], parseFloat(((element[1] - basePrice) / basePrice * 100).toFixed(2))];
+              return [element.d, parseFloat(((element.p - basePrice) / basePrice * 100).toFixed(2))];
             })
           };
         });
@@ -72,7 +76,10 @@ angular.module('miche.label', ['ngRoute'])
           },
           yAxis: {
             title: {
-              text: '涨幅(%)'
+              text: '涨幅'
+            },
+            labels: {
+              format: '{value} %',
             }
           },
           tooltip: {
@@ -147,7 +154,7 @@ angular.module('miche.label', ['ngRoute'])
           }],
           "columnDefs": [{
             "render": function(data, type, row) {
-              return '<a href="#/product/code/' + row.code + '">' + data + '</a>';
+              return '<a href="#/product/code/' + row.code + '?from=' + $scope.ctrl.id + '">' + data + '</a>';
             },
             "targets": [0, 1]
           }, {
@@ -191,7 +198,7 @@ angular.module('miche.label', ['ngRoute'])
         id: 0,
         name: '全部'
       }].concat(labels);
-      
+
       $scope.refresh();
     });
   }

@@ -37,26 +37,30 @@ angular.module('miche.label.wall', ['ngRoute'])
       $http.get(CF.preurl + '/product/price-label-lastday?id=0').success(function(lastDayLine) {
 
         lastDayLine = lastDayLine.filter(function(ele) {
-          return ele.data.length > 0
+          if (ele.prices) {
+            return true;
+          } else {
+            return false;
+          }
         });
 
         $scope.imax.latestTime = lastDayLine.map(function(ele) {
-          return ele.data[ele.data.length - 1][0];
+          return ele.prices[ele.prices.length - 1].d;
         }).reduce(function(prev, next) {
           return prev < next ? next : prev;
         }, 0);
 
         $scope.prodLineObj = {};
         var seriesLine = lastDayLine.forEach(function(input) {
-          var basePrice = input.data[0][1];
-          input.data.splice(0, 1);
+          var basePrice = input.prices[0].p;
+          input.prices.splice(0, 1);
           $scope.prodLineObj[input.code] = {
             name: input.name,
             basePrice: basePrice,
-            data: input.data.filter(function(element) {
-              return element[1] > 0;
+            data: input.prices.filter(function(element) {
+              return element.p > 0;
             }).map(function(element) {
-              return [element[0], parseFloat(((element[1] - basePrice) / basePrice * 100).toFixed(2))];
+              return [element.d, parseFloat(((element.p - basePrice) / basePrice * 100).toFixed(2))];
             })
           };
         });

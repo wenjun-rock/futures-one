@@ -6,7 +6,8 @@ angular.module('micheApp', [
   'miche.home',
   'miche.label',
   'miche.product',
-  'miche.label.wall'
+  'miche.label.wall',
+  'miche.hedging'
 ])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -16,7 +17,7 @@ angular.module('micheApp', [
 }])
 
 .constant('CF', {
-  preurl: 'http://139.196.37.92:8000/futures-api',
+  preurl: 'http://f7p8.win:8000/futures-api',
   preurl2: 'http://localhost:8000/futures-api'
 })
 

@@ -10,64 +10,179 @@ angular.module('miche.product', ['ngRoute'])
 }])
 
 .controller('micheProductCtrl', ['$scope', '$routeParams', '$http', '$location', '$modal', 'CF',
-
   function($scope, $routeParams, $http, $location, $modal, CF) {
 
     var preurl = CF.preurl;
 
     $http.get(preurl + '/product/labels').success(function(labels) {
+      labels.some(function(label) {
+        if (label.id == Number($routeParams.from)) {
+          label.open = true;
+          return true;
+        }
+      });
       $scope.labelMenu = {
         labels: labels,
         closeOthers: true
       };
     });
 
-    $scope.selectCode = function(code) {
-      $scope.product = {};
-      $http.get(preurl + '/product/prod-info?code=' + code).success(function(info) {
-        $scope.product.info = info;
-      });
-      $http.get(preurl + '/product/price-prod-aggre?code=' + code).success(function(price) {
-        $scope.product.price = price;
-      });
-      $http.get(preurl + '/comments?type=1&key=' + code).success(function(comments) {
-        $scope.product.comments = comments;
-      });
+    var code = $routeParams.code
 
-      $.getJSON(preurl + '/product/price-prod-realtime?codes=' + code, function(realtime) {
-        $('#realtimeChart').highcharts({
-          chart: {
-            zoomType: 'x'
-          },
+    $scope.product = {};
+    $http.get(preurl + '/product/prod-info?code=' + code).success(function(info) {
+      $scope.product.info = info;
+    });
+    $http.get(preurl + '/product/price-prod-aggre?code=' + code).success(function(price) {
+      $scope.product.price = price;
+    });
+    $http.get(preurl + '/comments?type=1&key=' + code).success(function(comments) {
+      $scope.product.comments = comments;
+    });
+
+    $.getJSON(preurl + '/product/price-prod-realtime?codes=' + code, function(realtime) {
+      $('#realtimeChart').highcharts({
+        chart: {
+          zoomType: 'x'
+        },
+        title: {
+          text: '实时'
+        },
+        xAxis: {
+          type: "datetime"
+        },
+        yAxis: {
           title: {
-            text: '实时价格走势'
-          },
-          xAxis: {
-            type: "datetime"
-          },
-          yAxis: {
-            title: {
-              text: '价格'
-            }
-          },
-          legend: {
-            enabled: false
-          },
-          tooltip: {
-            shared: true,
-            crosshairs: true
-          },
-          series: realtime
+            text: '价格'
+          }
+        },
+        legend: {
+          enabled: false
+        },
+        tooltip: {
+          shared: true,
+          crosshairs: true
+        },
+        series: realtime.map(function(prod) {
+          return {
+            name: prod.name,
+            data: prod.prices.map(function(price) {
+              return [price.d, price.p];
+            })
+          };
+        })
+      });
+    });
+
+    $.getJSON(preurl + '/product/price-contract-daily?code=' + code, function(prodContracts) {
+
+      $scope.contract = {
+        priceSeries: [],
+        volCategories: [],
+        volDataLatest: [],
+        volDataTotal: [],
+        maxLatestVol: 0,
+        maxTotalVol: 0,
+        mainContract: []
+      };
+      prodContracts.contracts.forEach(function(contract) {
+        $scope.contract.volCategories.push(contract.contract);
+        $scope.contract.volDataLatest.push(contract.latestVol);
+        $scope.contract.volDataTotal.push(contract.totalVol);
+        $scope.contract.maxLatestVol = Math.max($scope.contract.maxLatestVol, contract.latestVol);
+        $scope.contract.maxTotalVol = Math.max($scope.contract.maxTotalVol, contract.totalVol);
+        $scope.contract.priceSeries.push({
+          name: contract.contract,
+          data: contract.prices.map(function(price) {
+            return [price.d, price.p];
+          })
         });
       });
+      var mainMonth = {};
+      prodContracts.contracts.forEach(function(contract, index) {
+        if ($scope.contract.volDataTotal[index] > $scope.contract.maxTotalVol * 0.05) {
+          $scope.contract.mainContract.push(true);
+          mainMonth[contract.contract.substr(-2)] = true;
+        } else if (mainMonth[contract.contract.substr(-2)]) {
+          $scope.contract.mainContract.push(true);
+        } else {
+          $scope.contract.mainContract.push(false);
+        }
+      });
 
-      $.getJSON(preurl + '/product/price-prod-daily?codes=' + code, function(daily) {
+      $('#contractPriceChart').highcharts({
+        chart: {
+          zoomType: 'x'
+        },
+        title: {
+          text: '合约价格'
+        },
+        xAxis: {
+          type: "datetime"
+        },
+        yAxis: {
+          title: {
+            text: '价格'
+          }
+        },
+        tooltip: {
+          shared: true,
+          crosshairs: true
+        },
+        series: $scope.contract.priceSeries
+      });
+
+      $('#contractVolChart').highcharts({
+        chart: {
+          type: 'column',
+          zoomType: 'x'
+        },
+        title: {
+          text: prodContracts.latest + '成交量统计'
+        },
+        xAxis: {
+          categories: $scope.contract.volCategories,
+          crosshair: true
+        },
+        yAxis: [{
+          min: 0,
+          title: {
+            text: '当日成交量'
+          }
+        }, {
+          title: {
+            text: '累积成交量'
+          },
+          opposite: true
+        }],
+        tooltip: {
+          shared: true,
+          crosshairs: true
+        },
+        colors: ['#7cb5ec', '#90ed7d'],
+        series: [{
+          name: '当日',
+          type: 'spline',
+          yAxis: 0,
+          data: $scope.contract.volDataLatest
+        }, {
+          name: '累积',
+          type: 'column',
+          yAxis: 1,
+          data: $scope.contract.volDataTotal
+        }]
+      });
+    });
+
+    // define event handler
+    $scope.dailyK = function(month) {
+      $.getJSON(preurl + '/product/price-prod-daily?codes=' + code + '&month=' + month, function(daily) {
         $('#dailyChart').highcharts({
           chart: {
             zoomType: 'x'
           },
           title: {
-            text: '日K价格走势'
+            text: '日K'
           },
           xAxis: {
             type: "datetime"
@@ -84,12 +199,41 @@ angular.module('miche.product', ['ngRoute'])
             shared: true,
             crosshairs: true
           },
-          series: daily
+          series: daily.map(function(prod) {
+            return {
+              name: prod.name,
+              data: prod.prices.map(function(price) {
+                return [price.d, price.p];
+              })
+            };
+          })
         });
       });
     };
+    $scope.dailyK(3);
 
-    $scope.selectCode($routeParams.code);
+    $scope.showAllContract = function() {
+      $('#contractPriceChart').highcharts().series.forEach(function(series, index) {
+        if (!series.visible) {
+          series.show();
+        }
+      });
+    };
+
+    $scope.showMainContract = function() {
+      $('#contractPriceChart').highcharts().series.forEach(function(series, index) {
+        if (series.visible && !$scope.contract.mainContract[index]) {
+          series.hide();
+        } else if (!series.visible && $scope.contract.mainContract[index]) {
+          series.show();
+        }
+      });
+    };
+
+    $scope.hasComments = function() {
+      return $scope.product.comments && $scope.product.comments.length > 0;
+    };
+
 
     $scope.hasComments = function() {
       return $scope.product.comments && $scope.product.comments.length > 0;
@@ -97,6 +241,12 @@ angular.module('miche.product', ['ngRoute'])
 
     $scope.toLabel = function(labelId) {
       $location.path('/product/label/' + labelId);
+    };
+
+    $scope.toCode = function(code, labelId) {
+      $location.path('/product/code/' + code).search({
+        from: labelId
+      });
     };
 
     $scope.openModal = function() {
