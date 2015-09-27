@@ -7,17 +7,17 @@ import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.resource.task.KLineRefresher;
 
 @Component
-public class KLineDownload extends AbstractBaseLaunch {
+public class ContractKLineDownload extends AbstractBaseLaunch {
 
 	@Autowired
 	KLineRefresher kLineRefresher;
 
 	@Override
 	protected void execute() throws Exception {
-		kLineRefresher.refreshKLine();
+		kLineRefresher.refreshContractKLine(true);
 	}
 
 	public static void main(String[] args) {
-		launch(KLineDownload.class);
+		launch(ContractKLineDownload.class);
 	}
 }

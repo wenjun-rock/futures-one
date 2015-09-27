@@ -1,6 +1,7 @@
 package fwj.futures.resource.entity.price;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,14 +11,17 @@ import javax.persistence.UniqueConstraint;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
-@Table(name = "price_kline", uniqueConstraints = {
-		@UniqueConstraint(name = "kline_uni", columnNames = { "dt", "code" }) })
-public class KLine extends AbstractPersistable<Integer>implements Comparable<KLine> {
+@Table(name = "price_contract_kline", uniqueConstraints = {
+		@UniqueConstraint(name = "kline_uni", columnNames = { "contract", "dt" }) })
+public class ContractKLine extends AbstractPersistable<Integer>implements Comparable<ContractKLine> {
 
-	private static final long serialVersionUID = -2830714212177779485L;
+	private static final long serialVersionUID = 2664970167802802857L;
 
-	@Column(length = 10)
-	private String dt;
+	@Column(columnDefinition = "DATE")
+	private Date dt;
+
+	@Column(length = 6)
+	private String contract;
 
 	@Column(length = 2)
 	private String code;
@@ -35,10 +39,6 @@ public class KLine extends AbstractPersistable<Integer>implements Comparable<KLi
 
 	@Column(precision = 10, scale = 2)
 	private BigDecimal minPrice;
-
-	public String getDt() {
-		return dt;
-	}
 
 	public String getCode() {
 		return code;
@@ -62,10 +62,6 @@ public class KLine extends AbstractPersistable<Integer>implements Comparable<KLi
 
 	public BigDecimal getMinPrice() {
 		return minPrice;
-	}
-
-	public void setDt(String dt) {
-		this.dt = dt;
 	}
 
 	public void setCode(String code) {
@@ -92,14 +88,30 @@ public class KLine extends AbstractPersistable<Integer>implements Comparable<KLi
 		this.minPrice = minPrice;
 	}
 
+	public String getContract() {
+		return contract;
+	}
+
+	public void setContract(String contract) {
+		this.contract = contract;
+	}
+
+	public Date getDt() {
+		return dt;
+	}
+
+	public void setDt(Date dt) {
+		this.dt = dt;
+	}
+
 	/*
 	 * 按照dt升序
 	 */
 	@Override
-	public int compareTo(KLine that) {
-		int cmp = this.dt.compareTo(that.dt);
+	public int compareTo(ContractKLine that) {
+		int cmp = this.contract.compareTo(that.contract);
 		if (cmp == 0) {
-			cmp = this.code.compareTo(that.code);
+			cmp = this.dt.compareTo(that.dt);
 		}
 		return cmp;
 	}

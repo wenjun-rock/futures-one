@@ -1,6 +1,8 @@
 package fwj.futures.resource.web.ctrl;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fwj.futures.resource.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.ProdPriceBuss;
 import fwj.futures.resource.buss.ProductBuss;
@@ -18,6 +21,7 @@ import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.vo.ProductInfo;
 import fwj.futures.resource.vo.ProductLabel;
 import fwj.futures.resource.vo.UnitDataGroup;
+import fwj.futures.resource.web.vo.ProdContracts;
 import fwj.futures.resource.web.vo.ProductPriceAggre;
 import fwj.futures.resource.web.vo.Series;
 
@@ -30,6 +34,9 @@ public class ProductCtrl {
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;
+
+	@Autowired
+	private ContractDailyPriceBuss contractDailyPriceBuss;
 
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
@@ -80,6 +87,15 @@ public class ProductCtrl {
 	public List<Series> findRealtimeByCodes(@RequestParam("codes") String codes) {
 		return Stream.of(codes.split(",")).map(code -> realTimePriceBuss.querySeriesByCode(code))
 				.collect(Collectors.toList());
+	}
+
+	@RequestMapping(value = "/price-contract-daily", method = RequestMethod.GET)
+	public ProdContracts findContractDailyByCode(@RequestParam("code") String code) {
+		Calendar cal = Calendar.getInstance();
+		Date endDate = cal.getTime();
+		cal.add(Calendar.YEAR, -1);
+		Date startDate = cal.getTime();
+		return contractDailyPriceBuss.getConstractsByCode(code, startDate, endDate);
 	}
 
 }
