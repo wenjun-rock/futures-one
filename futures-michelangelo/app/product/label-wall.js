@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('miche.label.wall', ['ngRoute'])
+angular.module('miche.label.wall', ['ngRoute', 'miche.services'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/product/labels', {
@@ -9,14 +9,14 @@ angular.module('miche.label.wall', ['ngRoute'])
   });
 }])
 
-.controller('micheLabelWallCtrl', ['$scope', '$location', '$http', '$interval', 'CF',
-  function($scope, $location, $http, $interval, CF) {
+.controller('micheLabelWallCtrl', ['$scope', '$location', '$interval', 'micheHttp',
+  function($scope, $location, $interval, micheHttp) {
 
     $scope.imax = {
       id: 0
     };
 
-    $http.get(CF.preurl + '/product/labels').success(function(labels) {
+    micheHttp.get('/product/labels').success(function(labels) {
       $scope.labels = labels;
       var prodArr = [],
         prodTmp = {};
@@ -34,7 +34,9 @@ angular.module('miche.label.wall', ['ngRoute'])
         products: prodArr
       }].concat(labels);
 
-      $http.get(CF.preurl + '/product/price-label-lastday?id=0').success(function(lastDayLine) {
+      micheHttp.get('/product/price-label-lastday', {
+        id: 0
+      }).success(function(lastDayLine) {
 
         lastDayLine = lastDayLine.filter(function(ele) {
           if (ele.prices) {
@@ -137,7 +139,7 @@ angular.module('miche.label.wall', ['ngRoute'])
     };
 
     $scope.refreshChart = function() {
-      $http.get(CF.preurl + '/product/price-latest').success(function(latest) {
+      micheHttp.get('/product/price-latest').success(function(latest) {
         if (latest.datetime > $scope.imax.latestTime) {
           $scope.imax.latestTime = latest.datetime;
           var codePoint = {};

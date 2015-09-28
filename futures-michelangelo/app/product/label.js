@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('miche.label', ['ngRoute'])
+angular.module('miche.label', ['ngRoute', 'miche.services'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/product/label/:id', {
@@ -9,10 +9,8 @@ angular.module('miche.label', ['ngRoute'])
   });
 }])
 
-.controller('micheLabelCtrl', ['$scope', '$routeParams', '$http', '$interval', 'CF',
-  function($scope, $routeParams, $http, $interval, CF) {
-
-    var preurl = CF.preurl;
+.controller('micheLabelCtrl', ['$scope', '$routeParams', '$interval', 'micheHttp',
+  function($scope, $routeParams, $interval, micheHttp) {
 
     $scope.ctrl = {
       id: Number($routeParams.id)
@@ -26,7 +24,9 @@ angular.module('miche.label', ['ngRoute'])
         $interval.cancel(re);
       }
 
-      $http.get(preurl + '/product/price-label-lastday?id=' + $scope.ctrl.id).success(function(lastDayLine) {
+      micheHttp.get('/product/price-label-lastday', {
+        id: $scope.ctrl.id
+      }).success(function(lastDayLine) {
 
         lastDayLine = lastDayLine.filter(function(ele) {
           if (ele.prices) {
@@ -90,7 +90,7 @@ angular.module('miche.label', ['ngRoute'])
         });
 
         $scope.ctrl.refresh = $interval(function() {
-          $http.get(preurl + '/product/price-latest').success(function(latest) {
+          micheHttp.get('/product/price-latest').success(function(latest) {
             if (latest.datetime > $scope.ctrl.latestTime) {
               $scope.ctrl.latestTime = latest.datetime;
               var chart = $('#realtimeChart').highcharts();
@@ -117,7 +117,9 @@ angular.module('miche.label', ['ngRoute'])
     });
 
     $scope.initTable = function() {
-      $http.get(preurl + '/product/price-label-aggre?id=' + $scope.ctrl.id).success(function(data) {
+      micheHttp.get('/product/price-label-aggre', {
+        id: $scope.ctrl.id
+      }).success(function(data) {
 
         $('#example').dataTable({
           "data": data,
@@ -193,12 +195,11 @@ angular.module('miche.label', ['ngRoute'])
       $scope.initTable();
     };
 
-    $http.get(preurl + '/product/labels').success(function(labels) {
+    micheHttp.get('/product/labels').success(function(labels) {
       $scope.ctrl.labels = [{
         id: 0,
         name: '全部'
       }].concat(labels);
-
       $scope.refresh();
     });
   }

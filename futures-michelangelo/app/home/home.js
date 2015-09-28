@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('miche.home', ['ngRoute'])
+angular.module('miche.home', ['ngRoute', 'miche.services'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/home', {
@@ -9,10 +9,10 @@ angular.module('miche.home', ['ngRoute'])
   });
 }])
 
-.controller('micheHomeCtrl', ['$scope', '$http', 'CF',
-  function($scope, $http, CF) {
+.controller('micheHomeCtrl', ['$scope', 'micheHttp',
+  function($scope, micheHttp) {
 
-    $http.get(CF.preurl + '/product/labels').success(function(labels) {
+    micheHttp.get('/product/labels').success(function(labels) {
       $scope.labels = labels;
       var prodArr = [],
         prodTmp = {};
@@ -28,7 +28,7 @@ angular.module('miche.home', ['ngRoute'])
       $scope.labels = labels;
     });
 
-    $http.get(CF.preurl + '/comments').success(function(comments) {
+    micheHttp.get('/comments').success(function(comments) {
       $scope.comments = comments;
     });
 
@@ -37,8 +37,7 @@ angular.module('miche.home', ['ngRoute'])
     }
 
     $scope.drawHedging = function(url, domId) {
-      $.getJSON(url, function(data) {
-
+      micheHttp.get(url).success(function(data) {
         var series = data.prices.map(function(price) {
           return [price.d, price.p];
         });
@@ -61,18 +60,15 @@ angular.module('miche.home', ['ngRoute'])
               from: data.hedging.upLimit,
               to: data.hedging.upLimit + 10000,
               color: '#FFD700',
-            },
-            {
+            }, {
               from: data.hedging.upLimit / 2,
               to: data.hedging.upLimit,
               color: '#FFF8DC',
-            },
-            {
+            }, {
               from: data.hedging.downLimit,
               to: data.hedging.downLimit / 2,
               color: '#FFF8DC',
-            },
-             {
+            }, {
               from: data.hedging.downLimit - 10000,
               to: data.hedging.downLimit,
               color: '#FFD700',
@@ -91,12 +87,10 @@ angular.module('miche.home', ['ngRoute'])
               return [price.d, price.p];
             })
           }]
-
         });
       });
-
     };
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/1', 'container1');
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/2', 'container2');
+    $scope.drawHedging('/hedging/realtime/1', 'container1');
+    $scope.drawHedging('/hedging/realtime/2', 'container2');
   }
 ]);

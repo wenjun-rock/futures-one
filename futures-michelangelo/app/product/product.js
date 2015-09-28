@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('miche.product', ['ngRoute'])
+angular.module('miche.product', ['ngRoute', 'miche.services'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/product/code/:code', {
@@ -9,12 +9,10 @@ angular.module('miche.product', ['ngRoute'])
   });
 }])
 
-.controller('micheProductCtrl', ['$scope', '$routeParams', '$http', '$location', '$modal', 'CF',
-  function($scope, $routeParams, $http, $location, $modal, CF) {
+.controller('micheProductCtrl', ['$scope', '$routeParams', '$location', '$modal', 'micheHttp',
+  function($scope, $routeParams, $location, $modal, micheHttp) {
 
-    var preurl = CF.preurl;
-
-    $http.get(preurl + '/product/labels').success(function(labels) {
+    micheHttp.get('/product/labels').success(function(labels) {
       labels.some(function(label) {
         if (label.id == Number($routeParams.from)) {
           label.open = true;
@@ -30,17 +28,26 @@ angular.module('miche.product', ['ngRoute'])
     var code = $routeParams.code
 
     $scope.product = {};
-    $http.get(preurl + '/product/prod-info?code=' + code).success(function(info) {
+    micheHttp.get('/product/prod-info', {
+      code: code
+    }).success(function(info) {
       $scope.product.info = info;
     });
-    $http.get(preurl + '/product/price-prod-aggre?code=' + code).success(function(price) {
+    micheHttp.get('/product/price-prod-aggre', {
+      code: code
+    }).success(function(price) {
       $scope.product.price = price;
     });
-    $http.get(preurl + '/comments?type=1&key=' + code).success(function(comments) {
+    micheHttp.get('/comments', {
+      type: 1,
+      key: code
+    }).success(function(comments) {
       $scope.product.comments = comments;
     });
 
-    $.getJSON(preurl + '/product/price-prod-realtime?codes=' + code, function(realtime) {
+    micheHttp.get('/product/price-prod-realtime', {
+      codes: code
+    }).success(function(realtime) {
       $('#realtimeChart').highcharts({
         chart: {
           zoomType: 'x'
@@ -74,8 +81,9 @@ angular.module('miche.product', ['ngRoute'])
       });
     });
 
-    $.getJSON(preurl + '/product/price-contract-daily?code=' + code, function(prodContracts) {
-
+    micheHttp.get('/product/price-contract-daily', {
+      code: code
+    }).success(function(prodContracts) {
       $scope.contract = {
         priceSeries: [],
         volCategories: [],
@@ -131,7 +139,6 @@ angular.module('miche.product', ['ngRoute'])
         },
         series: $scope.contract.priceSeries
       });
-
       $('#contractVolChart').highcharts({
         chart: {
           type: 'column',
@@ -176,7 +183,10 @@ angular.module('miche.product', ['ngRoute'])
 
     // define event handler
     $scope.dailyK = function(month) {
-      $.getJSON(preurl + '/product/price-prod-daily?codes=' + code + '&month=' + month, function(daily) {
+      micheHttp.get('/product/price-prod-daily', {
+        codes: code,
+        month: month
+      }).success(function(daily) {
         $('#dailyChart').highcharts({
           chart: {
             zoomType: 'x'
@@ -266,7 +276,6 @@ angular.module('miche.product', ['ngRoute'])
         $scope.product.comments.unshift(comment);
       });
     };
-
   }
 ])
 
@@ -294,4 +303,5 @@ angular.module('miche.product', ['ngRoute'])
       $modalInstance.dismiss('cancel');
     };
 
-  });
+  }
+);

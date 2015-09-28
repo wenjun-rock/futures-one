@@ -3,6 +3,7 @@
 angular.module('micheApp', [
   'ngRoute',
   'ui.bootstrap',
+  'miche.services',
   'miche.home',
   'miche.label',
   'miche.product',
