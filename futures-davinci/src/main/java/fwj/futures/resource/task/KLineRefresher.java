@@ -52,9 +52,9 @@ public class KLineRefresher {
 	private ContractDailyPriceBuss contractDailyPriceBuss;
 
 	/**
-	 * 每天15时10分调度。
+	 * 每天15时45分调度。
 	 */
-	@Scheduled(cron = "0 10 15 * * ?")
+	@Scheduled(cron = "0 45 15 * * ?")
 	public void doTask() {
 		refreshKLine();
 		refreshContractKLine(false);
@@ -100,7 +100,7 @@ public class KLineRefresher {
 						Date dt = yyyyMMdd.parse(ele.getString(0));
 						if (latest == null || latest.getDt().compareTo(dt) <= 0) {
 							ContractKLine daily = new ContractKLine();
-							if (latest != null && latest.getDt().equals(ele.getString(0))) {
+							if (latest != null && latest.getDt().compareTo(dt) == 0) {
 								daily = latest;
 							}
 							daily.setCode(prod.getCode());
@@ -155,7 +155,7 @@ public class KLineRefresher {
 					Date dt = yyyyMMdd.parse(ele.getString(0));
 					if (latest == null || latest.getDt().compareTo(dt) <= 0) {
 						KLine daily = new KLine();
-						if (latest != null && latest.getDt().equals(ele.getString(0))) {
+						if (latest != null && latest.getDt().compareTo(dt) == 0) {
 							daily = latest;
 						}
 						daily.setCode(prod.getCode());
