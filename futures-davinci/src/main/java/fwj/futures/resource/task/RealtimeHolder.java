@@ -119,7 +119,9 @@ public class RealtimeHolder {
 					String data = line.substring(beg + 1, end);
 					BigDecimal price = new BigDecimal(data.split(",")[8]);
 					String code = codeList.get(i);
-					map.put(code, new UnitData(datetime, code, price));
+					if (price.compareTo(BigDecimal.ZERO) > 0) {
+						map.put(code, new UnitData(datetime, code, price));
+					}
 					RealtimeStore rt = new RealtimeStore();
 					rt.setPriceTime(datetime);
 					rt.setCode(code);
@@ -181,6 +183,7 @@ public class RealtimeHolder {
 		Map<Date, Map<String, UnitData>> map = storeList.stream()
 				.map(store -> new UnitData(store.getPriceTime(), store.getCode(),
 						new BigDecimal(store.getData().split(",")[8])))
+				.filter(unitData -> unitData.getPrice().compareTo(BigDecimal.ZERO) > 0)
 				.collect(Collectors.groupingBy(UnitData::getDatetime, Collectors.toMap(UnitData::getCode, o -> o)));
 		List<UnitDataGroup> groupList = map.entrySet().stream()
 				.map(entry -> new UnitDataGroup(entry.getKey(), entry.getValue())).sorted()
