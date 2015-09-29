@@ -6,7 +6,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -64,9 +63,7 @@ public class KLineRefresher {
 
 	public void refreshContractKLine(boolean includeHist) {
 		DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
-		// List<Futures> allFutures = futuresRepository.findAllActive();
-		List<Futures> allFutures = Arrays.asList(futuresRepository.findByCode("C"));
-		System.out.println(allFutures.size());
+		List<Futures> allFutures = futuresRepository.findAllActive();
 		for (Futures prod : allFutures) {
 			log.info("Downloading contract of " + prod.getCode());
 
@@ -83,7 +80,7 @@ public class KLineRefresher {
 					jsonStr = Resources.toString(new URL(String.format(CONTRACT_URI_DAILY, contract)),
 							StandardCharsets.UTF_8);
 				} catch (Exception e) {
-					log.error("Bad boy " + prod.getCode(), e);
+					log.error("Bad boy " + contract, e);
 					continue;
 				}
 				JSONArray dailyKs = JSON.parseArray(jsonStr);
