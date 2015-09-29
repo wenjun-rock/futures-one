@@ -19,7 +19,7 @@ public class Formula {
 	public static Formula create() {
 		return new Formula();
 	}
-	
+
 	public static Formula parse(String json) {
 		return JSON.parseObject(json, Formula.class);
 	}
@@ -44,6 +44,11 @@ public class Formula {
 
 	public Formula putMultinomial(ProdEnum prod, String coefficient) {
 		putMultinomial(prod.getCode(), new BigDecimal(coefficient));
+		return this;
+	}
+
+	public Formula putMultinomial(String prodCode, String coefficient) {
+		putMultinomial(prodCode, new BigDecimal(coefficient));
 		return this;
 	}
 
@@ -72,6 +77,23 @@ public class Formula {
 		this.multinomials = multinomials;
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder(constant.toString());
+		for (Multinomial multinomial : multinomials) {
+			sb.append(multinomial.getCoefficient().compareTo(BigDecimal.ZERO) > 0 ? " + " : " - ")
+					.append(multinomial.getCoefficient().abs()).append("*").append(multinomial.code);
+		}
+		return sb.toString();
+	}
+	
+	public String toCsv() {
+		StringBuilder sb = new StringBuilder(constant.toString());
+		for (Multinomial multinomial : multinomials) {
+			sb.append(",").append(multinomial.getCoefficient()).append(",").append(multinomial.code);
+		}
+		return sb.toString();
+	}
+
 	public static class Multinomial {
 
 		private String code;
@@ -93,7 +115,5 @@ public class Formula {
 			this.coefficient = coefficient;
 		}
 	}
-	
-	
 
 }
