@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
 @Table(name = "price_contract_kline", uniqueConstraints = {
-		@UniqueConstraint(name = "kline_uni", columnNames = { "contract", "dt" }) })
+		@UniqueConstraint(name = "contract_kline_uni", columnNames = { "dt", "code", "contractMonth" }) })
 public class ContractKLine extends AbstractPersistable<Integer>implements Comparable<ContractKLine> {
 
 	private static final long serialVersionUID = 2664970167802802857L;
@@ -20,8 +20,8 @@ public class ContractKLine extends AbstractPersistable<Integer>implements Compar
 	@Column(columnDefinition = "DATE")
 	private Date dt;
 
-	@Column(length = 6)
-	private String contract;
+	@Column(columnDefinition = "TINYINT")
+	private int contractMonth;
 
 	@Column(length = 2)
 	private String code;
@@ -88,12 +88,12 @@ public class ContractKLine extends AbstractPersistable<Integer>implements Compar
 		this.minPrice = minPrice;
 	}
 
-	public String getContract() {
-		return contract;
+	public int getContractMonth() {
+		return contractMonth;
 	}
 
-	public void setContract(String contract) {
-		this.contract = contract;
+	public void setContractMonth(int contractMonth) {
+		this.contractMonth = contractMonth;
 	}
 
 	public Date getDt() {
@@ -104,14 +104,26 @@ public class ContractKLine extends AbstractPersistable<Integer>implements Compar
 		this.dt = dt;
 	}
 
+	public String getContractName() {
+		if (contractMonth < 10) {
+			return code + "0" + contractMonth;
+		} else {
+			return code + contractMonth;
+		}
+	}
+
 	/*
 	 * 按照dt升序
 	 */
 	@Override
 	public int compareTo(ContractKLine that) {
-		int cmp = this.contract.compareTo(that.contract);
+		int cmp = this.dt.compareTo(that.dt);
 		if (cmp == 0) {
-			cmp = this.dt.compareTo(that.dt);
+			if (this.contractMonth == that.contractMonth) {
+				cmp = 0;
+			} else {
+				cmp = this.contractMonth > that.contractMonth ? 1 : -1;
+			}
 		}
 		return cmp;
 	}

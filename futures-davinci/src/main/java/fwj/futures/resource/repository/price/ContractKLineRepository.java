@@ -10,12 +10,12 @@ import fwj.futures.resource.entity.price.ContractKLine;
 
 @RepositoryRestResource(exported = false)
 public interface ContractKLineRepository extends JpaRepository<ContractKLine, Integer> {
-
-	ContractKLine findTopByContractOrderByDtDesc(String contract);
 	
 	List<ContractKLine> findByCodeAndDtBetween(String code, Date startDt, Date endDt);
 
 	List<ContractKLine> findByCodeOrderByDtAsc(String code);
 	
 	List<ContractKLine> findByCodeOrderByDtDesc(String code);
+
+	ContractKLine findTopByCodeAndContractMonthOrderByDtDesc(String code, int contractMonth);
 }

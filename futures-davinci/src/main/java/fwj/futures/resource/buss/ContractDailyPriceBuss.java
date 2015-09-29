@@ -36,7 +36,7 @@ public class ContractDailyPriceBuss {
 		Date latestDt = contractKLineList.stream().map(ContractKLine::getDt).max(Comparator.naturalOrder())
 				.orElseGet(null);
 		Map<String, List<ContractKLine>> kLineMap = contractKLineList.stream()
-				.collect(Collectors.groupingBy(ContractKLine::getContract));
+				.collect(Collectors.groupingBy(ContractKLine::getContractName));
 		List<Contract> contracts = kLineMap.entrySet().stream().map(entry -> {
 			String contract = entry.getKey();
 			List<ContractKLine> lines = entry.getValue();

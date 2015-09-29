@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -63,11 +64,13 @@ public class KLineRefresher {
 
 	public void refreshContractKLine(boolean includeHist) {
 		DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
-		List<Futures> allFutures = futuresRepository.findAllActive();
+		// List<Futures> allFutures = futuresRepository.findAllActive();
+		List<Futures> allFutures = Arrays.asList(futuresRepository.findByCode("C"));
+		System.out.println(allFutures.size());
 		for (Futures prod : allFutures) {
 			log.info("Downloading contract of " + prod.getCode());
 
-			int startMonth = includeHist ? -12 : 0;
+			int startMonth = includeHist ? -120 : 0;
 			int endMonth = 12;
 			DateFormat df = new SimpleDateFormat("yyMM");
 			Calendar cal = Calendar.getInstance();
@@ -87,15 +90,17 @@ public class KLineRefresher {
 				if (dailyKs == null) {
 					continue;
 				}
+				int contractMonth = Integer.parseInt(contract.substring(contract.length() - 2));
+				ContractKLine latest = contractKLineRepository
+						.findTopByCodeAndContractMonthOrderByDtDesc(prod.getCode(), contractMonth);
 				List<ContractKLine> createList = new ArrayList<>();
-				int start = Math.max(0, dailyKs.size() - 300);
-				for (int i = start; i < dailyKs.size(); i++) {
+				for (int i = 0; i < dailyKs.size(); i++) {
 					JSONArray ele = dailyKs.getJSONArray(i);
 					if (ele.getInteger(5) == null || ele.getIntValue(5) <= 0) {
 						// 过滤交易为0的日K
 						continue;
 					}
-					ContractKLine latest = contractKLineRepository.findTopByContractOrderByDtDesc(contract);
+
 					try {
 						Date dt = yyyyMMdd.parse(ele.getString(0));
 						if (latest == null || latest.getDt().compareTo(dt) <= 0) {
@@ -104,7 +109,7 @@ public class KLineRefresher {
 								daily = latest;
 							}
 							daily.setCode(prod.getCode());
-							daily.setContract(contract);
+							daily.setContractMonth(contractMonth);
 							daily.setDt(dt);
 							daily.setOpenPrice(ele.getBigDecimal(1));
 							daily.setMaxPrice(ele.getBigDecimal(2));

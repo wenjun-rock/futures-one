@@ -47,6 +47,26 @@ public class InitHedging extends AbstractBaseLaunch {
 		hedgingList.add(hedging3);
 		System.out.println(JSON.toJSONString(hedging3));
 		
+		Hedging hedging4 = new Hedging();
+		hedging4.setName("豆油棕榈油套利2");
+		hedging4.setDesc("");
+		hedging4.setUpLimit(new BigDecimal(300));
+		hedging4.setDownLimit(new BigDecimal(-300));
+		hedging4.setExpression(JSON.toJSONString(Formula.create().putConstant("2881.57")
+				.putMultinomial(ProdEnum.DouYou, "-1").putMultinomial(ProdEnum.ZongLvYou, "0.5619586")));
+		hedgingList.add(hedging4);
+		System.out.println(JSON.toJSONString(hedging4));
+		
+		Hedging hedging5 = new Hedging();
+		hedging5.setName("豆油棕榈油套利3");
+		hedging5.setDesc("");
+		hedging5.setUpLimit(new BigDecimal(300));
+		hedging5.setDownLimit(new BigDecimal(-300));
+		hedging5.setExpression(JSON.toJSONString(Formula.create().putConstant("3162.88")
+				.putMultinomial(ProdEnum.DouYou, "-1.430981").putMultinomial(ProdEnum.ZongLvYou, "1")));
+		hedgingList.add(hedging5);
+		System.out.println(JSON.toJSONString(hedging5));
+		
 
 		for (Hedging ne : hedgingList) {
 			Hedging old = hedgingRepository.findByName(ne.getName());

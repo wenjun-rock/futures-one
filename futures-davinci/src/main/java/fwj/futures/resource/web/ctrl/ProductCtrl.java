@@ -94,7 +94,7 @@ public class ProductCtrl {
 	public ProdContracts findContractDailyByCode(@RequestParam("code") String code) {
 		Calendar cal = Calendar.getInstance();
 		Date endDate = cal.getTime();
-		cal.add(Calendar.YEAR, -2);
+		cal.add(Calendar.YEAR, -4);
 		Date startDate = cal.getTime();
 		return contractDailyPriceBuss.getConstractsByCode(code, startDate, endDate);
 	}

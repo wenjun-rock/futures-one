@@ -14,7 +14,7 @@ public class ContractKLineDownload extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		kLineRefresher.refreshContractKLine(false);
+		kLineRefresher.refreshContractKLine(true);
 	}
 
 	public static void main(String[] args) {

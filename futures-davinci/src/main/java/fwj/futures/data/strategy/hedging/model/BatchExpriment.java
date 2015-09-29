@@ -74,12 +74,14 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		cal.add(Calendar.MONTH, -months);
 		Date startDt = cal.getTime();
 
-		List<Futures> futuresList = futuresRepo.findAllActive();
-		for (int i = 0; i < futuresList.size(); i++) {
-			for (int j = i + 1; j < futuresList.size(); j++) {
-				this.execute(startDt, endDt, Arrays.asList(futuresList.get(i), futuresList.get(j)));
-			}
-		}
+		// List<Futures> futuresList = futuresRepo.findAllActive();
+		// for (int i = 0; i < futuresList.size(); i++) {
+		// for (int j = i + 1; j < futuresList.size(); j++) {
+		// this.execute(startDt, endDt, Arrays.asList(futuresList.get(i),
+		// futuresList.get(j)));
+		// }
+		// }
+		this.execute(startDt, endDt, Arrays.asList(futuresRepo.findByCode("P"), futuresRepo.findByCode("Y")));
 
 	}
 
