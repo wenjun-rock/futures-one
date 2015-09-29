@@ -114,7 +114,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		process.waitFor();
 		List<String> lines = Files.readLines(new File(workingDir, "my.out"), Charset.forName("GBK"));
 		current.setSquared(new BigDecimal(lines.get(1).split(" ")[1]));
-		Formula formula = Formula.create().putConstant(lines.get(5).split(" ")[1])
+		Formula formula = Formula.create().putConstant(lines.get(5).split("\\s+")[1])
 				.putMultinomial(current.getCodeList().get(0), "1")
 				.putMultinomial(current.getCodeList().get(1), lines.get(6).split("\\s+")[1]);
 		current.setFormula(formula);
