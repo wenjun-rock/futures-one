@@ -105,11 +105,7 @@ public class ContractKLine extends AbstractPersistable<Integer>implements Compar
 	}
 
 	public String getContractName() {
-		if (contractMonth < 10) {
-			return code + "0" + contractMonth;
-		} else {
-			return code + contractMonth;
-		}
+		return String.format("%s%02d", code, contractMonth);
 	}
 
 	/*
