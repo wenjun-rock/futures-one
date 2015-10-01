@@ -9271,9 +9271,11 @@ Tooltip.prototype = {
 			});
 
 			// start by wenjun
-			pointConfig.sort(function(a,b){
-				return a.y > b.y ? -1 : 1;
-			});
+			if(options.descOrder) {
+			    pointConfig.sort(function(a,b){
+			    	return a.y > b.y ? -1 : 1;
+			    });	
+			}
 			// end by wenjun
 
 			textConfig = {

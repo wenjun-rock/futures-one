@@ -3,7 +3,7 @@
 angular.module('miche.hedging', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/hedging', {
+  $routeProvider.when('/hedging/prods', {
     templateUrl: 'hedging/hedging.html',
     controller: 'micheHedgingCtrl'
   });

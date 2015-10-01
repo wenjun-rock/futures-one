@@ -1,0 +1,30 @@
+<div>
+  <div class="row">
+    <ol class="breadcrumb">
+      <li class="active">跨期对冲</li>
+    </ol>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">产品列表</div>
+        <div class="panel-body">
+          <ul class="list-inline">
+            <li ng-repeat="prod in prods">
+            <a ng-href="#/hedging/contract/{{prod.code}}" ng-hide="prod.code == code">{{prod.name}}</a>
+            <span ng-show="prod.code == code" style="font-size: 30px;"><strong>{{prod.name}}</strong></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-repeat="contract in contracts">
+    <div class="col-md-6">
+      <div class="panel panel-default" id="line-years-{{contract.name}}"></div>
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-default" id="line-vol-{{contract.name}}"></div>
+    </div>
+  </div>
+</div>

@@ -126,7 +126,18 @@ angular.module('miche.product', ['ngRoute', 'miche.services'])
           text: '合约价格'
         },
         xAxis: {
-          type: "datetime"
+          type: "datetime",
+          dateTimeLabelFormats: {
+            millisecond: '%H:%M:%S.%L',
+            second: '%H:%M:%S',
+            minute: '%H:%M',
+            hour: '%H:%M',
+            day: '%e. %b',
+            week: '%e. %b',
+            month: '%b'
+          }
+
+
         },
         yAxis: {
           title: {
