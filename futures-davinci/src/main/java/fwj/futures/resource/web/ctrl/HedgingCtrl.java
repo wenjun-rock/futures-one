@@ -1,5 +1,7 @@
 package fwj.futures.resource.web.ctrl;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.data.struct.Formula;
 import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.HedgingBuss;
+import fwj.futures.resource.buss.HedgingContractBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.entity.hedging.Hedging;
+import fwj.futures.resource.vo.HedgingContractContainer;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitDataGroup;
 import fwj.futures.resource.web.vo.HedgingMonitor;
@@ -34,6 +39,9 @@ public class HedgingCtrl {
 
 	@Autowired
 	private HedgingBuss hedgingBuss;
+
+	@Autowired
+	private HedgingContractBuss hedgingContractBuss;
 
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
@@ -58,6 +66,15 @@ public class HedgingCtrl {
 				.map(group -> new Price(group.getDt(), hedgingBuss.calculate(fomular, group)))
 				.filter(price -> price.getP() != null).collect(Collectors.toList());
 		return new HedgingMonitor(hedging, prices);
+	}
+
+	@RequestMapping(value = "/contracts", method = RequestMethod.GET)
+	public List<HedgingContractContainer> queryHedgingContractByCode(@RequestParam("code") String code) {
+		Calendar cal = Calendar.getInstance();
+		Date endDt = cal.getTime();
+		cal.add(Calendar.YEAR, -5);
+		Date startDt = cal.getTime();
+		return hedgingContractBuss.queryHedgingContractByCode(startDt, endDt, code);
 	}
 
 }
