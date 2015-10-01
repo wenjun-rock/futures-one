@@ -19,7 +19,49 @@ public class InitHedgingContract extends AbstractBaseLaunch {
 	protected void execute() throws Exception {
 		hedgingContractRepo.deleteAllInBatch();
 		Stream.of(//
-				new ProdContract("A", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }) //
+					// 上海
+				new ProdContract("AG", new int[][] { { 6, 12 } }), //
+				new ProdContract("AL",
+						new int[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 5 }, { 5, 6 }, { 6, 7 }, { 7, 8 }, { 8, 9 },
+								{ 9, 10 }, { 10, 11 }, { 11, 12 }, { 12, 1 } }), //
+				new ProdContract("AU", new int[][] { { 6, 12 } }), //
+				new ProdContract("BU", new int[][] { { 6, 9 }, { 9, 12 }, { 12, 6 } }), //
+				new ProdContract("CU",
+						new int[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 5 }, { 5, 6 }, { 6, 7 }, { 7, 8 }, { 8, 9 },
+								{ 9, 10 }, { 10, 11 }, { 11, 12 }, { 12, 1 } }), //
+				new ProdContract("HC", new int[][] { { 1, 5 }, { 5, 10 }, { 10, 1 } }), //
+				new ProdContract("NI", new int[][] { { 1, 7 }, { 7, 9 }, { 9, 1 } }), //
+				new ProdContract("PB", new int[][] { { 6, 10 } }), //
+				new ProdContract("RB", new int[][] { { 1, 5 }, { 5, 10 }, { 10, 1 } }), //
+				new ProdContract("RU", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("SN", new int[][] { { 7, 9 } }), //
+				new ProdContract("ZN",
+						new int[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 5 }, { 5, 6 }, { 6, 7 }, { 7, 8 }, { 8, 9 },
+								{ 9, 10 }, { 10, 11 }, { 11, 12 }, { 12, 1 } }), //
+				// 大连
+				new ProdContract("A", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("C", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("CS", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("I", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("J", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("JD", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("JM", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("L", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("M", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("P", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("PP", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("V", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("Y", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				// 郑州
+				new ProdContract("CF", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("FG", new int[][] { { 1, 5 }, { 5, 6 }, { 6, 9 }, { 9, 1 } }), //
+				new ProdContract("MA", new int[][] { { 1, 6 }, { 6, 9 }, { 9, 1 } }), //
+				new ProdContract("OI", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("RM", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("SR", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("TA", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("WH", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } }), //
+				new ProdContract("ZC", new int[][] { { 1, 5 }, { 5, 9 }, { 9, 1 } })
 		).forEach(prod -> {
 			Stream.of(prod.contracts).forEach(ele -> {
 				HedgingContract contract = new HedgingContract();
