@@ -3,18 +3,16 @@ package fwj.futures.resource.vo;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class HedgingContractDiff {
+public class HedgingContractDiff implements TimeLineable{
 
 	private BigDecimal d;
 	private Integer vol1;
 	private Integer vol2;
-	private String y;
 	private Date dt;
 
-	public HedgingContractDiff(BigDecimal diff, Integer tradeVol1, Integer tradeVol2, String year, Date dt) {
+	public HedgingContractDiff(BigDecimal diff, Integer tradeVol1, Integer tradeVol2, Date dt) {
 		this.d = diff;
 		this.dt = dt;
-		this.y = year;
 		this.vol1 = tradeVol1;
 		this.vol2 = tradeVol2;
 	}
@@ -29,10 +27,6 @@ public class HedgingContractDiff {
 
 	public Integer getVol2() {
 		return vol2;
-	}
-
-	public String getY() {
-		return y;
 	}
 
 	public Date getDt() {

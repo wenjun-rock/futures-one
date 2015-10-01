@@ -6,19 +6,26 @@ public class HedgingContractContainer {
 
 	private String name;
 
-	private List<HedgingContractLine> lines;
+	private List<HedgingContractDiff> line;
+	private List<YearTimeLine<HedgingContractDiff>> yearLines;
 
-	public HedgingContractContainer(String name, List<HedgingContractLine> lines) {
+	public HedgingContractContainer(String name, List<HedgingContractDiff> line,
+			List<YearTimeLine<HedgingContractDiff>> yearLines) {
 		this.name = name;
-		this.lines = lines;
+		this.line = line;
+		this.yearLines = yearLines;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public List<HedgingContractLine> getLines() {
-		return lines;
+	public List<YearTimeLine<HedgingContractDiff>> getYearLines() {
+		return yearLines;
+	}
+
+	public List<HedgingContractDiff> getLine() {
+		return line;
 	}
 
 	public static class HedgingContractLine implements Comparable<HedgingContractLine> {

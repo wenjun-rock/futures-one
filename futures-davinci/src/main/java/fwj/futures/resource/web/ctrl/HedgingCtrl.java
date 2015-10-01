@@ -1,6 +1,10 @@
 package fwj.futures.resource.web.ctrl;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +22,7 @@ import fwj.futures.resource.buss.HedgingBuss;
 import fwj.futures.resource.buss.HedgingContractBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.entity.hedging.Hedging;
+import fwj.futures.resource.entity.hedging.HedgingContract;
 import fwj.futures.resource.vo.HedgingContractContainer;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitDataGroup;
@@ -70,11 +75,23 @@ public class HedgingCtrl {
 
 	@RequestMapping(value = "/contracts", method = RequestMethod.GET)
 	public List<HedgingContractContainer> queryHedgingContractByCode(@RequestParam("code") String code) {
-		Calendar cal = Calendar.getInstance();
-		Date endDt = cal.getTime();
-		cal.add(Calendar.YEAR, -5);
-		Date startDt = cal.getTime();
-		return hedgingContractBuss.queryHedgingContractByCode(startDt, endDt, code);
+		try {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			Date endDt = df.parse(df.format(new Date()));
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(endDt);
+			cal.add(Calendar.YEAR, -5);
+			Date startDt = cal.getTime();
+			return hedgingContractBuss.queryHedgingContractByCode(startDt, endDt, code);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return Collections.emptyList();
+		}
+	}
+
+	@RequestMapping(value = "/contractBasic", method = RequestMethod.GET)
+	public List<HedgingContract> queryHedgingContractBasic(@RequestParam("code") String code) {
+		return hedgingContractBuss.queryHedgingContractBasic(code);
 	}
 
 }

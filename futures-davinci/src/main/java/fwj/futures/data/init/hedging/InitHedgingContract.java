@@ -26,7 +26,7 @@ public class InitHedgingContract extends AbstractBaseLaunch {
 				contract.setCode(prod.code);
 				contract.setContractMonth1(ele[0]);
 				contract.setContractMonth2(ele[1]);
-				contract.setName(String.format("%s%02d~%s%02d", prod.code, ele[0], prod.code, ele[1]));
+				contract.setName(String.format("%s%02d-%s%02d", prod.code, ele[0], prod.code, ele[1]));
 				hedgingContractRepo.save(contract);
 			});
 		});

@@ -1,9 +1,6 @@
 package fwj.futures.resource.buss;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import fwj.futures.resource.entity.hedging.HedgingContract;
 import fwj.futures.resource.entity.price.ContractKLine;
 import fwj.futures.resource.repository.hedging.HedgingContractRepository;
 import fwj.futures.resource.repository.price.ContractKLineRepository;
+import fwj.futures.resource.util.LineHelper;
 import fwj.futures.resource.vo.HedgingContractContainer;
-import fwj.futures.resource.vo.HedgingContractContainer.HedgingContractLine;
 import fwj.futures.resource.vo.HedgingContractDiff;
 
 @Component
@@ -32,9 +30,8 @@ public class HedgingContractBuss {
 	@Autowired
 	private ContractKLineRepository contractKLineRepo;
 
-	@Cacheable("HedgingContractBuss.queryHedgingContractByCode")
+	@Cacheable(value = "HedgingContractBuss.queryHedgingContractByCode", key = "#code+','+#startDt.getTime()+','+#endDt.getTime()")
 	public List<HedgingContractContainer> queryHedgingContractByCode(Date startDt, Date endDt, String code) {
-		DateFormat df = new SimpleDateFormat("yyyy");
 		List<ContractKLine> contractKLineList = contractKLineRepo.findByCodeAndDtBetween(code, startDt, endDt);
 		Map<Integer, List<ContractKLine>> contractKLineMap = contractKLineList.stream()
 				.collect(Collectors.groupingBy(ContractKLine::getContractMonth, Collectors.toList()));
@@ -44,7 +41,7 @@ public class HedgingContractBuss {
 			TreeMap<Date, Map<Integer, ContractKLine>> dateContractKLineMap = Stream
 					.concat(contract1.stream(), contract2.stream()).collect(Collectors.groupingBy(ContractKLine::getDt,
 							TreeMap::new, Collectors.toMap(ContractKLine::getContractMonth, Function.identity())));
-			Map<String, List<HedgingContractDiff>> diffMap = dateContractKLineMap.entrySet().stream()
+			List<HedgingContractDiff> line = dateContractKLineMap.entrySet().stream()
 					.filter(entry -> entry.getValue().size() == 2).map(entry -> {
 				Map<Integer, ContractKLine> ele = entry.getValue();
 				ContractKLine k1 = ele.get(hedging.getContractMonth1());
@@ -52,19 +49,16 @@ public class HedgingContractBuss {
 				BigDecimal diff = k2.getEndPrice().subtract(k1.getEndPrice());
 				Integer tradeVol1 = k1.getTradeVol();
 				Integer tradeVol2 = k2.getTradeVol();
-				String year = df.format(entry.getKey());
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(entry.getKey());
-				cal.set(Calendar.YEAR, 2012);
-				Date cmpDt = cal.getTime();
-				return new HedgingContractDiff(diff, tradeVol1, tradeVol2, year, cmpDt);
-			}).collect(Collectors.groupingBy(HedgingContractDiff::getY, Collectors.toList()));
-			List<HedgingContractLine> lines = diffMap.entrySet().stream()
-					.map(entry -> new HedgingContractLine(entry.getKey(), entry.getValue())).sorted()
-					.collect(Collectors.toList());
-			return new HedgingContractContainer(hedging.getName(), lines);
-		}).collect(Collectors.toList());
+				return new HedgingContractDiff(diff, tradeVol1, tradeVol2, entry.getKey());
+			}).collect(Collectors.toList());
 
+			return new HedgingContractContainer(hedging.getName(), line, LineHelper.foldLineInYear(line));
+		}).collect(Collectors.toList());
+	}
+	
+	@Cacheable("HedgingContractBuss.queryHedgingContractBasic")
+	public List<HedgingContract> queryHedgingContractBasic(String code) {
+		return hedgingRepo.findByCode(code);
 	}
 
 }
