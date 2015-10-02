@@ -17,7 +17,7 @@ angular.module('miche.hedging.contract', ['ngRoute', 'miche.services'])
     });
 
     $scope.code = $routeParams.code;
-    micheHttp.get('/hedging/contractBasic', {
+    micheHttp.get('/hedging/contracts-basic', {
       code: $scope.code
     }).success(function(contracts) {
       $scope.contracts = contracts;

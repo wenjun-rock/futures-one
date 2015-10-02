@@ -9,7 +9,8 @@ angular.module('micheApp', [
   'miche.product',
   'miche.label.wall',
   'miche.hedging',
-  'miche.hedging.contract'
+  'miche.hedging.contract',
+  'miche.hedging.experiments'
 ])
 
 .config(['$routeProvider', function($routeProvider) {
@@ -19,8 +20,8 @@ angular.module('micheApp', [
 }])
 
 .constant('CF', {
-  preurl: 'http://f7p8.win:8000/futures-api',
-  preurl2: 'http://localhost:8000/futures-api'
+  preurl1: 'http://f7p8.win:8000/futures-api',
+  preurl: 'http://localhost:8000/futures-api'
 })
 
 .filter('percentage', function() {

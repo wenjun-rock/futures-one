@@ -38,6 +38,7 @@ public class HedgingBuss {
 				result = result.add(multinomial.getCoefficient().multiply(kLine.getEndPrice()));
 			}
 		}
+		System.out.println(group.getDt() + " " + result.setScale(2, RoundingMode.FLOOR));
 		return result.setScale(2, RoundingMode.FLOOR);
 	}
 
