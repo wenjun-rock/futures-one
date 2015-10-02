@@ -1,6 +1,7 @@
 package fwj.futures.data.struct;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,14 +79,14 @@ public class Formula {
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder(constant.toString());
+		StringBuilder sb = new StringBuilder(constant.setScale(0, RoundingMode.FLOOR).toString());
 		for (Multinomial multinomial : multinomials) {
 			sb.append(multinomial.getCoefficient().compareTo(BigDecimal.ZERO) > 0 ? " + " : " - ")
 					.append(multinomial.getCoefficient().abs()).append("*").append(multinomial.code);
 		}
 		return sb.toString();
 	}
-	
+
 	public String toCsv() {
 		StringBuilder sb = new StringBuilder(constant.toString());
 		for (Multinomial multinomial : multinomials) {

@@ -1,5 +1,6 @@
 package fwj.futures.resource.web.ctrl;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,10 +21,12 @@ import fwj.futures.data.struct.Formula;
 import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.HedgingBuss;
 import fwj.futures.resource.buss.HedgingContractBuss;
+import fwj.futures.resource.buss.HedgingExperimentBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.entity.hedging.Hedging;
 import fwj.futures.resource.entity.hedging.HedgingContract;
 import fwj.futures.resource.vo.HedgingContractContainer;
+import fwj.futures.resource.vo.HedgingExperimentView;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitDataGroup;
 import fwj.futures.resource.web.vo.HedgingMonitor;
@@ -47,6 +50,9 @@ public class HedgingCtrl {
 
 	@Autowired
 	private HedgingContractBuss hedgingContractBuss;
+
+	@Autowired
+	private HedgingExperimentBuss hedgingExperimentBuss;
 
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
@@ -89,9 +95,14 @@ public class HedgingCtrl {
 		}
 	}
 
-	@RequestMapping(value = "/contractBasic", method = RequestMethod.GET)
+	@RequestMapping(value = "/contracts-basic", method = RequestMethod.GET)
 	public List<HedgingContract> queryHedgingContractBasic(@RequestParam("code") String code) {
 		return hedgingContractBuss.queryHedgingContractBasic(code);
+	}
+
+	@RequestMapping(value = "/prod-experiments", method = RequestMethod.GET)
+	public List<HedgingExperimentView> queryProdExperiments() {
+		return hedgingExperimentBuss.queryProdExperiments(new BigDecimal("0.8"));
 	}
 
 }

@@ -19,12 +19,17 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.io.Files;
 
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.struct.Formula;
+import fwj.futures.resource.entity.hedging.HedgingProdBatch;
+import fwj.futures.resource.entity.hedging.HedgingProdExperiment;
 import fwj.futures.resource.entity.price.KLine;
 import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.repository.hedging.HedgingProdBatchRepository;
+import fwj.futures.resource.repository.hedging.HedgingProdExperimentRepository;
 import fwj.futures.resource.repository.price.KLineRepository;
 import fwj.futures.resource.repository.prod.FuturesRepository;
 import fwj.futures.resource.util.CollectorsHelper;
@@ -43,9 +48,9 @@ public class BatchExpriment extends AbstractBaseLaunch {
 
 	private File workingDir;
 
-	private List<Chance> chanceList = new ArrayList<>();
+	private List<Experiment> chanceList = new ArrayList<>();
 
-	private Chance current;
+	private Experiment current;
 
 	@Autowired
 	private KLineRepository kLineRepo;
@@ -53,36 +58,70 @@ public class BatchExpriment extends AbstractBaseLaunch {
 	@Autowired
 	private FuturesRepository futuresRepo;
 
+	@Autowired
+	private HedgingProdBatchRepository hedgingProdbatchRepo;
+
+	@Autowired
+	private HedgingProdExperimentRepository hedgingProdExperimentRepo;
+
 	@Override
 	protected void execute() throws Exception {
-		String dirName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		Calendar cal = Calendar.getInstance();
+		Date runDt = cal.getTime();
+		String dirName = new SimpleDateFormat("yyyyMMddHHmmss").format(runDt);
 		experimentDir = new File(BASE_DIR, dirName);
 		if (!experimentDir.exists()) {
 			experimentDir.mkdirs();
 		}
 
-		this.execute(12);
-
-		List<String> lineList = chanceList.stream().sorted()
-				.map(chance -> chance.getSquared() + "," + chance.getFormula().toCsv()).collect(Collectors.toList());
-		Files.asCharSink(new File(experimentDir, "report.csv"), StandardCharsets.UTF_8).writeLines(lineList);
-	}
-
-	private void execute(int months) throws Exception {
-		Calendar cal = Calendar.getInstance();
-		Date endDt = cal.getTime();
-		cal.add(Calendar.MONTH, -months);
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		Date endDt = df.parse(df.format(runDt));
+		cal.setTime(endDt);
+		cal.add(Calendar.MONTH, -12);
 		Date startDt = cal.getTime();
 
-		// List<Futures> futuresList = futuresRepo.findAllActive();
-		// for (int i = 0; i < futuresList.size(); i++) {
-		// for (int j = i + 1; j < futuresList.size(); j++) {
-		// this.execute(startDt, endDt, Arrays.asList(futuresList.get(i),
-		// futuresList.get(j)));
-		// }
-		// }
-		this.execute(startDt, endDt, Arrays.asList(futuresRepo.findByCode("P"), futuresRepo.findByCode("Y")));
+		this.execute(startDt, endDt);
 
+		List<String> lineList = chanceList.stream().sorted().map(
+				chance -> chance.getSquared() + "," + chance.getFormula1().toCsv() + "," + chance.getFormula2().toCsv())
+				.collect(Collectors.toList());
+		Files.asCharSink(new File(experimentDir, "report.csv"), StandardCharsets.UTF_8).writeLines(lineList);
+
+		HedgingProdBatch batch = new HedgingProdBatch();
+		batch.setRunDt(runDt);
+		batch.setStartDt(startDt);
+		batch.setEndDt(endDt);
+		final HedgingProdBatch insbatch = hedgingProdbatchRepo.saveAndFlush(batch);
+
+		chanceList.stream().forEach(chance -> {
+			HedgingProdExperiment experiment = new HedgingProdExperiment();
+			experiment.setHedgingProdBatch(insbatch);
+			experiment.setName(chance.getCodeList().get(0) + "-" + chance.getCodeList().get(1));
+			experiment.setRsquared(chance.getSquared());
+			experiment.setExpression1(JSON.toJSONString(chance.getFormula1()));
+			experiment.setExpression2(JSON.toJSONString(chance.getFormula2()));
+			experiment.setStdError1(chance.getStdError1());
+			experiment.setStdError2(chance.getStdError2());
+			hedgingProdExperimentRepo.save(experiment);
+		});
+		hedgingProdExperimentRepo.flush();
+
+	}
+
+	private void execute(Date startDt, Date endDt) throws Exception {
+
+		List<Futures> futuresList = futuresRepo.findAllActive();
+		for (int i = 0; i < futuresList.size(); i++) {
+			for (int j = i + 1; j < futuresList.size(); j++) {
+				this.execute(startDt, endDt, Arrays.asList(futuresList.get(i), futuresList.get(j)));
+			}
+		}
+		// this.execute(startDt, endDt,
+		// Arrays.asList(futuresRepo.findByCode("P"),
+		// futuresRepo.findByCode("Y")));
+		// this.execute(startDt, endDt,
+		// Arrays.asList(futuresRepo.findByCode("J"),
+		// futuresRepo.findByCode("JM")));
 	}
 
 	private void execute(Date startDt, Date endDt, List<Futures> futuresList) throws Exception {
@@ -96,7 +135,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		String newDirName = current.getCodeList().stream() //
 				.sorted().reduce(FuncHelper.joinString("_")).get();
 		newDirName += "_" + current.getSquared();
-		Files.move(workingDir, new File(experimentDir, newDirName));
+		workingDir.renameTo(new File(experimentDir, newDirName));
 		chanceList.add(current);
 		current = null;
 		System.out.println(String.format("%4d Done! %s", chanceList.size(), new File(experimentDir, newDirName)));
@@ -105,7 +144,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 	private void init() {
 		workingDir = new File(experimentDir, WORKING_DIR);
 		workingDir.mkdirs();
-		current = new Chance();
+		current = new Experiment();
 	}
 
 	private void CalculateInR() throws Exception {
@@ -116,10 +155,19 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		process.waitFor();
 		List<String> lines = Files.readLines(new File(workingDir, "my.out"), Charset.forName("GBK"));
 		current.setSquared(new BigDecimal(lines.get(1).split(" ")[1]));
-		Formula formula = Formula.create().putConstant(lines.get(5).split("\\s+")[1])
-				.putMultinomial(current.getCodeList().get(0), "1")
-				.putMultinomial(current.getCodeList().get(1), lines.get(6).split("\\s+")[1]);
-		current.setFormula(formula);
+		Formula formula1 = Formula.create()
+				.putConstant(BigDecimal.ZERO.subtract(new BigDecimal(lines.get(5).split("\\s+")[1])))
+				.putMultinomial(current.getCodeList().get(0), "1").putMultinomial(current.getCodeList().get(1),
+						BigDecimal.ZERO.subtract(new BigDecimal(lines.get(6).split("\\s+")[1])));
+		BigDecimal stdError1 = new BigDecimal(lines.get(5).split("\\s+")[2]);
+		Formula formula2 = Formula.create().putConstant(new BigDecimal(lines.get(13).split("\\s+")[1]))
+				.putMultinomial(current.getCodeList().get(1), "-1")
+				.putMultinomial(current.getCodeList().get(0), new BigDecimal(lines.get(14).split("\\s+")[1]));
+		BigDecimal stdError2 = new BigDecimal(lines.get(13).split("\\s+")[2]);
+		current.setFormula1(formula1);
+		current.setFormula2(formula2);
+		current.setStdError1(stdError1);
+		current.setStdError2(stdError2);
 	}
 
 	private void outputCsv(Date startDt, Date endDt, List<Futures> futuresList) throws Exception {
@@ -157,44 +205,71 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		launch(BatchExpriment.class);
 	}
 
-	public class Chance implements Comparable<Chance> {
+	public class Experiment implements Comparable<Experiment> {
 
 		private List<String> codeList;
 		private BigDecimal squared;
-		private Formula formula;
+		private Formula formula1;
+		private Formula formula2;
+		private BigDecimal stdError1;
+		private BigDecimal stdError2;
 
 		public List<String> getCodeList() {
 			return codeList;
-		}
-
-		public void setCodeList(List<String> codeList) {
-			this.codeList = codeList;
 		}
 
 		public BigDecimal getSquared() {
 			return squared;
 		}
 
+		public Formula getFormula1() {
+			return formula1;
+		}
+
+		public Formula getFormula2() {
+			return formula2;
+		}
+
+		public BigDecimal getStdError1() {
+			return stdError1;
+		}
+
+		public BigDecimal getStdError2() {
+			return stdError2;
+		}
+
+		public void setCodeList(List<String> codeList) {
+			this.codeList = codeList;
+		}
+
 		public void setSquared(BigDecimal squared) {
 			this.squared = squared;
 		}
 
-		public Formula getFormula() {
-			return formula;
+		public void setFormula1(Formula formula1) {
+			this.formula1 = formula1;
 		}
 
-		public void setFormula(Formula formula) {
-			this.formula = formula;
+		public void setFormula2(Formula formula2) {
+			this.formula2 = formula2;
+		}
+
+		public void setStdError1(BigDecimal stdError1) {
+			this.stdError1 = stdError1;
+		}
+
+		public void setStdError2(BigDecimal stdError2) {
+			this.stdError2 = stdError2;
 		}
 
 		@Override
-		public int compareTo(Chance that) {
+		public int compareTo(Experiment that) {
 			return that.squared.compareTo(this.squared);
 		}
 
 		@Override
 		public String toString() {
-			return squared.toString() + "," + formula.toString();
+			return squared.toString() + "," + formula1.toString() + "," + formula2.toString();
 		}
 
 	}
