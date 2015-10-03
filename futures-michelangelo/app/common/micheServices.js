@@ -129,11 +129,58 @@ angular.module('miche.services', [])
       }));
     };
 
+    service.drawHedgingExperiment = function(hedging, domId) {
+      $('#' + domId).highcharts({
+        chart: {
+          zoomType: 'x'
+        },
+        title: {
+          text: hedging.name
+        },
+        xAxis: {
+          type: "datetime"
+        },
+        yAxis: {
+          title: {
+            text: '钻石点'
+          },
+          plotBands: [{
+            from: hedging.upLimit,
+            to: hedging.upLimit + 10000,
+            color: '#FFD700',
+          }, {
+            from: hedging.upLimit / 2,
+            to: hedging.upLimit,
+            color: '#FFF8DC',
+          }, {
+            from: hedging.downLimit,
+            to: hedging.downLimit / 2,
+            color: '#FFF8DC',
+          }, {
+            from: hedging.downLimit - 10000,
+            to: hedging.downLimit,
+            color: '#FFD700',
+          }]
+        },
+        legend: {
+          enabled: false
+        },
+        series: [{
+          name: '',
+          data: hedging.data
+        }]
+
+      });
+
+    };
+
+
+
     return service;
   }
 ])
 
-.factory('micheData', ['$q', 'micheHttp', 
+.factory('micheData', ['$q', 'micheHttp',
   function($q, micheHttp) {
     var prods, labels, labelsIncludeAll;
 
