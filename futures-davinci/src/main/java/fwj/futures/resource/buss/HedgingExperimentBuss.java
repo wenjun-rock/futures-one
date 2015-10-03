@@ -1,6 +1,7 @@
 package fwj.futures.resource.buss;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,8 +56,8 @@ public class HedgingExperimentBuss {
 		Date endDt = experiment.getHedgingProdBatch().getEndDt();
 		Formula formula1 = Formula.parse(experiment.getExpression1());
 		Formula formula2 = Formula.parse(experiment.getExpression2());
-		BigDecimal stdError1 = experiment.getStdError1();
-		BigDecimal stdError2 = experiment.getStdError2();
+		BigDecimal stdError1 = experiment.getStdError1().setScale(0, RoundingMode.FLOOR);
+		BigDecimal stdError2 = experiment.getStdError2().setScale(0, RoundingMode.FLOOR);
 		List<KLineGroup> groupList = kLineBuss.queryAllGroup();
 		List<Price> price1 = hedgingBuss.calculateKLine(formula1, groupList);
 		List<Price> price2 = hedgingBuss.calculateKLine(formula2, groupList);
