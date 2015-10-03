@@ -138,7 +138,12 @@ angular.module('miche.services', [])
           text: hedging.name
         },
         xAxis: {
-          type: "datetime"
+          type: "datetime",
+          plotBands: [{
+            from: hedging.startDt,
+            to: hedging.endDt,
+            color: 'rgba(68, 170, 213, .2)'
+          }]
         },
         yAxis: {
           title: {
@@ -149,24 +154,22 @@ angular.module('miche.services', [])
             to: hedging.upLimit + 10000,
             color: '#FFD700',
           }, {
-            from: hedging.upLimit / 2,
-            to: hedging.upLimit,
-            color: '#FFF8DC',
-          }, {
-            from: hedging.downLimit,
-            to: hedging.downLimit / 2,
-            color: '#FFF8DC',
-          }, {
             from: hedging.downLimit - 10000,
             to: hedging.downLimit,
             color: '#FFD700',
           }]
         },
+        tooltip: {
+          crosshairs: true,
+          dateTimeLabelFormats: {
+            day: '%Y-%m-%d'
+          }
+        },
         legend: {
           enabled: false
         },
         series: [{
-          name: '',
+          name: 'diff',
           data: hedging.data
         }]
 

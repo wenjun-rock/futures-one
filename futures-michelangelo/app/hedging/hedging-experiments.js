@@ -53,6 +53,8 @@ angular.module('miche.hedging.experiments', ['ngRoute', 'miche.services'])
         var hedging = {};
 
         hedging.name = experiment.name + " (" + experiment.formula1 + ") e=" + experiment.stdError1;
+        hedging.startDt = experiment.startDt;
+        hedging.endDt = experiment.endDt;
         hedging.upLimit = experiment.stdError1;
         hedging.downLimit = 0 - experiment.stdError1;
         hedging.data = experiment.prices1.map(function(price) {
@@ -61,6 +63,8 @@ angular.module('miche.hedging.experiments', ['ngRoute', 'miche.services'])
         micheChart.drawHedgingExperiment(hedging, 'monitor-experiment-1');
 
         hedging.name = experiment.name + " (" + experiment.formula2 + ") e=" + experiment.stdError2;
+        hedging.startDt = experiment.startDt;
+        hedging.endDt = experiment.endDt;
         hedging.upLimit = experiment.stdError2;
         hedging.downLimit = 0 - experiment.stdError2;
         hedging.data = experiment.prices2.map(function(price) {
