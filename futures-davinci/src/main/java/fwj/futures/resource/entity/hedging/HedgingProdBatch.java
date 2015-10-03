@@ -12,14 +12,25 @@ public class HedgingProdBatch extends AbstractPersistable<Integer> {
 
 	private static final long serialVersionUID = 518216574212298838L;
 
+	@Column(length = 10)
+	private String name;
+
 	@Column(columnDefinition = "DATE")
 	private Date StartDt;
-	
+
 	@Column(columnDefinition = "DATE")
 	private Date endDt;
-	
+
 	@Column(columnDefinition = "TIMESTAMP")
 	private Date runDt;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public Date getStartDt() {
 		return StartDt;

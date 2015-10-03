@@ -36,7 +36,7 @@ public class HedgingExperimentBuss {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		return experimentList.stream().map(experiment -> {
 			Integer id = experiment.getId();
-			String name = experiment.getName() + "-" + experiment.getHedgingProdBatch().getId();
+			String name = experiment.getName() + "-" + experiment.getHedgingProdBatch().getName();
 			String startDt = df.format(experiment.getHedgingProdBatch().getStartDt());
 			String endDt = df.format(experiment.getHedgingProdBatch().getEndDt());
 			BigDecimal rsquared = experiment.getRsquared();
@@ -51,7 +51,7 @@ public class HedgingExperimentBuss {
 
 	public HedgingExperimentMonitor monitorProdExperiment(Integer id) {
 		HedgingProdExperiment experiment = experimentRepo.findOne(id);
-		String name = experiment.getName();
+		String name = experiment.getName() + "-" + experiment.getHedgingProdBatch().getName();
 		Date startDt = experiment.getHedgingProdBatch().getStartDt();
 		Date endDt = experiment.getHedgingProdBatch().getEndDt();
 		Formula formula1 = Formula.parse(experiment.getExpression1());

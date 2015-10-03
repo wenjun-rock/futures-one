@@ -88,15 +88,20 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		Files.asCharSink(new File(experimentDir, "report.csv"), StandardCharsets.UTF_8).writeLines(lineList);
 
 		HedgingProdBatch batch = new HedgingProdBatch();
+		batch.setName("1年");
 		batch.setRunDt(runDt);
 		batch.setStartDt(startDt);
 		batch.setEndDt(endDt);
 		final HedgingProdBatch insbatch = hedgingProdbatchRepo.saveAndFlush(batch);
 
+		Map<String, String> codeNameMap = futuresRepo.findAllActive().stream()
+				.collect(Collectors.toMap(Futures::getCode, Futures::getName));
+
 		chanceList.stream().forEach(chance -> {
 			HedgingProdExperiment experiment = new HedgingProdExperiment();
 			experiment.setHedgingProdBatch(insbatch);
-			experiment.setName(chance.getCodeList().get(0) + "-" + chance.getCodeList().get(1));
+			experiment.setName(
+					codeNameMap.get(chance.getCodeList().get(0)) + "-" + codeNameMap.get(chance.getCodeList().get(1)));
 			experiment.setRsquared(chance.getSquared());
 			experiment.setExpression1(JSON.toJSONString(chance.getFormula1()));
 			experiment.setExpression2(JSON.toJSONString(chance.getFormula2()));
