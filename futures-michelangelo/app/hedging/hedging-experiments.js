@@ -18,6 +18,7 @@ angular.module('miche.hedging.experiments', ['ngRoute', 'miche.services'])
         "data": experiments,
         "destroy": true,
         "info": false,
+        "order": [[ 3, "desc" ]],
         "columns": [{
           "data": "name"
         }, {

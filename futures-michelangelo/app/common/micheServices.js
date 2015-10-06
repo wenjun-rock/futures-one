@@ -142,7 +142,7 @@ angular.module('miche.services', [])
           plotBands: [{
             from: hedging.startDt,
             to: hedging.endDt,
-            color: 'rgba(68, 170, 213, .2)'
+            color: '#FF8C69'
           }]
         },
         yAxis: {

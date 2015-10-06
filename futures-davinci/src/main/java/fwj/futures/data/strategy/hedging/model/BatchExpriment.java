@@ -75,8 +75,9 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		}
 
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
-		Date endDt = df.parse(df.format(runDt));
-		cal.setTime(endDt);
+		cal.setTime(df.parse(df.format(runDt)));
+		cal.add(Calendar.MONTH, -6);
+		Date endDt = cal.getTime();
 		cal.add(Calendar.MONTH, -12);
 		Date startDt = cal.getTime();
 
@@ -88,7 +89,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		Files.asCharSink(new File(experimentDir, "report.csv"), StandardCharsets.UTF_8).writeLines(lineList);
 
 		HedgingProdBatch batch = new HedgingProdBatch();
-		batch.setName("1年");
+		batch.setName("模拟半年");
 		batch.setRunDt(runDt);
 		batch.setStartDt(startDt);
 		batch.setEndDt(endDt);
@@ -131,9 +132,10 @@ public class BatchExpriment extends AbstractBaseLaunch {
 
 	private void execute(Date startDt, Date endDt, List<Futures> futuresList) throws Exception {
 		init();
-		outputCsv(startDt, endDt, futuresList);
-		CalculateInR();
-		cleanup();
+		if(outputCsv(startDt, endDt, futuresList)) {
+			CalculateInR();
+			cleanup();			
+		}
 	}
 
 	private void cleanup() throws Exception {
@@ -175,14 +177,17 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		current.setStdError2(stdError2);
 	}
 
-	private void outputCsv(Date startDt, Date endDt, List<Futures> futuresList) throws Exception {
+	private boolean outputCsv(Date startDt, Date endDt, List<Futures> futuresList) throws Exception {
 		TreeMap<Date, Map<String, KLine>> kLineMap = futuresList.stream()
 				.map(futures -> kLineRepo.findByCodeAndDtBetweenOrderByDtAsc(futures.getCode(), startDt, endDt))
 				.flatMap(kLineList -> kLineList.stream()).collect(Collectors.groupingBy(KLine::getDt, TreeMap::new,
 						Collectors.toMap(KLine::getCode, Function.identity())));
 		kLineMap = kLineMap.entrySet().stream().filter(entry -> entry.getValue().size() == futuresList.size())
 				.collect(CollectorsHelper.toTreeMap(Map.Entry::getKey, Map.Entry::getValue));
-
+		
+		if(kLineMap.isEmpty()){
+			return false;
+		}		
 		List<String> codeList = kLineMap.lastEntry().getValue().entrySet().stream()
 				.sorted((l, r) -> r.getValue().getEndPrice().compareTo(l.getValue().getEndPrice()))
 				.map(Map.Entry::getKey).collect(Collectors.toList());
@@ -203,7 +208,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		System.out.println(workingDir.getAbsolutePath());
 		System.out.println(new File(workingDir, DATA_FILE_NAME).getAbsolutePath());
 		Files.asCharSink(new File(workingDir, DATA_FILE_NAME), StandardCharsets.UTF_8).write(content);
-
+		return true;
 	}
 
 	public static void main(String[] args) {
