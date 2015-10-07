@@ -132,9 +132,9 @@ angular.module('miche.product', ['ngRoute', 'miche.services'])
             second: '%H:%M:%S',
             minute: '%H:%M',
             hour: '%H:%M',
-            day: '%e. %b',
-            week: '%e. %b',
-            month: '%b'
+            day: '%m-%d',
+            week: '%m-%d',
+            month: '%Y-%m'
           }
 
 
@@ -206,7 +206,16 @@ angular.module('miche.product', ['ngRoute', 'miche.services'])
             text: '日K'
           },
           xAxis: {
-            type: "datetime"
+            type: "datetime",
+            dateTimeLabelFormats: {
+              millisecond: '%H:%M:%S.%L',
+              second: '%H:%M:%S',
+              minute: '%H:%M',
+              hour: '%H:%M',
+              day: '%m-%d',
+              week: '%m-%d',
+              month: '%Y-%m'
+            }
           },
           yAxis: {
             title: {
