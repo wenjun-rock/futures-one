@@ -20,9 +20,11 @@ import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.HedgingBuss;
 import fwj.futures.resource.buss.HedgingContractBuss;
 import fwj.futures.resource.buss.HedgingExperimentBuss;
+import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.entity.hedging.Hedging;
 import fwj.futures.resource.entity.hedging.HedgingContract;
+import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.vo.HedgingContractContainer;
 import fwj.futures.resource.vo.HedgingExperimentMonitor;
 import fwj.futures.resource.vo.HedgingExperimentView;
@@ -30,6 +32,7 @@ import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitDataGroup;
 import fwj.futures.resource.web.vo.HedgingMonitor;
 import fwj.futures.resource.web.vo.Price;
+import fwj.futures.resource.web.vo.Series;
 
 /**
  * 对冲套利相关WEB服务
@@ -55,6 +58,9 @@ public class HedgingCtrl {
 
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
+
+	@Autowired
+	private ProductBuss productBuss;
 
 	@RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
 	public HedgingMonitor monitorRealtime(@PathVariable("id") Integer id) {
@@ -101,6 +107,19 @@ public class HedgingCtrl {
 	@RequestMapping(value = "/prod-experiment", method = RequestMethod.GET)
 	public HedgingExperimentMonitor monitorProdExperiment(@RequestParam("id") Integer id) {
 		return hedgingExperimentBuss.monitorProdExperiment(id);
+	}
+
+	@RequestMapping(value = "/prod-compare", method = RequestMethod.GET)
+	public List<Series> compareProd(@RequestParam("codes") String codes) {
+		String[] codeArr = codes.split(",");
+		if (codeArr.length < 2) {
+			return null;
+		} else {
+			Futures f1 = productBuss.queryFuturesByCode(codeArr[0]);
+			Futures f2 = productBuss.queryFuturesByCode(codeArr[1]);
+			return hedgingBuss.compareProd(f1, f2);
+		}
+
 	}
 
 }

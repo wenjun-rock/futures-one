@@ -2,6 +2,7 @@ package fwj.futures.resource.buss;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,17 +13,22 @@ import fwj.futures.data.struct.Formula;
 import fwj.futures.data.struct.Formula.Multinomial;
 import fwj.futures.resource.entity.hedging.Hedging;
 import fwj.futures.resource.entity.price.KLine;
+import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.repository.hedging.HedgingRepository;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.vo.UnitDataGroup;
 import fwj.futures.resource.web.vo.Price;
+import fwj.futures.resource.web.vo.Series;
 
 @Component
 public class HedgingBuss {
 
 	@Autowired
 	private HedgingRepository hedgingRepo;
+
+	@Autowired
+	private DailyPriceBuss dailyPriceBuss;
 
 	public Hedging getById(Integer id) {
 		return hedgingRepo.findOne(id);
@@ -38,7 +44,6 @@ public class HedgingBuss {
 				result = result.add(multinomial.getCoefficient().multiply(kLine.getEndPrice()));
 			}
 		}
-		System.out.println(group.getDt() + " " + result.setScale(2, RoundingMode.FLOOR));
 		return result.setScale(2, RoundingMode.FLOOR);
 	}
 
@@ -71,6 +76,17 @@ public class HedgingBuss {
 
 	public List<Price> calculateUnitData(String expression, List<UnitDataGroup> groupList) {
 		return calculateUnitData(Formula.parse(expression), groupList);
+	}
+
+	public List<Series> compareProd(Futures f1, Futures f2) {
+		Series s1 = dailyPriceBuss.querySeriesByCode(f1.getCode(), -1);
+		Series s2 = dailyPriceBuss.querySeriesByCode(f2.getCode(), -1);
+		Formula formula = Formula.create().putConstant(BigDecimal.ZERO).putMultinomial(f1.getCode(), "1")
+				.putMultinomial(f2.getCode(), "-1");
+		List<Price> diffPriceList = this.calculateKLine(formula, dailyPriceBuss.queryAllGroup());
+		String diffName = f1.getName() + "-" + f2.getName();
+		Series diffSeries = new Series("", diffName, diffPriceList);
+		return Arrays.asList(s1, s2, diffSeries);
 	}
 
 }
