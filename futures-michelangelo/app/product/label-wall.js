@@ -105,11 +105,17 @@ angular.module('miche.label.wall', ['ngRoute', 'miche.services'])
           type: "datetime"
         },
         yAxis: {
+          labels: {
+            formatter: function() {
+              return this.value + '%';
+            }
+          },
           title: {
-            text: '涨幅(%)'
+            text: '涨幅'
           }
         },
         tooltip: {
+          descOrder: true,
           shared: true,
           crosshairs: true
         },

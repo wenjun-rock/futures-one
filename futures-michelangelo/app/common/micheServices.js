@@ -177,6 +177,50 @@ angular.module('miche.services', [])
 
     };
 
+    service.drawHedgingCompare = function(seriesList, domId) {
+      var series = [{
+        yAxis: 0,
+        zIndex: 2,
+        name: seriesList[0].name,
+        data: seriesList[0].prices.map(function(ele) {
+          return [ele.d, ele.p];
+        })
+      }, {
+        yAxis: 0,
+        zIndex: 2,
+        name: seriesList[1].name,
+        data: seriesList[1].prices.map(function(ele) {
+          return [ele.d, ele.p];
+        })
+      }, {
+        yAxis: 1,
+        zIndex: 1,
+        type: 'column',
+        name: seriesList[2].name,
+        data: seriesList[2].prices.map(function(ele) {
+          return [ele.d, ele.p];
+        })
+      }];
+
+      $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
+        title: {
+          text: seriesList[2].name
+        },
+        colors: ['#2f7ed8', '#492970', '#8bbc21'],
+        yAxis: [{
+          title: {
+            text: '价格'
+          }
+        }, {
+          title: {
+            text: '价差'
+          },
+          opposite: true
+        }],
+        series: series
+      }));
+    };
+
 
 
     return service;

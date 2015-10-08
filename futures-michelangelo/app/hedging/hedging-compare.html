@@ -1,0 +1,17 @@
+<div>
+  <div class="row">
+    <ol class="breadcrumb">
+      <li class="active">价格比较</li>
+    </ol>
+  </div>
+  <span>产品1:</span>
+  <select ng-model="ctrl.code1" ng-options="prod.code as prod.name for prod in prods" style="width:100px"></select>
+  <span style="margin-left: 20px">产品2:</span>
+  <select ng-model="ctrl.code2" ng-options="prod.code as prod.name for prod in prods" style="width:100px"></select>
+  <button class="btn btn-primary" style="margin-left: 20px" ng-click="compareProd();">比较</button>
+  <div class="row" style="margin-top: 10px">
+    <div class="col-md-12">
+      <div class="panel panel-default" id="hedgingCmpChart"></div>
+    </div>
+  </div>
+</div>

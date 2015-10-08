@@ -10,7 +10,8 @@ angular.module('micheApp', [
   'miche.label.wall',
   'miche.hedging',
   'miche.hedging.contract',
-  'miche.hedging.experiments'
+  'miche.hedging.experiments',
+  'miche.hedging.compare'
 ])
 
 .config(['$routeProvider', function($routeProvider) {
