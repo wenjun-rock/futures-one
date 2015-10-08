@@ -26,7 +26,8 @@ angular.module('miche.hedging.compare', ['ngRoute'])
         return;
       }
       micheHttp.get('/hedging/prod-compare', {
-        codes: $scope.ctrl.code1 + ',' + $scope.ctrl.code2
+        code1: $scope.ctrl.code1,
+        code2: $scope.ctrl.code2
       }).success(function(seriesList) {
         micheChart.drawHedgingCompare(seriesList, 'hedgingCmpChart');
       });

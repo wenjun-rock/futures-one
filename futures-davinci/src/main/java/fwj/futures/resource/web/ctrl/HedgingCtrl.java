@@ -110,16 +110,10 @@ public class HedgingCtrl {
 	}
 
 	@RequestMapping(value = "/prod-compare", method = RequestMethod.GET)
-	public List<Series> compareProd(@RequestParam("codes") String codes) {
-		String[] codeArr = codes.split(",");
-		if (codeArr.length < 2) {
-			return null;
-		} else {
-			Futures f1 = productBuss.queryFuturesByCode(codeArr[0]);
-			Futures f2 = productBuss.queryFuturesByCode(codeArr[1]);
-			return hedgingBuss.compareProd(f1, f2);
-		}
-
+	public List<Series> compareProd(@RequestParam("code1") String code1, @RequestParam("code2") String code2) {
+		Futures f1 = productBuss.queryFuturesByCode(code1);
+		Futures f2 = productBuss.queryFuturesByCode(code2);
+		return hedgingBuss.compareProd(f1, f2);
 	}
 
 }
