@@ -15,6 +15,7 @@ import fwj.futures.resource.entity.hedging.Hedging;
 import fwj.futures.resource.entity.price.KLine;
 import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.repository.hedging.HedgingRepository;
+import fwj.futures.resource.vo.HedgingView;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.vo.UnitDataGroup;
@@ -29,6 +30,9 @@ public class HedgingBuss {
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;
+	
+	@Autowired
+	private RealTimePriceBuss realTimePriceBuss;
 
 	public Hedging getById(Integer id) {
 		return hedgingRepo.findOne(id);
@@ -87,6 +91,13 @@ public class HedgingBuss {
 		String diffName = f1.getName() + "-" + f2.getName();
 		Series diffSeries = new Series("", diffName, diffPriceList);
 		return Arrays.asList(s1, s2, diffSeries);
+	}
+
+	public List<HedgingView> queryHedging() {
+		List<Hedging> hedgingList = hedgingRepo.findAll();
+		UnitDataGroup realTime = realTimePriceBuss.queryLatest();
+		KLineGroup kline = dailyPriceBuss.queryLatest();
+		return null;
 	}
 
 }

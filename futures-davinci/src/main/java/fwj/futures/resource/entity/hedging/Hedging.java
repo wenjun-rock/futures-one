@@ -1,7 +1,5 @@
 package fwj.futures.resource.entity.hedging;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -21,77 +19,83 @@ public class Hedging extends AbstractPersistable<Integer> {
 	@Column(length = 400)
 	private String expression;
 
-	@Column(precision = 10, scale = 2)
-	private BigDecimal upLimit;
-
-	@Column(precision = 10, scale = 2)
-	private BigDecimal downLimit;
+	@Column(precision = 8)
+	private int q1;
 	
-	@Column(length = 10)
-	private String modelStartDt;
+	@Column(precision = 8)
+	private int q3;
 	
-	@Column(length = 10)
-	private String modelEndDt;
+	@Column(precision = 8)
+	private int mid;
+	
+	@Column(precision = 8)
+	private int down;
+	
+	@Column(precision = 8)
+	private int up;
 
 	public String getName() {
 		return name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public String getExpression() {
-		return expression;
-	}
-
-	public BigDecimal getUpLimit() {
-		return upLimit;
-	}
-
-	public BigDecimal getDownLimit() {
-		return downLimit;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void setDesc(String description) {
-		this.description = description;
-	}
-
-	public void setExpression(String expression) {
-		this.expression = expression;
-	}
-
-	public void setUpLimit(BigDecimal upLimit) {
-		this.upLimit = upLimit;
-	}
-
-	public void setDownLimit(BigDecimal downLimit) {
-		this.downLimit = downLimit;
-	}
-
-	public String getModelStartDt() {
-		return modelStartDt;
-	}
-
-	public String getModelEndDt() {
-		return modelEndDt;
+	public String getDescription() {
+		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public void setModelStartDt(String modelStartDt) {
-		this.modelStartDt = modelStartDt;
+	public String getExpression() {
+		return expression;
 	}
 
-	public void setModelEndDt(String modelEndDt) {
-		this.modelEndDt = modelEndDt;
+	public void setExpression(String expression) {
+		this.expression = expression;
 	}
 
+	public int getQ1() {
+		return q1;
+	}
 
+	public void setQ1(int q1) {
+		this.q1 = q1;
+	}
+
+	public int getQ3() {
+		return q3;
+	}
+
+	public void setQ3(int q3) {
+		this.q3 = q3;
+	}
+
+	public int getMid() {
+		return mid;
+	}
+
+	public void setMid(int mid) {
+		this.mid = mid;
+	}
+
+	public int getDown() {
+		return down;
+	}
+
+	public void setDown(int down) {
+		this.down = down;
+	}
+
+	public int getUp() {
+		return up;
+	}
+
+	public void setUp(int up) {
+		this.up = up;
+	}
+	
 }

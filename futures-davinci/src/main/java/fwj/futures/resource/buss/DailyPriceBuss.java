@@ -47,6 +47,12 @@ public class DailyPriceBuss {
 		return Collections.unmodifiableList(list);
 	}
 
+	@Cacheable(value = "KLineBuss.queryLatest")
+	public KLineGroup queryLatest() {
+		List<KLineGroup> list = queryAllGroup();
+		return list.get(list.size() - 1);
+	}
+
 	@Cacheable(value = "KLineBuss.querySeriesByCode")
 	public Series querySeriesByCode(String code, int month) {
 		Futures prod = productBuss.queryFuturesByCode(code);

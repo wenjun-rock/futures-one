@@ -28,6 +28,7 @@ import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.vo.HedgingContractContainer;
 import fwj.futures.resource.vo.HedgingExperimentMonitor;
 import fwj.futures.resource.vo.HedgingExperimentView;
+import fwj.futures.resource.vo.HedgingView;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitDataGroup;
 import fwj.futures.resource.web.vo.HedgingMonitor;
@@ -116,4 +117,8 @@ public class HedgingCtrl {
 		return hedgingBuss.compareProd(f1, f2);
 	}
 
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public List<HedgingView> queryHedging() {
+		return hedgingBuss.queryHedging();
+	}
 }
