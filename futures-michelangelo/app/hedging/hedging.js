@@ -69,12 +69,12 @@ angular.module('miche.hedging', ['ngRoute'])
       });
 
     };
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/1', 'container1');
-    $scope.drawHedging(CF.preurl + '/hedging/daily/1', 'container2');
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/2', 'container3');
-    $scope.drawHedging(CF.preurl + '/hedging/daily/2', 'container4');
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/3', 'container5');
-    $scope.drawHedging(CF.preurl + '/hedging/daily/3', 'container6');
+    $scope.drawHedging(CF.preurl + '/hedging/realtime/8', 'container1');
+    $scope.drawHedging(CF.preurl + '/hedging/daily/8', 'container2');
+    $scope.drawHedging(CF.preurl + '/hedging/realtime/9', 'container3');
+    $scope.drawHedging(CF.preurl + '/hedging/daily/9', 'container4');
+    $scope.drawHedging(CF.preurl + '/hedging/realtime/10', 'container5');
+    $scope.drawHedging(CF.preurl + '/hedging/daily/10', 'container6');
     $scope.drawHedging(CF.preurl + '/hedging/realtime/4', 'container7');
     $scope.drawHedging(CF.preurl + '/hedging/daily/4', 'container8');
   }

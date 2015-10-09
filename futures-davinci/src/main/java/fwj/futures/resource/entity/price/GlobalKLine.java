@@ -9,11 +9,11 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "price_kline", uniqueConstraints = {
-		@UniqueConstraint(name = "kline_uni", columnNames = { "dt", "code" }) })
-public  class KLine extends AbstractKLine {
+@Table(name = "price_global_kline", uniqueConstraints = {
+		@UniqueConstraint(name = "global_kline_uni", columnNames = { "dt", "code" }) })
+public class GlobalKLine extends AbstractKLine {
 
-	private static final long serialVersionUID = 2828780035386533672L;
+	private static final long serialVersionUID = 193739558344301213L;
 	
 	@Column(columnDefinition = "DATE")
 	private Date dt;

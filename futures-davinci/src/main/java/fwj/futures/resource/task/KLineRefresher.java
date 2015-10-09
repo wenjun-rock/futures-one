@@ -17,16 +17,21 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.entity.price.ContractKLine;
+import fwj.futures.resource.entity.price.GlobalKLine;
 import fwj.futures.resource.entity.price.KLine;
 import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.entity.prod.GlobalFutures;
 import fwj.futures.resource.repository.price.ContractKLineRepository;
+import fwj.futures.resource.repository.price.GlobalKLineRepository;
 import fwj.futures.resource.repository.price.KLineRepository;
 import fwj.futures.resource.repository.prod.FuturesRepository;
+import fwj.futures.resource.repository.prod.GlobalFuturesRepository;
 
 @Component
 public class KLineRefresher {
@@ -35,15 +40,22 @@ public class KLineRefresher {
 
 	private static final String URI_DAILY = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesDailyKLine?symbol=%s0";
 	private static final String CONTRACT_URI_DAILY = "http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesDailyKLine?symbol=%s";
+	private static final String GLOBAL_URI_DAILY = "http://stock2.finance.sina.com.cn/futures/api/json.php/GlobalFuturesService.getGlobalFuturesDailyKLine?symbol=%s";
 
 	@Autowired
 	private KLineRepository kLineRepository;
+
+	@Autowired
+	private GlobalKLineRepository globalKLineRepository;
 
 	@Autowired
 	private ContractKLineRepository contractKLineRepository;
 
 	@Autowired
 	private FuturesRepository futuresRepository;
+
+	@Autowired
+	private GlobalFuturesRepository globalFuturesRepository;
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;
@@ -57,8 +69,61 @@ public class KLineRefresher {
 	@Scheduled(cron = "0 45 15 * * ?")
 	public void doTask() {
 		refreshKLine();
+		refreshGlobalKLine();
 		refreshContractKLine(false);
 		log.info("Done!");
+	}
+
+	public void refreshGlobalKLine() {
+		DateFormat yyyyMMdd = new SimpleDateFormat("yyyy-MM-dd");
+		for (GlobalFutures prod : globalFuturesRepository.findAll()) {
+			log.info("Downloading " + prod.getGlobalCode());
+
+			String jsonStr = null;
+			try {
+				jsonStr = Resources.toString(new URL(String.format(GLOBAL_URI_DAILY, prod.getGlobalCode())),
+						StandardCharsets.ISO_8859_1);
+			} catch (Exception e) {
+				log.error("Bad boy " + prod.getCode(), e);
+				continue;
+			}
+			JSONArray dailyKs = JSON.parseArray(jsonStr);
+			if (dailyKs == null) {
+				log.info("Can't get " + prod.getGlobalCode());
+				continue;
+			}
+			GlobalKLine latest = globalKLineRepository.findTopByCodeOrderByDtDesc(prod.getGlobalCode());
+			List<GlobalKLine> createList = new ArrayList<>();
+			for (int i = 0; i < dailyKs.size(); i++) {
+				JSONObject ele = dailyKs.getJSONObject(i);
+				if (ele.getInteger("volume") == null || ele.getInteger("volume") <= 0) {
+					// 过滤交易为0的日K
+					continue;
+				}
+				try {
+					Date dt = yyyyMMdd.parse(ele.getString("date"));
+					if (latest == null || latest.getDt().compareTo(dt) <= 0) {
+						GlobalKLine daily = new GlobalKLine();
+						if (latest != null && latest.getDt().compareTo(dt) == 0) {
+							daily = latest;
+						}
+						daily.setCode(prod.getGlobalCode());
+						daily.setDt(dt);
+						daily.setOpenPrice(ele.getBigDecimal("open"));
+						daily.setMaxPrice(ele.getBigDecimal("high"));
+						daily.setMinPrice(ele.getBigDecimal("low"));
+						daily.setEndPrice(ele.getBigDecimal("close"));
+						daily.setTradeVol(ele.getInteger("volume"));
+						createList.add(daily);
+					}
+				} catch (ParseException e) {
+					log.error("oops", e);
+				}
+			}
+			globalKLineRepository.save(createList);
+			globalKLineRepository.flush();
+			log.info(String.format("Download %s of %s,%s", createList.size(), prod.getCode(), prod.getGlobalCode()));
+		}
 	}
 
 	public void refreshContractKLine(boolean includeHist) {
@@ -138,7 +203,7 @@ public class KLineRefresher {
 			try {
 				jsonStr = Resources.toString(new URL(String.format(URI_DAILY, prod.getCode())), StandardCharsets.UTF_8);
 			} catch (Exception e) {
-				log.trace("Bad boy " + prod.getCode(), e);
+				log.error("Bad boy " + prod.getCode(), e);
 				continue;
 			}
 			JSONArray dailyKs = JSON.parseArray(jsonStr);

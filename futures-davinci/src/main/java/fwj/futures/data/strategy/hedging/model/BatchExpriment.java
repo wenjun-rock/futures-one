@@ -76,9 +76,9 @@ public class BatchExpriment extends AbstractBaseLaunch {
 
 		DateFormat df = new SimpleDateFormat("yyyyMMdd");
 		cal.setTime(df.parse(df.format(runDt)));
-		cal.add(Calendar.MONTH, -6);
+//		cal.add(Calendar.MONTH, -6);
 		Date endDt = cal.getTime();
-		cal.add(Calendar.MONTH, -12);
+		cal.add(Calendar.MONTH, -36);
 		Date startDt = cal.getTime();
 
 		this.execute(startDt, endDt);
@@ -89,7 +89,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		Files.asCharSink(new File(experimentDir, "report.csv"), StandardCharsets.UTF_8).writeLines(lineList);
 
 		HedgingProdBatch batch = new HedgingProdBatch();
-		batch.setName("模拟半年");
+		batch.setName("3年");
 		batch.setRunDt(runDt);
 		batch.setStartDt(startDt);
 		batch.setEndDt(endDt);

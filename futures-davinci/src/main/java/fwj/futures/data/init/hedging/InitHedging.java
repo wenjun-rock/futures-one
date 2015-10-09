@@ -33,6 +33,7 @@ public class InitHedging extends AbstractBaseLaunch {
 			if (hedging == null) {
 				hedging = new Hedging();
 			}
+			hedging.setName(input.name);
 			hedging.setExpression(JSON.toJSONString(Formula.create().putConstant(input.constant)
 					.putMultinomial(input.prod1, input.coefficient1).putMultinomial(input.prod2, input.coefficient2)));
 			hedging.setUpLimit(new BigDecimal(input.upLimit));

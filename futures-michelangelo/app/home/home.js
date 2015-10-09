@@ -90,7 +90,8 @@ angular.module('miche.home', ['ngRoute', 'miche.services'])
         });
       });
     };
-    $scope.drawHedging('/hedging/realtime/1', 'container1');
-    $scope.drawHedging('/hedging/realtime/2', 'container2');
+    $scope.drawHedging('/hedging/realtime/8', 'container1');
+    $scope.drawHedging('/hedging/realtime/9', 'container2');
+    $scope.drawHedging('/hedging/realtime/10', 'container3');
   }
 ]);
