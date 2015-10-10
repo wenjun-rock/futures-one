@@ -7,18 +7,28 @@ public class HedgingView {
 	private Integer id;
 	private String name;
 	private String formula;
-	private BigDecimal stdError;
+	private BigDecimal complete;
 	private BigDecimal diffKline;
 	private BigDecimal diffRealtime;
+	private Integer up;
+	private Integer down;
+	private Integer mid;
+	private Integer q1;
+	private Integer q3;
 
-	public HedgingView(Integer id, String name, String formula, BigDecimal stdError, BigDecimal diffKline,
-			BigDecimal diffRealtime) {
+	public HedgingView(Integer id, String name, String formula, BigDecimal complete, BigDecimal diffKline,
+			BigDecimal diffRealtime, Integer up, Integer down, Integer mid, Integer q1, Integer q3) {
 		this.id = id;
 		this.name = name;
 		this.formula = formula;
-		this.stdError = stdError;
+		this.complete = complete;
 		this.diffKline = diffKline;
 		this.diffRealtime = diffRealtime;
+		this.up = up;
+		this.down = down;
+		this.mid = mid;
+		this.q1 = q1;
+		this.q3 = q3;
 	}
 
 	public Integer getId() {
@@ -33,8 +43,8 @@ public class HedgingView {
 		return formula;
 	}
 
-	public BigDecimal getStdError() {
-		return stdError;
+	public BigDecimal getComplete() {
+		return complete;
 	}
 
 	public BigDecimal getDiffKline() {
@@ -43,6 +53,26 @@ public class HedgingView {
 
 	public BigDecimal getDiffRealtime() {
 		return diffRealtime;
+	}
+
+	public Integer getUp() {
+		return up;
+	}
+
+	public Integer getDown() {
+		return down;
+	}
+
+	public Integer getMid() {
+		return mid;
+	}
+
+	public Integer getQ1() {
+		return q1;
+	}
+
+	public Integer getQ3() {
+		return q3;
 	}
 
 }

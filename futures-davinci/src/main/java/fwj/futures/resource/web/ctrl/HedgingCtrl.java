@@ -10,29 +10,22 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.HedgingBuss;
 import fwj.futures.resource.buss.HedgingContractBuss;
 import fwj.futures.resource.buss.HedgingExperimentBuss;
 import fwj.futures.resource.buss.ProductBuss;
-import fwj.futures.resource.buss.RealTimePriceBuss;
-import fwj.futures.resource.entity.hedging.Hedging;
 import fwj.futures.resource.entity.hedging.HedgingContract;
 import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.vo.HedgingContractContainer;
 import fwj.futures.resource.vo.HedgingExperimentMonitor;
 import fwj.futures.resource.vo.HedgingExperimentView;
+import fwj.futures.resource.vo.HedgingMonitor;
 import fwj.futures.resource.vo.HedgingView;
-import fwj.futures.resource.vo.KLineGroup;
-import fwj.futures.resource.vo.UnitDataGroup;
-import fwj.futures.resource.web.vo.HedgingMonitor;
-import fwj.futures.resource.web.vo.Price;
 import fwj.futures.resource.web.vo.Series;
 
 /**
@@ -46,9 +39,6 @@ import fwj.futures.resource.web.vo.Series;
 public class HedgingCtrl {
 
 	@Autowired
-	private DailyPriceBuss kLineBuss;
-
-	@Autowired
 	private HedgingBuss hedgingBuss;
 
 	@Autowired
@@ -58,26 +48,28 @@ public class HedgingCtrl {
 	private HedgingExperimentBuss hedgingExperimentBuss;
 
 	@Autowired
-	private RealTimePriceBuss realTimePriceBuss;
-
-	@Autowired
 	private ProductBuss productBuss;
 
-	@RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
-	public HedgingMonitor monitorRealtime(@PathVariable("id") Integer id) {
-		Hedging hedging = hedgingBuss.getById(id);
-		List<UnitDataGroup> unitDataGroupList = realTimePriceBuss.queryAllAsc();
-		List<Price> prices = hedgingBuss.calculateUnitData(hedging.getExpression(), unitDataGroupList);
-		return new HedgingMonitor(hedging, prices);
-	}
-
-	@RequestMapping(value = "/daily/{id}", method = RequestMethod.GET)
-	public HedgingMonitor monitorDaily(@PathVariable("id") Integer id) {
-		Hedging hedging = hedgingBuss.getById(id);
-		List<KLineGroup> groupList = kLineBuss.queryAllGroup();
-		List<Price> prices = hedgingBuss.calculateKLine(hedging.getExpression(), groupList);
-		return new HedgingMonitor(hedging, prices);
-	}
+	// @RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
+	// public HedgingMonitor monitorRealtime(@PathVariable("id") Integer id) {
+	// Hedging hedging = hedgingBuss.getById(id);
+	// List<UnitDataGroup> unitDataGroupList = realTimePriceBuss.queryAllAsc();
+	// List<Price> prices =
+	// hedgingBuss.calculateUnitData(hedging.getExpression(),
+	// unitDataGroupList);
+	// return null;
+	// // return new HedgingMonitor(hedging, prices);
+	// }
+	//
+	// @RequestMapping(value = "/daily/{id}", method = RequestMethod.GET)
+	// public HedgingMonitor monitorDaily(@PathVariable("id") Integer id) {
+	// Hedging hedging = hedgingBuss.getById(id);
+	// List<KLineGroup> groupList = kLineBuss.queryAllGroup();
+	// List<Price> prices = hedgingBuss.calculateKLine(hedging.getExpression(),
+	// groupList);
+	// return null;
+	//// return new HedgingMonitor(hedging, prices);
+	// }
 
 	@RequestMapping(value = "/contracts", method = RequestMethod.GET)
 	public List<HedgingContractContainer> queryHedgingContractByCode(@RequestParam("code") String code) {
@@ -120,5 +112,10 @@ public class HedgingCtrl {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public List<HedgingView> queryHedging() {
 		return hedgingBuss.queryHedging();
+	}
+
+	@RequestMapping(value = "/monitor", method = RequestMethod.GET)
+	public HedgingMonitor monitorHedging(@RequestParam("id") Integer id) {
+		return hedgingBuss.monitorHedging(id);
 	}
 }

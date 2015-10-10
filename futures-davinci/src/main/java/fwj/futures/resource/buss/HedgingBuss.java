@@ -15,6 +15,7 @@ import fwj.futures.resource.entity.hedging.Hedging;
 import fwj.futures.resource.entity.price.KLine;
 import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.repository.hedging.HedgingRepository;
+import fwj.futures.resource.vo.HedgingMonitor;
 import fwj.futures.resource.vo.HedgingView;
 import fwj.futures.resource.vo.KLineGroup;
 import fwj.futures.resource.vo.UnitData;
@@ -30,7 +31,7 @@ public class HedgingBuss {
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;
-	
+
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
 
@@ -55,7 +56,7 @@ public class HedgingBuss {
 		BigDecimal result = fomular.getConstant();
 		for (Multinomial multinomial : fomular.getMultinomials()) {
 			UnitData unit = unitDataGroup.getUnitData(multinomial.getCode());
-			if (unit == UnitData.DUMMY) {
+			if (unit == null || unit == UnitData.DUMMY) {
 				return null;
 			} else {
 				result = result.add(multinomial.getCoefficient().multiply(unit.getPrice()));
@@ -94,10 +95,33 @@ public class HedgingBuss {
 	}
 
 	public List<HedgingView> queryHedging() {
-		List<Hedging> hedgingList = hedgingRepo.findAll();
 		UnitDataGroup realTime = realTimePriceBuss.queryLatest();
 		KLineGroup kline = dailyPriceBuss.queryLatest();
-		return null;
+		return hedgingRepo.findAll().stream().map(hedging -> {
+			Formula f = Formula.parse(hedging.getExpression());
+			BigDecimal diffKline = this.calculate(f, kline);
+			BigDecimal diffRealtime = this.calculate(f, realTime);
+			BigDecimal diff = diffRealtime == null ? diffKline : diffRealtime;
+			int mid = hedging.getMid();
+			int down = hedging.getDown();
+			int up = hedging.getUp();
+			BigDecimal complete = null;
+			if (diff.compareTo(new BigDecimal(mid)) > 0) {
+				complete = diff.subtract(new BigDecimal(mid)).divide(new BigDecimal(up - mid), 4, RoundingMode.FLOOR);
+			} else {
+				complete = new BigDecimal(mid).subtract(diff).divide(new BigDecimal(mid - down), 4, RoundingMode.FLOOR);
+			}
+			return new HedgingView(hedging.getId(), hedging.getName(), f.toString(), complete, diffKline, diffRealtime,
+					hedging.getUp(), hedging.getDown(), hedging.getMid(), hedging.getQ1(), hedging.getQ3());
+		}).collect(Collectors.toList());
 	}
 
+	public HedgingMonitor monitorHedging(Integer id) {
+		Hedging hedging = hedgingRepo.findOne(id);
+		Formula formula = Formula.parse(hedging.getExpression());
+		List<Price> realtimePrices = this.calculateUnitData(formula, realTimePriceBuss.queryAllAsc());
+		List<Price> klinePrices = this.calculateKLine(formula, dailyPriceBuss.queryAllGroup());
+		return new HedgingMonitor(id, hedging.getName(), formula.toString(), hedging.getDown(), hedging.getUp(),
+				realtimePrices, klinePrices);
+	}
 }
