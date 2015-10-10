@@ -9,73 +9,69 @@ angular.module('miche.hedging', ['ngRoute'])
   });
 }])
 
-.controller('micheHedgingCtrl', ['$scope', '$http', 'CF',
-  function($scope, $http, CF) {
+.controller('micheHedgingCtrl', ['$scope', 'micheHttp', 'micheChart', 'micheData',
+  function($scope, micheHttp, micheChart, micheData) {
 
-    $scope.drawHedging = function(url, domId) {
-      $.getJSON(url, function(data) {
+    micheHttp.get('/hedging/list').success(function(list) {
+      $('#hedging-table').dataTable({
+        "data": list,
+        "destroy": true,
+        "info": false,
+        "order": [
+          [2, "desc"]
+        ],
+        "columns": [{
+          "data": "name"
+        }, {
+          "data": "formula"
+        }, {
+          "data": "complete"
+        }, {
+          "data": "diffRealtime"
+        }, {
+          "data": "diffKline"
+        }, {
+          "data": "down"
+        }, {
+          "data": "up"
+        }, {
+          "data": "mid"
+        }, {
+          "data": "q1"
+        }, {
+          "data": "q3"
+        }],
+        "columnDefs": [{
+          "render": function(data, type, row) {
+            return '<a href="javascript:void(0)" onclick="$(\'#monitorId\').val(' + row.id + ');$(\'#monitorId\').click();return false;">' + data + '</a>';
+          },
+          "targets": [0]
+        }]
+      });
+    });
 
-        var series = data.prices.map(function(price) {
+    $scope.monitorHedging = function() {
+      var monitorId = $('#monitorId').val();
+      micheHttp.get('/hedging/monitor', {
+        id: monitorId
+      }).success(function(hedgingMonitor) {
+        var hedging = {
+          down: hedgingMonitor.down,
+          up: hedgingMonitor.up
+        };
+
+        hedging.name = hedgingMonitor.name + "(实时)";
+        hedging.data = hedgingMonitor.realtimePrices.map(function(price) {
           return [price.d, price.p];
         });
+        micheChart.drawHedging(hedging, 'monitor-hedging-realtime');
 
-        $('#' + domId).highcharts({
-          chart: {
-            zoomType: 'x'
-          },
-          title: {
-            text: data.hedging.name + ' (' + data.hedging.downLimit + ',' + data.hedging.upLimit + ')'
-          },
-          xAxis: {
-            type: "datetime"
-          },
-          yAxis: {
-            title: {
-              text: '钻石点'
-            },
-            plotBands: [{
-              from: data.hedging.upLimit,
-              to: data.hedging.upLimit + 10000,
-              color: '#FFD700',
-            }, {
-              from: data.hedging.upLimit / 2,
-              to: data.hedging.upLimit,
-              color: '#FFF8DC',
-            }, {
-              from: data.hedging.downLimit,
-              to: data.hedging.downLimit / 2,
-              color: '#FFF8DC',
-            }, {
-              from: data.hedging.downLimit - 10000,
-              to: data.hedging.downLimit,
-              color: '#FFD700',
-            }]
-          },
-          tooltip: {
-            shared: true,
-            crosshairs: true
-          },
-          legend: {
-            enabled: false
-          },
-          series: [{
-            name: 'hello',
-            data: data.prices.map(function(price) {
-              return [price.d, price.p];
-            })
-          }]
-
+        hedging.name = hedgingMonitor.name + "(日K)";
+        hedging.data = hedgingMonitor.klinePrices.map(function(price) {
+          return [price.d, price.p];
         });
+        micheChart.drawHedging(hedging, 'monitor-hedging-kline');
       });
-
-    };
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/8', 'container1');
-    $scope.drawHedging(CF.preurl + '/hedging/daily/8', 'container2');
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/9', 'container3');
-    $scope.drawHedging(CF.preurl + '/hedging/daily/9', 'container4');
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/10', 'container5');
-    $scope.drawHedging(CF.preurl + '/hedging/daily/10', 'container6');
-    $scope.drawHedging(CF.preurl + '/hedging/realtime/4', 'container7');
-    $scope.drawHedging(CF.preurl + '/hedging/daily/4', 'container8');
+    }
   }
 ]);

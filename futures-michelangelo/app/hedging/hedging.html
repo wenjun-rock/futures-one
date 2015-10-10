@@ -1,33 +1,32 @@
 <div>
   <div class="row">
     <ol class="breadcrumb">
-      <li class="active">套利</li>
+      <li class="active">跨产品对冲</li>
     </ol>
   </div>
+  <table id="hedging-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th>名称</th>
+        <th>公式</th>
+        <th>完成度</th>
+        <th>实时</th>
+        <th>日K</th>
+        <th>下限</th>
+        <th>上限</th>
+        <th>平均</th>
+        <th>1Q</th>
+        <th>3Q</th>
+      </tr>
+    </thead>
+  </table>
+  <input type="hidden" ng-click="monitorHedging();" id="monitorId"></input>
   <div class="row">
     <div class="col-md-6">
-      <div class="panel panel-default" id="container1"></div>
+      <div id="monitor-hedging-realtime"></div>
     </div>
     <div class="col-md-6">
-      <div class="panel panel-default" id="container2"></div>
-    </div>
-    <div class="col-md-6">
-      <div class="panel panel-default" id="container3"></div>
-    </div>
-    <div class="col-md-6">
-      <div class="panel panel-default" id="container4"></div>
-    </div>
-    <div class="col-md-6">
-      <div class="panel panel-default" id="container5"></div>
-    </div>
-    <div class="col-md-6">
-      <div class="panel panel-default" id="container6"></div>
-    </div>
-    <div class="col-md-6">
-      <div class="panel panel-default" id="container7"></div>
-    </div>
-    <div class="col-md-6">
-      <div class="panel panel-default" id="container8"></div>
+      <div id="monitor-hedging-kline"></div>
     </div>
   </div>
 </div>

@@ -129,6 +129,35 @@ angular.module('miche.services', [])
       }));
     };
 
+    service.drawHedging = function(hedging, domId) {
+      $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
+        title: {
+          text: hedging.name
+        },
+        yAxis: {
+          title: {
+            text: '价差'
+          },
+          plotBands: [{
+            from: hedging.up,
+            to: hedging.up + 10000,
+            color: '#FFD700',
+          }, {
+            from: hedging.down - 10000,
+            to: hedging.down,
+            color: '#FFD700',
+          }]
+        },
+        legend: {
+          enabled: false
+        },
+        series: [{
+          name: 'diff',
+          data: hedging.data
+        }]
+      }));
+    };
+
     service.drawHedgingExperiment = function(hedging, domId) {
       $('#' + domId).highcharts({
         chart: {
