@@ -47,8 +47,11 @@ public class InitHedging extends AbstractBaseLaunch {
 
 		Stream.of(//
 				new Input("豆油-棕榈油", ProdEnum.DouYou, "1", ProdEnum.ZongLvYou, "-1"),
+				new Input("菜油-豆油", ProdEnum.CaiYou, "1", ProdEnum.DouYou, "-1"),
+				new Input("菜油-棕榈油", ProdEnum.CaiYou, "1", ProdEnum.ZongLvYou, "-1"),
 				new Input("焦炭-焦煤", ProdEnum.JiaoTan, "1", ProdEnum.JiaoMei, "-1.5"),
-				new Input("大豆-玉米", ProdEnum.DaDou1, "1", ProdEnum.YuMi, "-2")
+				new Input("大豆-玉米", ProdEnum.DaDou1, "1", ProdEnum.YuMi, "-2"),
+				new Input("沪锌-沪铅", ProdEnum.Xin, "1", ProdEnum.Qian, "-1")
 		//
 		).forEach(input -> {
 			Hedging hedging = hedgingRepository.findByName(input.name);
