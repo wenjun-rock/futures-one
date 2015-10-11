@@ -46,6 +46,12 @@ angular.module('miche.hedging', ['ngRoute'])
             return '<a href="javascript:void(0)" onclick="$(\'#monitorId\').val(' + row.id + ');$(\'#monitorId\').click();return false;">' + data + '</a>';
           },
           "targets": [0]
+        }, {
+          "render": function(data, type, row) {
+            var out = (data * 100).toFixed(2);
+            return out;
+          },
+          "targets": [2]
         }]
       });
     });
