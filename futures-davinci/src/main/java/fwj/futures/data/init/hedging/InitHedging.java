@@ -79,6 +79,8 @@ public class InitHedging extends AbstractBaseLaunch {
 					.map(Price::getP).collect(Collectors.toList());
 			Result result = StatisticsHelper.statsBigDecimal(pList);
 
+			hedging.setStartDt(startDt);
+			hedging.setEndDt(endDt);
 			hedging.setDown((int) (result.getAvg() - result.getSd()));
 			hedging.setUp((int) (result.getAvg() + result.getSd()));
 			hedging.setMid((int) (result.getAvg()));

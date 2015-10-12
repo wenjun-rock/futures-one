@@ -1,5 +1,6 @@
 package fwj.futures.resource.vo;
 
+import java.util.Date;
 import java.util.List;
 
 import fwj.futures.resource.web.vo.Price;
@@ -9,16 +10,20 @@ public class HedgingMonitor {
 	private Integer id;
 	private String name;
 	private String formula;
+	private Date startDt;
+	private Date endDt;
 	private int down;
 	private int up;
 	private List<Price> realtimePrices;
 	private List<Price> klinePrices;
 
-	public HedgingMonitor(Integer id, String name, String formula,
-			int down, int up, List<Price> realtimePrices, List<Price> klinePrices) {
+	public HedgingMonitor(Integer id, String name, String formula, Date startDt, Date endDt, int down, int up,
+			List<Price> realtimePrices, List<Price> klinePrices) {
 		this.id = id;
 		this.name = name;
 		this.formula = formula;
+		this.startDt = startDt;
+		this.endDt = endDt;
 		this.down = down;
 		this.up = up;
 		this.realtimePrices = realtimePrices;
@@ -35,6 +40,14 @@ public class HedgingMonitor {
 
 	public String getFormula() {
 		return formula;
+	}
+
+	public Date getStartDt() {
+		return startDt;
+	}
+
+	public Date getEndDt() {
+		return endDt;
 	}
 
 	public int getDown() {

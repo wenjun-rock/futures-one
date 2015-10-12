@@ -1,5 +1,7 @@
 package fwj.futures.resource.entity.hedging;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -18,6 +20,12 @@ public class Hedging extends AbstractPersistable<Integer> {
 
 	@Column(length = 400)
 	private String expression;
+	
+	@Column(columnDefinition = "DATE")
+	private Date StartDt;
+
+	@Column(columnDefinition = "DATE")
+	private Date endDt;
 
 	@Column(precision = 8)
 	private int q1;
@@ -56,6 +64,22 @@ public class Hedging extends AbstractPersistable<Integer> {
 
 	public void setExpression(String expression) {
 		this.expression = expression;
+	}
+
+	public Date getStartDt() {
+		return StartDt;
+	}
+
+	public Date getEndDt() {
+		return endDt;
+	}
+
+	public void setStartDt(Date startDt) {
+		StartDt = startDt;
+	}
+
+	public void setEndDt(Date endDt) {
+		this.endDt = endDt;
 	}
 
 	public int getQ1() {

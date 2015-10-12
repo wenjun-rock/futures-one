@@ -121,7 +121,7 @@ public class HedgingBuss {
 		Formula formula = Formula.parse(hedging.getExpression());
 		List<Price> realtimePrices = this.calculateUnitData(formula, realTimePriceBuss.queryAllAsc());
 		List<Price> klinePrices = this.calculateKLine(formula, dailyPriceBuss.queryAllGroup());
-		return new HedgingMonitor(id, hedging.getName(), formula.toString(), hedging.getDown(), hedging.getUp(),
-				realtimePrices, klinePrices);
+		return new HedgingMonitor(id, hedging.getName(), formula.toString(), hedging.getStartDt(), hedging.getEndDt(),
+				hedging.getDown(), hedging.getUp(), realtimePrices, klinePrices);
 	}
 }
