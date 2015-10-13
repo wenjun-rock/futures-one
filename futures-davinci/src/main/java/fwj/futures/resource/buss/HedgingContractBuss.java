@@ -1,6 +1,7 @@
 package fwj.futures.resource.buss;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,8 @@ public class HedgingContractBuss {
 				Map<Integer, ContractKLine> ele = entry.getValue();
 				ContractKLine k1 = ele.get(hedging.getContractMonth1());
 				ContractKLine k2 = ele.get(hedging.getContractMonth2());
-				BigDecimal diff = k2.getEndPrice().subtract(k1.getEndPrice());
+				BigDecimal diff = k2.getEndPrice().subtract(k1.getEndPrice()).multiply(new BigDecimal(100))
+						.divide(k1.getEndPrice(), 2, RoundingMode.FLOOR);
 				Integer tradeVol1 = k1.getTradeVol();
 				Integer tradeVol2 = k2.getTradeVol();
 				return new HedgingContractDiff(diff, tradeVol1, tradeVol2, entry.getKey());
@@ -55,7 +57,7 @@ public class HedgingContractBuss {
 			return new HedgingContractContainer(hedging.getName(), line, LineHelper.foldLineInYear(line));
 		}).collect(Collectors.toList());
 	}
-	
+
 	@Cacheable("HedgingContractBuss.queryHedgingContractBasic")
 	public List<HedgingContract> queryHedgingContractBasic(String code) {
 		return hedgingRepo.findByCode(code);
