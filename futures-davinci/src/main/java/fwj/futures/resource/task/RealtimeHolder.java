@@ -126,10 +126,10 @@ public class RealtimeHolder {
 					rt.setPriceTime(datetime);
 					rt.setCode(code);
 					rt.setData(data);
-//					realtimeRepository.save(rt);
+					realtimeRepository.save(rt);
 				}
 			}
-//			realtimeRepository.flush();
+			realtimeRepository.flush();
 			UnitDataGroup current = new UnitDataGroup(datetime, map);
 			int nextIndex = (tick + 1) % loopCache.length;
 			loopCache[nextIndex] = current;
