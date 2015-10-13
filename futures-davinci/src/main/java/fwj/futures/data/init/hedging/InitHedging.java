@@ -46,9 +46,9 @@ public class InitHedging extends AbstractBaseLaunch {
 		Date endDt = df.parse("2015-09-01");
 
 		Stream.of(//
-				new Input("豆油-棕榈油", ProdEnum.DouYou, "1", ProdEnum.ZongLvYou, "-1"),
-				new Input("菜油-豆油", ProdEnum.CaiYou, "1", ProdEnum.DouYou, "-1"),
-				new Input("菜油-棕榈油", ProdEnum.CaiYou, "1", ProdEnum.ZongLvYou, "-1"),
+				new Input("豆油-棕榈油", ProdEnum.DouYou, "1", ProdEnum.ZongLvYou, "-1.5"),
+				new Input("菜油-豆油", ProdEnum.CaiYou, "1", ProdEnum.DouYou, "-1.5"),
+				new Input("菜油-棕榈油", ProdEnum.CaiYou, "1", ProdEnum.ZongLvYou, "-2"),
 				new Input("大豆-玉米", ProdEnum.DaDou1, "1", ProdEnum.YuMi, "-2"),
 				new Input("淀粉-玉米", ProdEnum.YuDian, "1", ProdEnum.YuMi, "-1"),
 				
