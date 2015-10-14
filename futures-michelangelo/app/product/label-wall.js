@@ -159,7 +159,9 @@ angular.module('miche.label.wall', ['ngRoute', 'miche.services'])
             var chart = $('#chart-label-' + key).highcharts();
             chart.series.forEach(function(series, index) {
               var code = val.label.products[index].code;
-              series.addPoint(codePoint[code], false);
+              if (codePoint[code]) {
+                series.addPoint(codePoint[code], false);
+              }
             });
             chart.redraw();
           });
