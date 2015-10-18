@@ -51,6 +51,10 @@ public class InitHedging extends AbstractBaseLaunch {
 				new Input("菜油-棕榈油", ProdEnum.CaiYou, "1", ProdEnum.ZongLvYou, "-2"),
 				new Input("大豆-玉米", ProdEnum.DaDou1, "1", ProdEnum.YuMi, "-2"),
 				new Input("淀粉-玉米", ProdEnum.YuDian, "1", ProdEnum.YuMi, "-1"),
+				new Input("大豆-豆粕", ProdEnum.DaDou1, "1", ProdEnum.DouPo, "-1"),
+				new Input("豆油-豆粕", ProdEnum.DouYou, "1", ProdEnum.DouPo, "-2"),
+				new Input("菜油-菜粕", ProdEnum.CaiYou, "1", ProdEnum.CaiPo, "-2"),
+				new Input("豆粕-菜粕", ProdEnum.DouPo, "1", ProdEnum.CaiPo, "-1"),
 				
 				new Input("焦炭-焦煤", ProdEnum.JiaoTan, "1", ProdEnum.JiaoMei, "-1.5"),
 				new Input("热卷-螺纹", ProdEnum.ReJuan, "1", ProdEnum.LuoWenGang, "-1"),
