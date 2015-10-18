@@ -1,5 +1,8 @@
 package fwj.futures.data.init.prod;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +29,7 @@ public class InitFutures extends AbstractBaseLaunch {
 			prod.setName(ele.getName());
 			prod.setUnit(ele.getUnit());
 			prod.setUnitDesc(ele.getUnitDesc());
+			prod.setMarginRate(new BigDecimal(ele.getPctMargin()).divide(new BigDecimal(100), 4, RoundingMode.FLOOR));
 			prod.setExchange(ele.getExchange().toString());
 			prod.setActive(1);
 			productRepository.save(prod);
