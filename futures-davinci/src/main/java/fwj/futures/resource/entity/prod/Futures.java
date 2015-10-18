@@ -1,5 +1,7 @@
 package fwj.futures.resource.entity.prod;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -28,6 +30,9 @@ public class Futures extends AbstractPersistable<Integer> {
 
 	@Column(length = 10)
 	private String unitDesc;
+	
+	@Column(precision = 4, scale = 4)
+	private BigDecimal marginRate;
 
 	public String getCode() {
 		return code;
@@ -75,6 +80,14 @@ public class Futures extends AbstractPersistable<Integer> {
 
 	public void setActive(int active) {
 		this.active = active;
+	}
+
+	public BigDecimal getMarginRate() {
+		return marginRate;
+	}
+
+	public void setMarginRate(BigDecimal marginRate) {
+		this.marginRate = marginRate;
 	}
 
 }
