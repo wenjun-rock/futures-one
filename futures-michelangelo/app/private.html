@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="micheApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+  <title>FuturesPlatform-愿乘长风破万里浪</title>
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bower_components/datatables/media/css/dataTables.bootstrap.min.css">
+  <!-- Custom styles for this template -->
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+  <!-- Static navbar -->
+  <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#/home">FuturesPlatform</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#/trade">交易</a></li>
+          <li><a href="#/product/labels">产品</a></li>
+          <li><a href="#/hedging/experiments">跨商品对冲</a></li>
+          <li><a href="#/hedging/prods">跨商品对冲(人工)</a></li>
+          <li><a href="#/hedging/contract/A">跨期对冲</a></li>
+          <li><a href="#/hedging/compare">价格比较</a></li>
+          <li><a href="#/trend">趋势</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div ng-view class="jumbotron" style="padding-left: 15px;padding-right: 15px;"></div>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script type="text/javascript" charset="utf8" src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/datatables/media/js/dataTables.bootstrap.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="modified_components/highcharts/highcharts.src.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/highcharts/modules/exporting.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/angular-route/angular-route.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="app.js"></script>
+  <script type="text/javascript" charset="utf8" src="common/micheServices.js"></script>
+  <script type="text/javascript" charset="utf8" src="home/home.js"></script>
+  <script type="text/javascript" charset="utf8" src="product/label.js"></script>
+  <script type="text/javascript" charset="utf8" src="product/product.js"></script>
+  <script type="text/javascript" charset="utf8" src="product/label-wall.js"></script>
+  <script type="text/javascript" charset="utf8" src="hedging/hedging.js"></script>
+  <script type="text/javascript" charset="utf8" src="hedging/hedging-contract.js"></script>
+  <script type="text/javascript" charset="utf8" src="hedging/hedging-experiments.js"></script>
+  <script type="text/javascript" charset="utf8" src="hedging/hedging-compare.js"></script>
+  <script type="text/javascript" charset="utf8" src="trade/trade-list.js"></script>
+  <script type="text/javascript">
+  Highcharts.setOptions({
+    global: {
+      useUTC: false
+    }
+  });
+  </script>
+</body>
+
+</html>

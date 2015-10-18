@@ -11,7 +11,8 @@ angular.module('micheApp', [
   'miche.hedging',
   'miche.hedging.contract',
   'miche.hedging.experiments',
-  'miche.hedging.compare'
+  'miche.hedging.compare',
+  'miche.trade.list'
 ])
 
 .config(['$routeProvider', function($routeProvider) {

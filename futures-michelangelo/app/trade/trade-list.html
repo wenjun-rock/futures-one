@@ -1,0 +1,93 @@
+<div>
+  <div class="row">
+    <ol class="breadcrumb">
+      <li class="active">交易清单</li>
+    </ol>
+  </div>
+  <div style="height: 45px; border-bottom: 3px solid #ddd;">
+    <div style="float: right; margin-bottom: 20px;">
+      <button type="button" class="btn btn-primary" ng-click="addTradeModal()">再来一局</button>
+    </div>
+    <div style="float: left; margin-bottom: 20px;">
+      <span style="margin-right: 10px; font-size: 24px">持仓收益:</span>
+      <span ng-class="{'price-up':totalFloatProfit>0,'price-down':totalFloatProfit<0}" style="margin-right: 30px; font-size: 30px">{{totalFloatProfit | number}}</span>
+      <span style="margin-right: 10px; font-size: 24px">平仓收益:</span>
+      <span ng-class="{'price-up':totalCompleteProfit>0,'price-down':totalCompleteProfit<0}" style="margin-right: 30px; font-size: 30px">{{totalCompleteProfit | number}}</span>
+      <span style="margin-right: 10px; font-size: 24px">总收益:</span>
+      <span ng-class="{'price-up':totalProfit>0,'price-down':totalProfit<0}" style="margin-right: 30px; font-size: 30px">{{totalProfit | number}}</span>
+    </div>
+  </div>
+  <div style="clear: both">
+    <table id="trade-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>类型</th>
+          <th>开始日期</th>
+          <th>结束日期</th>
+          <th>持仓量</th>
+          <th>保证金</th>
+          <th>持仓收益</th>
+          <th>平仓收益</th>
+          <th>总收益</th>
+          <th>最大保证金</th>
+          <th>ROI(%)</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+  <input type="hidden" ng-click="detailTrade();" id="detailId"></input>
+  <input type="hidden" ng-click="openPositionModal();" id="openId"></input>
+  <input type="hidden" ng-click="closePositionModal();" id="closeId"></input>
+  <script type="text/ng-template" id="addTradeModal.html">
+    <div class="modal-header">
+      <h3 class="modal-title">添加交易</h3>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="trade.name">名称</label>
+        <input type="text" class="form-control" id="trade.name" ng-model="trade.name">
+      </div>
+      <div class="form-group">
+        <label for="trade.type">类型</label>
+        <select id="trade.type" class="form-control" ng-model="trade.type" ng-options="ele.code as ele.name for ele in tradeTypes"></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="trade.name.length == 0">提交</button>
+      <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+    </div>
+  </script>
+  <script type="text/ng-template" id="openPositionModal.html">
+    <div class="modal-header">
+      <h3 class="modal-title">开仓</h3>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="action.conCode">合约编码</label>
+        <input type="text" class="form-control" id="action.conCode" ng-model="action.conCode">
+      </div>
+      <div class="form-group">
+        <label for="action.actionDt">交易时间</label>
+        <input type="date" class="form-control" id="action.dt" ng-model="action.dt">
+      </div>
+      <div class="form-group">
+        <label for="action.type">类型</label>
+        <select id="action.type" class="form-control" ng-model="action.type" ng-options="ele.code as ele.name for ele in actionTypes"></select>
+      </div>
+      <div class="form-group">
+        <label for="action.price">成交价</label>
+        <input type="text" class="form-control" id="action.price" ng-model="action.price">
+      </div>
+      <div class="form-group">
+        <label for="action.vol">手数</label>
+        <input type="text" class="form-control" id="action.vol" ng-model="action.vol">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="action.contractCode.length == 0 || action.price.length == 0 || action.vol.length == 0">提交</button>
+      <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
+    </div>
+  </script>
+</div>
