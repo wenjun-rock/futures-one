@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -29,6 +30,7 @@ import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.entity.price.RealtimeStore;
 import fwj.futures.resource.entity.prod.FuturesTradeTime;
 import fwj.futures.resource.repository.price.RealtimeRepository;
+import fwj.futures.resource.trade.repos.TradeBalanceRepos;
 import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.vo.UnitDataGroup;
 
@@ -50,11 +52,17 @@ public class RealtimeHolder {
 
 	@Autowired
 	private RealtimeRepository realtimeRepository;
+	
+	@Autowired
+	private TradeBalanceRepos tradeBalanceRepos;
 
 	private int tick = -1;
 	private boolean first = true;
 	private boolean running = false;
 	private UnitDataGroup[] loopCache = new UnitDataGroup[CACHE_SIZE];
+	
+	private ConcurrentHashMap<String, ArrayList<String>> regContract = new ConcurrentHashMap<>();
+	private Map<String, UnitData> latestContractPrice = null;
 
 	/**
 	 * 间隔1分钟调度
@@ -198,6 +206,12 @@ public class RealtimeHolder {
 		}
 		tick = groupList.size() - 1;
 		log.info(groupList.size() + " UnitDataGroup was loaded.");
+		
+		
+		tradeBalanceRepos.findAll().forEach(balance -> {
+			
+		});
+		
 	}
 
 	public List<UnitDataGroup> getRealtime() {
