@@ -95,4 +95,13 @@ public class RealTimePriceBuss {
 		return realtimeHolder.getLatest();
 	}
 
+	public UnitData queryLatest(String code) {
+		List<UnitData> list = this.queryAscByCode(code);
+		if (list.size() > 0) {
+			return list.get(list.size() - 1);
+		} else {
+			return null;
+		}
+	}
+
 }

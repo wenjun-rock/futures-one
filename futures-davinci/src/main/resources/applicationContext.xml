@@ -32,6 +32,7 @@
 		<property name="packagesToScan">
 			<array>
 				<value>fwj.futures.resource.entity</value>
+				<value>fwj.futures.resource.*.entity</value>
 			</array>
 		</property>
 		<property name="jpaProperties">
