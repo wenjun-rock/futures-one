@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.entity.prod.Futures;
-import fwj.futures.resource.task.RealtimeHolder;
 import fwj.futures.resource.trade.entity.Trade;
 import fwj.futures.resource.trade.entity.TradeAction;
 import fwj.futures.resource.trade.entity.TradeBalance;
@@ -56,10 +55,14 @@ public class TradeBuss {
 			if (trade.getEndDt() == null) {
 				int floatProfile = tradeBalanceRepos.findByTrade(trade).stream()
 						.collect(Collectors.summingInt(balance -> {
-					UnitData unitData = realTimePriceBuss.queryLatest(balance.getCode());
+					if (balance.getVol() == 0) {
+						return 0;
+					}
+					UnitData unitData = realTimePriceBuss.queryLatestContract(balance.getConCode());
 					Futures futures = productBuss.queryFuturesByCode(balance.getCode());
 					int valuePerVol = unitData.getPrice().multiply(new BigDecimal(futures.getUnit())).intValue();
-					return valuePerVol * balance.getVol() - balance.getTotalCostValue();
+					int diff = valuePerVol * balance.getVol() - balance.getTotalCostValue();
+					return balance.getType() == 1 ? diff : 0 - diff;
 				}));
 				view.setFloatProfit(floatProfile);
 				view.setProfit(trade.getCompleteProfit() + floatProfile);
@@ -179,10 +182,10 @@ public class TradeBuss {
 		TradeAction retAction = tradeActionRepos.saveAndFlush(action);
 		tradeBalanceRepos.saveAndFlush(balance);
 		tradeRepos.saveAndFlush(trade);
-		
+
 		// register contract
 		realTimePriceBuss.registerContract(code, conCode);
-		
+
 		actionView.setId(retAction.getId());
 		return actionView;
 	}
