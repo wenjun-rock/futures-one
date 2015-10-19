@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -103,5 +104,14 @@ public class RealTimePriceBuss {
 			return null;
 		}
 	}
-
+	
+	public UnitData queryLatestContract(String conCode) {
+		Map<String, UnitData> map =  realtimeHolder.getLatestContractPrice();
+		return map == null ? null : map.get(conCode);
+	}
+	
+	public void registerContract(String code, String conCode) {
+		realtimeHolder.registerContract(code, conCode);
+	}
+	
 }

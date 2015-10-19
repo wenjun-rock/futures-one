@@ -40,9 +40,6 @@ public class TradeBuss {
 
 	@Autowired
 	private ProductBuss productBuss;
-	
-	@Autowired
-	private RealtimeHolder realtimeHolder;
 
 	public List<TradeView> listTrade() {
 		return tradeRepos.findAll().stream().map(trade -> {
@@ -184,7 +181,7 @@ public class TradeBuss {
 		tradeRepos.saveAndFlush(trade);
 		
 		// register contract
-		realtimeHolder.registerContract(code, conCode);
+		realTimePriceBuss.registerContract(code, conCode);
 		
 		actionView.setId(retAction.getId());
 		return actionView;
