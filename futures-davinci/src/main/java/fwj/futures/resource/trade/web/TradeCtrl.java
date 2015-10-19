@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.resource.trade.buss.TradeBuss;
 import fwj.futures.resource.trade.vo.ActionView;
+import fwj.futures.resource.trade.vo.TradeDetail;
 import fwj.futures.resource.trade.vo.TradeView;
 
 @RestController()
@@ -22,6 +24,11 @@ public class TradeCtrl {
 	@RequestMapping(value = "/list-trade", method = RequestMethod.GET)
 	public List<TradeView> listTrade() {
 		return tradeBuss.listTrade();
+	}
+	
+	@RequestMapping(value = "/detail-trade", method = RequestMethod.GET)
+	public TradeDetail detailTrade(@RequestParam("id") Integer tradeId) {
+		return tradeBuss.detailTrade(tradeId);
 	}
 
 	@RequestMapping(value = "/add-trade", method = RequestMethod.POST)

@@ -13,4 +13,6 @@ public interface TradeActionRepos extends JpaRepository<TradeAction, Integer> {
 
 	List<TradeAction> findByTradeAndConCodeOrderByDtAsc(Trade trade, String contractCode);
 
+	List<TradeAction> findByTradeOrderByDtAsc(Trade trade);
+
 }

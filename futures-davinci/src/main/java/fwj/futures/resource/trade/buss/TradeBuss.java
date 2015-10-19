@@ -19,6 +19,8 @@ import fwj.futures.resource.trade.repos.TradeActionRepos;
 import fwj.futures.resource.trade.repos.TradeBalanceRepos;
 import fwj.futures.resource.trade.repos.TradeRepos;
 import fwj.futures.resource.trade.vo.ActionView;
+import fwj.futures.resource.trade.vo.BalanceView;
+import fwj.futures.resource.trade.vo.TradeDetail;
 import fwj.futures.resource.trade.vo.TradeView;
 import fwj.futures.resource.vo.UnitData;
 
@@ -188,6 +190,61 @@ public class TradeBuss {
 
 		actionView.setId(retAction.getId());
 		return actionView;
+	}
+
+	public TradeDetail detailTrade(Integer tradeId) {
+		Trade trade = tradeRepos.findOne(tradeId);
+
+		List<ActionView> actionList = tradeActionRepos.findByTradeOrderByDtAsc(trade).stream().map(action -> {
+			ActionView actionView = new ActionView();
+			actionView.setId(action.getId());
+			actionView.setTradeId(tradeId);
+			actionView.setConCode(action.getConCode());
+			actionView.setDt(action.getDt());
+			actionView.setType(action.getType());
+			actionView.setVol(action.getVol());
+			actionView.setPrice(action.getPrice());
+			return actionView;
+		}).collect(Collectors.toList());
+
+		List<BalanceView> balanceList = tradeBalanceRepos.findByTrade(trade).stream().map(balance -> {
+			BalanceView balanceView = new BalanceView();
+			balanceView.setId(balance.getId());
+			balanceView.setTradeId(tradeId);
+			balanceView.setConCode(balance.getConCode());
+			balanceView.setType(balance.getType());
+			balanceView.setVol(balance.getVol());
+			balanceView.setAvgCostPrice(balance.getAvgCostPrice());
+			balanceView.setMargin(balance.getMargin());
+			balanceView.setCompleteProfit(balance.getCompleteProfit());
+			if (balance.getVol() <= 0) {
+				balanceView.setFloatProfit(0);
+			} else {
+				BigDecimal price = realTimePriceBuss.queryLatestContract(balance.getConCode()).getPrice();
+				Futures futures = productBuss.queryFuturesByCode(balance.getCode());
+				int valuePerVol = price.multiply(new BigDecimal(futures.getUnit())).intValue();
+				int diff = valuePerVol * balance.getVol() - balance.getTotalCostValue();
+				balanceView.setFloatProfit(balance.getType() == 1 ? diff : 0 - diff);
+				balanceView.setPrice(price);
+			}
+			balanceView.setProfit(balanceView.getFloatProfit() + balanceView.getCompleteProfit());
+			return balanceView;
+		}).collect(Collectors.toList());
+
+		TradeView view = new TradeView();
+		view.setId(trade.getId());
+		view.setName(trade.getName());
+		view.setType(trade.getType());
+		view.setStartDt(trade.getStartDt());
+		view.setEndDt(trade.getEndDt());
+		view.setVol(trade.getVol());
+		view.setMargin(trade.getMargin());
+		view.setMaxMargin(trade.getMaxMargin());
+		view.setCompleteProfit(trade.getCompleteProfit());
+		view.setFloatProfit(balanceList.stream().collect(Collectors.summingInt(BalanceView::getFloatProfit)));
+		view.setProfit(view.getCompleteProfit() + view.getFloatProfit());
+
+		return new TradeDetail(view, balanceList, actionList);
 	}
 
 }
