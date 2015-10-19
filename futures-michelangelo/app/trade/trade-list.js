@@ -72,7 +72,10 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
             "render": function(data, type, row) {
               if (data) {
                 var date = new Date(data);
-                return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+                var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                return year + "-" + month + "-" + day;
               } else {
                 return '';
               }
@@ -109,7 +112,7 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
           }, {
             "orderable": false,
             "render": function(data, type, row) {
-              var ele = '<button type="button" class="btn btn-info trade-btn" ng-click="toLabel(imax.id)">详情</button>';
+              var ele = '<button type="button" class="btn btn-info trade-btn" onclick="$(\'#detailId\').val(' + row.id + ');$(\'#detailId\').click();">详情</button>';
               if (row.endDt == null) {
                 ele = ele + '<button type="button" class="btn btn-warning trade-btn" onclick="$(\'#openId\').val(' + row.id + ');$(\'#openId\').click();">开仓</button>' //
                   + '<button type="button" class="btn btn-danger trade-btn" onclick="$(\'#closeId\').val(' + row.id + ');$(\'#closeId\').click();">平仓</button>';
@@ -147,6 +150,31 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
           params: function() {
             return {
               trade: openTrade
+            };
+          }
+        }
+      });
+      modalInstance.result.then(function() {
+        refresh();
+      });
+    };
+    $scope.detailTradeModal = function() {
+      var detailId = $('#detailId').val();
+      var detailTrade;
+      $scope.tradeList.some(function(trade) {
+        if (trade.id == detailId) {
+          detailTrade = trade;
+          return true;
+        }
+      });
+      var modalInstance = $modal.open({
+        size: 'lg',
+        templateUrl: 'detailTradeModal.html',
+        controller: 'micheDetailTradeModalCtrl',
+        resolve: {
+          params: function() {
+            return {
+              trade: detailTrade
             };
           }
         }
@@ -196,6 +224,125 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
   }
 )
 
+.controller('micheDetailTradeModalCtrl',
+  function($scope, micheHttp, micheData, $modalInstance, params) {
+    $scope.trade = params.trade;
+    micheHttp.get('/trade/detail-trade', {
+      id: params.trade.id
+    }).success(function(detail) {
+      $('#balance-table').dataTable({
+        "data": detail.balanceList,
+        "destroy": true,
+        "paging": false,
+        "searching": false,
+        "info": false,
+        "columns": [{
+          "data": "conCode"
+        }, {
+          "data": "type"
+        }, {
+          "data": "vol"
+        }, {
+          "data": "avgCostPrice"
+        }, {
+          "data": "price"
+        }, {
+          "data": "margin"
+        }, {
+          "data": "floatProfit"
+        }, {
+          "data": "completeProfit"
+        }, {
+          "data": "profit"
+        }],
+        "columnDefs": [{
+          "render": function(data, type, row) {
+            if (data == 1) {
+              return '多'
+            } else if (data == 2) {
+              return '空'
+            }
+          },
+          "targets": [1]
+        }, {
+          "render": function(data, type, row) {
+            if (data) {
+              return data.toLocaleString();
+            } else {
+              return '';
+            }
+          },
+          "targets": [3, 4, 5]
+        }, {
+          "render": function(data, type, row) {
+            if (data > 0) {
+              return '<span style="color:red">' + data.toLocaleString() + '</span>';
+            } else if (data < 0) {
+              return '<span style="color:green">' + data.toLocaleString() + '</span>';
+            } else {
+              return data;
+            }
+          },
+          "targets": [6, 7, 8]
+        }]
+      });
+
+      $('#action-table').dataTable({
+        "data": detail.actionList,
+        "destroy": true,
+        "paging": false,
+        "searching": false,
+        "info": false,
+        "columns": [{
+          "data": "id"
+        }, {
+          "data": "dt"
+        }, {
+          "data": "conCode"
+        }, {
+          "data": "type"
+        }, {
+          "data": "vol"
+        }, {
+          "data": "price"
+        }],
+        "columnDefs": [{
+          "render": function(data, type, row) {
+           if (data) {
+                var date = new Date(data);
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+                var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                return year + "-" + month + "-" + day;
+              } else {
+                return '';
+              }
+          },
+          "targets": [1]
+        }, {
+          "render": function(data, type, row) {
+            if (data) {
+              return data.toLocaleString();
+            } else {
+              return '';
+            }
+          },
+          "targets": [5]
+        }, {
+         "render": function(data, type, row) {
+            if (data == 1) {
+              return '多'
+            } else if (data == 2) {
+              return '空'
+            }
+          },
+          "targets": [3]
+        }]
+      });
+    });
+  }
+)
+
 .controller('micheOpenPositionModalCtrl',
   function($scope, micheHttp, micheData, $modalInstance, params) {
     $scope.actionTypes = [{
@@ -205,7 +352,7 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
       code: '2',
       name: '开空'
     }];
-    $scope.trade = params.trade
+    $scope.trade = params.trade;
     $scope.action = {
       tradeId: params.trade.id,
       conCode: '',
