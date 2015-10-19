@@ -1,5 +1,6 @@
 package fwj.futures.resource.entity.price;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -46,6 +47,14 @@ public class RealtimeStore extends AbstractPersistable<Integer>implements Compar
 
 	public void setData(String data) {
 		this.data = data;
+	}
+
+	public BigDecimal getPrice() {
+		try {
+			return new BigDecimal(data.split(",")[8]);
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 
 	/*

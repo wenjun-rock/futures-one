@@ -31,6 +31,7 @@ import fwj.futures.resource.entity.price.RealtimeStore;
 import fwj.futures.resource.entity.prod.FuturesTradeTime;
 import fwj.futures.resource.repository.price.RealtimeRepository;
 import fwj.futures.resource.trade.repos.TradeBalanceRepos;
+import fwj.futures.resource.util.FuncHelper;
 import fwj.futures.resource.vo.UnitData;
 import fwj.futures.resource.vo.UnitDataGroup;
 
@@ -52,7 +53,7 @@ public class RealtimeHolder {
 
 	@Autowired
 	private RealtimeRepository realtimeRepository;
-	
+
 	@Autowired
 	private TradeBalanceRepos tradeBalanceRepos;
 
@@ -60,9 +61,9 @@ public class RealtimeHolder {
 	private boolean first = true;
 	private boolean running = false;
 	private UnitDataGroup[] loopCache = new UnitDataGroup[CACHE_SIZE];
-	
-	private ConcurrentHashMap<String, ArrayList<String>> regContract = new ConcurrentHashMap<>();
-	private Map<String, UnitData> latestContractPrice = null;
+
+	private ConcurrentHashMap<String, List<String>> regContract = new ConcurrentHashMap<>();
+	private Map<String, UnitData> latestContractPrice = new HashMap<>();
 
 	/**
 	 * 间隔1分钟调度
@@ -103,48 +104,99 @@ public class RealtimeHolder {
 			mills = (mills / 1000) * 1000;
 			Date datetime = new Date(mills);
 
-			List<String> lines = new ArrayList<>();
-			int from = 0;
-			while (from < codeList.size()) {
-				int to = Math.min(from + 10, codeList.size());
-				String params = codeList.subList(from, to).stream().map(code -> code + "0")
-						.reduce((l, r) -> l + "," + r).get();
-				try {
-					lines.addAll(Resources.readLines(new URL(String.format(URI_RT, params)), Charset.forName("GBK")));
-				} catch (Exception ex) {
-					log.error("error when access " + String.format(URI_RT, params));
-					return;
-				}
-				from += 10;
-			}
-
-			Map<String, UnitData> map = new HashMap<>();
-			for (int i = 0; i < codeList.size(); i++) {
-				String line = lines.get(i);
-				int beg = line.indexOf("\"");
-				int end = line.lastIndexOf("\"");
-				if (end - beg > 1) {
-					String data = line.substring(beg + 1, end);
-					BigDecimal price = new BigDecimal(data.split(",")[8]);
-					String code = codeList.get(i);
-					if (price.compareTo(BigDecimal.ZERO) > 0) {
-						map.put(code, new UnitData(datetime, code, price));
-					}
-					RealtimeStore rt = new RealtimeStore();
-					rt.setPriceTime(datetime);
-					rt.setCode(code);
-					rt.setData(data);
-					realtimeRepository.save(rt);
-				}
-			}
-			realtimeRepository.flush();
-			UnitDataGroup current = new UnitDataGroup(datetime, map);
-			int nextIndex = (tick + 1) % loopCache.length;
-			loopCache[nextIndex] = current;
-			tick++;
-			log.info(String.format("%6d | get %s codes (%s)", tick, map.size(), String.join(",", map.keySet())));
+			updateProd(codeList, datetime);
+			updateContract(codeList, datetime);
 		}
 
+	}
+
+	private void updateProd(List<String> codeList, Date datetime) {
+		List<String> lines = new ArrayList<>();
+		int from = 0;
+		while (from < codeList.size()) {
+			int to = Math.min(from + 10, codeList.size());
+			List<String> mainCodeList = codeList.subList(from, to).stream().map(code -> code + "0")
+					.collect(Collectors.toList());
+			lines.addAll(this.getExternalRealtime(mainCodeList));
+			from += 10;
+		}
+
+		Map<String, UnitData> map = new HashMap<>();
+		for (int i = 0; i < codeList.size(); i++) {
+			String line = lines.get(i);
+			String code = codeList.get(i);
+			RealtimeStore rt = this.parseRealtime(code, datetime, line);
+			if (rt != null) {
+				BigDecimal price = rt.getPrice();
+				if (price != null && price.compareTo(BigDecimal.ZERO) > 0) {
+					map.put(code, new UnitData(datetime, code, price));
+				}
+				realtimeRepository.save(rt);
+			}
+		}
+		realtimeRepository.flush();
+		UnitDataGroup current = new UnitDataGroup(datetime, map);
+		int nextIndex = (tick + 1) % loopCache.length;
+		loopCache[nextIndex] = current;
+		tick++;
+		log.info(String.format("%6d | get %s codes (%s)", tick, map.size(), String.join(",", map.keySet())));
+	}
+
+	private void updateContract(List<String> prodCodeList, Date datetime) {
+		List<String> conCodeList = prodCodeList.stream().filter(code -> regContract.containsKey(code))
+				.flatMap(code -> regContract.get(code).stream()).collect(Collectors.toList());
+
+		List<String> lines = new ArrayList<>();
+		int from = 0;
+		while (from < conCodeList.size()) {
+			int to = Math.min(from + 10, conCodeList.size());
+			lines.addAll(this.getExternalRealtime(conCodeList.subList(from, to)));
+			from += 10;
+		}
+
+		Map<String, UnitData> map = new HashMap<>();
+		for (int i = 0; i < conCodeList.size(); i++) {
+			String line = lines.get(i);
+			String code = conCodeList.get(i);
+			RealtimeStore rt = this.parseRealtime(code, datetime, line);
+			if (rt != null) {
+				BigDecimal price = rt.getPrice();
+				if (price != null && price.compareTo(BigDecimal.ZERO) > 0) {
+					map.put(code, new UnitData(datetime, code, price));
+				}
+			}
+		}
+		log.info(String.format("refresh %s contracts (%s)", map.size(), String.join(",", map.keySet())));
+		latestContractPrice.entrySet().stream().forEach(entry -> {
+			if (!map.containsKey(entry.getKey())) {
+				map.put(entry.getKey(), entry.getValue());
+			}
+		});
+		latestContractPrice = map;
+	}
+
+	private RealtimeStore parseRealtime(String code, Date datetime, String line) {
+		int beg = line.indexOf("\"");
+		int end = line.lastIndexOf("\"");
+		if (end - beg > 1) {
+			RealtimeStore rt = new RealtimeStore();
+			rt.setPriceTime(datetime);
+			rt.setCode(code);
+			rt.setData(line.substring(beg + 1, end));
+			return rt;
+		} else {
+			return null;
+		}
+	}
+
+	private List<String> getExternalRealtime(List<String> codeList) {
+		String params = codeList.stream().reduce(FuncHelper.joinString(",")).get();
+		try {
+			return Resources.readLines(new URL(String.format(URI_RT, params)), Charset.forName("GBK"));
+		} catch (Exception ex) {
+			log.error("error when access " + String.format(URI_RT, params));
+			return codeList;
+		}
 	}
 
 	private List<String> getTradingCodes() {
@@ -183,8 +235,11 @@ public class RealtimeHolder {
 
 	private void init() throws Exception {
 		first = false;
-		// List<RealtimeStore> storeList =
-		// realtimeRepository.findTop20000OrderByPriceTimeDesc();
+		initProd();
+		initContract();
+	}
+
+	private void initProd() {
 		List<RealtimeStore> storeList = realtimeRepository
 				.findAll(new PageRequest(0, 20000, Direction.DESC, "priceTime")).getContent();
 
@@ -206,12 +261,29 @@ public class RealtimeHolder {
 		}
 		tick = groupList.size() - 1;
 		log.info(groupList.size() + " UnitDataGroup was loaded.");
-		
-		
+	}
+
+	private void initContract() {
+		// 设置regContract
 		tradeBalanceRepos.findAll().forEach(balance -> {
-			
+			if (balance.getVol() <= 0) {
+				return;
+			}
+			String conCode = balance.getConCode();
+			String code = balance.getCode();
+			List<String> conCodeList = regContract.get(code);
+			if (conCodeList == null) {
+				conCodeList = new ArrayList<>();
+				conCodeList.add(conCode);
+				regContract.put(code, conCodeList);
+			} else if (!conCodeList.contains(conCode)) {
+				conCodeList.add(conCode);
+			}
 		});
-		
+
+		// 更新所有已注册的合约，即使在非交易时段。
+		this.updateContract(productBuss.queryAllCode(), new Date());
+
 	}
 
 	public List<UnitDataGroup> getRealtime() {
@@ -232,6 +304,22 @@ public class RealtimeHolder {
 			return null;
 		} else {
 			return loopCache[tick % loopCache.length];
+		}
+	}
+
+	public Map<String, UnitData> getLatestContractPrice() {
+		return latestContractPrice;
+	}
+
+	public void registerContract(String code, String conCode) {
+		List<String> conCodeList = regContract.get(code);
+		if (conCodeList == null) {
+			conCodeList = new ArrayList<>();
+			conCodeList.add(conCode);
+			this.updateContract(Arrays.asList(code), new Date());
+		} else if (!conCodeList.contains(conCode)) {
+			conCodeList.add(conCode);
+			this.updateContract(Arrays.asList(code), new Date());
 		}
 	}
 }

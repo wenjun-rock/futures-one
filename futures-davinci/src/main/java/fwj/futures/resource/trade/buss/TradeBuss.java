@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.task.RealtimeHolder;
 import fwj.futures.resource.trade.entity.Trade;
 import fwj.futures.resource.trade.entity.TradeAction;
 import fwj.futures.resource.trade.entity.TradeBalance;
@@ -39,6 +40,9 @@ public class TradeBuss {
 
 	@Autowired
 	private ProductBuss productBuss;
+	
+	@Autowired
+	private RealtimeHolder realtimeHolder;
 
 	public List<TradeView> listTrade() {
 		return tradeRepos.findAll().stream().map(trade -> {
@@ -178,7 +182,10 @@ public class TradeBuss {
 		TradeAction retAction = tradeActionRepos.saveAndFlush(action);
 		tradeBalanceRepos.saveAndFlush(balance);
 		tradeRepos.saveAndFlush(trade);
-
+		
+		// register contract
+		realtimeHolder.registerContract(code, conCode);
+		
 		actionView.setId(retAction.getId());
 		return actionView;
 	}
