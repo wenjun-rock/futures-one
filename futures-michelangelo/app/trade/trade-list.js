@@ -14,7 +14,7 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
 
     var refresh = function() {
       micheHttp.get('/trade/list-trade').success(function(tradeList) {
-
+        $scope.tradeList = tradeList;
         $scope.totalFloatProfit = 0;
         $scope.totalCompleteProfit = 0;
         $scope.totalProfit = 0;
@@ -29,6 +29,7 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
           "destroy": true,
           "info": false,
           "order": [
+            [4, "desc"],
             [2, "desc"]
           ],
           "columns": [{
@@ -132,13 +133,20 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
     };
     $scope.openPositionModal = function() {
       var openId = $('#openId').val();
+      var openTrade;
+      $scope.tradeList.some(function(trade) {
+        if (trade.id == openId) {
+          openTrade = trade;
+          return true;
+        }
+      });
       var modalInstance = $modal.open({
         templateUrl: 'openPositionModal.html',
         controller: 'micheOpenPositionModalCtrl',
         resolve: {
           params: function() {
             return {
-              tradeId: openId
+              trade: openTrade
             };
           }
         }
@@ -197,8 +205,9 @@ angular.module('miche.trade.list', ['ngRoute', 'miche.services'])
       code: '2',
       name: '开空'
     }];
+    $scope.trade = params.trade
     $scope.action = {
-      tradeId: params.tradeId,
+      tradeId: params.trade.id,
       conCode: '',
       dt: new Date(),
       type: '1',
