@@ -6,6 +6,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.resource.price.buss.ProdIndexBuss;
 
@@ -21,7 +22,12 @@ public class ProdIndexUpdator extends AbstractBaseLaunch {
 		Date endDt = cal.getTime();
 		cal.add(Calendar.YEAR, -20);
 		Date startDt = cal.getTime();
-		prodIndexBuss.updateProdIndex("RB", startDt, endDt);
+		int i = 0;
+		for (ProdEnum prod : ProdEnum.values()) {
+			log.info(
+					String.format("%3d updateProdIndex for %s between %s and %s", ++i, prod.getCode(), startDt, endDt));
+			prodIndexBuss.updateProdIndex(prod.getCode(), startDt, endDt);
+		}
 	}
 
 	public static void main(String[] args) {
