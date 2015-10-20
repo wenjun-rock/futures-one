@@ -12,7 +12,9 @@ import fwj.futures.resource.price.entity.ProdIndex;
 public interface ProdIndexRepos extends JpaRepository<ProdIndex, Integer> {
 
 	List<ProdIndex> findByCodeOrderByDtAsc(String code);
-	
+
+	List<ProdIndex> findByCodeAndDtBetweenOrderByDtAsc(String code, Date startDt, Date endDt);
+
 	int deleteByCodeAndDtBetween(String code, Date startDt, Date endDt);
-	
+
 }

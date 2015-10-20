@@ -9,10 +9,10 @@ angular.module('miche.product', ['ngRoute', 'miche.services'])
   });
 }])
 
-.controller('micheProductCtrl', ['$scope', '$routeParams', '$location', '$modal', 'micheHttp',
-  function($scope, $routeParams, $location, $modal, micheHttp) {
+.controller('micheProductCtrl', ['$scope', '$routeParams', '$location', '$modal', 'micheHttp', 'micheChart', 'micheData',
+  function($scope, $routeParams, $location, $modal, micheHttp, micheChart, micheData) {
 
-    micheHttp.get('/product/labels').success(function(labels) {
+    micheData.getLabels(true).then(function(labels) {
       labels.some(function(label) {
         if (label.id == Number($routeParams.from)) {
           label.open = true;
@@ -48,37 +48,7 @@ angular.module('miche.product', ['ngRoute', 'miche.services'])
     micheHttp.get('/product/price-prod-realtime', {
       codes: code
     }).success(function(realtime) {
-      $('#realtimeChart').highcharts({
-        chart: {
-          zoomType: 'x'
-        },
-        title: {
-          text: '实时'
-        },
-        xAxis: {
-          type: "datetime"
-        },
-        yAxis: {
-          title: {
-            text: '价格'
-          }
-        },
-        legend: {
-          enabled: false
-        },
-        tooltip: {
-          shared: true,
-          crosshairs: true
-        },
-        series: realtime.map(function(prod) {
-          return {
-            name: prod.name,
-            data: prod.prices.map(function(price) {
-              return [price.d, price.p];
-            })
-          };
-        })
-      });
+      micheChart.drawProdRealtimeChart(realtime, 'realtimeChart');
     });
 
     micheHttp.get('/product/price-contract-daily', {
@@ -136,8 +106,6 @@ angular.module('miche.product', ['ngRoute', 'miche.services'])
             week: '%m-%d',
             month: '%Y-%m'
           }
-
-
         },
         yAxis: {
           title: {
@@ -195,49 +163,10 @@ angular.module('miche.product', ['ngRoute', 'miche.services'])
     // define event handler
     $scope.dailyK = function(month) {
       micheHttp.get('/product/price-prod-daily', {
-        codes: code,
+        code: code,
         month: month
       }).success(function(daily) {
-        $('#dailyChart').highcharts({
-          chart: {
-            zoomType: 'x'
-          },
-          title: {
-            text: '日K'
-          },
-          xAxis: {
-            type: "datetime",
-            dateTimeLabelFormats: {
-              millisecond: '%H:%M:%S.%L',
-              second: '%H:%M:%S',
-              minute: '%H:%M',
-              hour: '%H:%M',
-              day: '%m-%d',
-              week: '%m-%d',
-              month: '%Y-%m'
-            }
-          },
-          yAxis: {
-            title: {
-              text: '价格'
-            }
-          },
-          legend: {
-            enabled: false
-          },
-          tooltip: {
-            shared: true,
-            crosshairs: true
-          },
-          series: daily.map(function(prod) {
-            return {
-              name: prod.name,
-              data: prod.prices.map(function(price) {
-                return [price.d, price.p];
-              })
-            };
-          })
-        });
+        micheChart.drawProdDailyPrice(daily, 'dailyChart');
       });
     };
     $scope.dailyK(3);

@@ -16,9 +16,9 @@ import com.alibaba.fastjson.JSON;
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.struct.Formula;
-import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.HedgingBuss;
 import fwj.futures.resource.entity.hedging.Hedging;
+import fwj.futures.resource.price.buss.DailyPriceBuss;
 import fwj.futures.resource.repository.hedging.HedgingRepository;
 import fwj.futures.resource.util.StatisticsHelper;
 import fwj.futures.resource.util.StatisticsHelper.Result;
@@ -56,7 +56,7 @@ public class InitHedging extends AbstractBaseLaunch {
 				new Input("菜油-菜粕", ProdEnum.CaiYou, "1", ProdEnum.CaiPo, "-2"),
 				new Input("豆粕-菜粕", ProdEnum.DouPo, "1", ProdEnum.CaiPo, "-1"),
 				
-				new Input("焦炭-焦煤", ProdEnum.JiaoTan, "1", ProdEnum.JiaoMei, "-1.5"),
+				new Input("焦炭-焦煤", ProdEnum.JiaoTan, "1", ProdEnum.JiaoMei, "-1.4"),
 				new Input("热卷-螺纹", ProdEnum.ReJuan, "1", ProdEnum.LuoWenGang, "-1"),
 				new Input("螺纹-焦炭", ProdEnum.LuoWenGang, "1", ProdEnum.JiaoTan, "-2"),
 				new Input("螺纹-动力煤", ProdEnum.LuoWenGang, "1", ProdEnum.DongLiMeiZC, "-8"),

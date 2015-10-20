@@ -3,7 +3,7 @@ package fwj.futures.resource.vo;
 import java.util.Date;
 import java.util.Map;
 
-import fwj.futures.resource.entity.price.KLine;
+import fwj.futures.resource.price.entity.KLine;
 
 /**
  * @author Administrator

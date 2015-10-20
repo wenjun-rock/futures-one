@@ -21,15 +21,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.buss.ContractDailyPriceBuss;
-import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.entity.price.ContractKLine;
 import fwj.futures.resource.entity.price.GlobalKLine;
-import fwj.futures.resource.entity.price.KLine;
 import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.entity.prod.GlobalFutures;
+import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.entity.KLine;
+import fwj.futures.resource.price.repos.KLineRepos;
 import fwj.futures.resource.repository.price.ContractKLineRepository;
 import fwj.futures.resource.repository.price.GlobalKLineRepository;
-import fwj.futures.resource.repository.price.KLineRepository;
 import fwj.futures.resource.repository.prod.FuturesRepository;
 import fwj.futures.resource.repository.prod.GlobalFuturesRepository;
 
@@ -43,7 +43,7 @@ public class KLineRefresher {
 	private static final String GLOBAL_URI_DAILY = "http://stock2.finance.sina.com.cn/futures/api/json.php/GlobalFuturesService.getGlobalFuturesDailyKLine?symbol=%s";
 
 	@Autowired
-	private KLineRepository kLineRepository;
+	private KLineRepos kLineRepository;
 
 	@Autowired
 	private GlobalKLineRepository globalKLineRepository;

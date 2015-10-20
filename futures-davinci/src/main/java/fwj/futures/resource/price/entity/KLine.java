@@ -1,4 +1,4 @@
-package fwj.futures.resource.entity.price;
+package fwj.futures.resource.price.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import fwj.futures.resource.entity.price.AbstractKLine;
 
 @Entity
 @Table(name = "price_kline", uniqueConstraints = {

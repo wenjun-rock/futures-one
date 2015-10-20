@@ -18,14 +18,14 @@ import com.google.common.io.Files;
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.process.DataURI;
-import fwj.futures.resource.entity.price.KLine;
-import fwj.futures.resource.repository.price.KLineRepository;
+import fwj.futures.resource.price.entity.KLine;
+import fwj.futures.resource.price.repos.KLineRepos;
 
 @Component
 public class ExportOrigin extends AbstractBaseLaunch {
 
 	@Autowired
-	private KLineRepository kLineRepository;
+	private KLineRepos kLineRepository;
 
 	@Autowired
 	private DataURI dataURI;

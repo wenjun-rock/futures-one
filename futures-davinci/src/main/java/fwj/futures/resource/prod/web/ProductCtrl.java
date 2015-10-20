@@ -1,4 +1,4 @@
-package fwj.futures.resource.web.ctrl;
+package fwj.futures.resource.prod.web;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.resource.buss.ContractDailyPriceBuss;
-import fwj.futures.resource.buss.DailyPriceBuss;
 import fwj.futures.resource.buss.ProdPriceBuss;
 import fwj.futures.resource.buss.ProductBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
+import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.vo.ProdDailyPrice;
 import fwj.futures.resource.vo.ProductInfo;
 import fwj.futures.resource.vo.ProductLabel;
 import fwj.futures.resource.vo.UnitDataGroup;
@@ -77,11 +78,17 @@ public class ProductCtrl {
 		return realTimePriceBuss.queryLatest();
 	}
 
-	@RequestMapping(value = "/price-prod-daily", method = RequestMethod.GET)
+	@RequestMapping(value = "/price-prod-daily2", method = RequestMethod.GET)
 	public List<Series> findDailyByCodes(@RequestParam("codes") String codes,
 			@RequestParam(value = "month", defaultValue = "-1") int month) {
 		return Stream.of(codes.split(",")).map(code -> dailyPriceBuss.querySeriesByCode(code, month))
 				.collect(Collectors.toList());
+	}
+	
+	@RequestMapping(value = "/price-prod-daily", method = RequestMethod.GET)
+	public ProdDailyPrice queryDailyByCode(@RequestParam("code") String code,
+			@RequestParam(value = "month", defaultValue = "-1") int month) {
+		return dailyPriceBuss.queryProdDailyPrice(code, month);
 	}
 
 	@RequestMapping(value = "/price-prod-realtime", method = RequestMethod.GET)

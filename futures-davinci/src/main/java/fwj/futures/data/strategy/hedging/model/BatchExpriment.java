@@ -26,11 +26,11 @@ import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.struct.Formula;
 import fwj.futures.resource.entity.hedging.HedgingProdBatch;
 import fwj.futures.resource.entity.hedging.HedgingProdExperiment;
-import fwj.futures.resource.entity.price.KLine;
 import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.price.entity.KLine;
+import fwj.futures.resource.price.repos.KLineRepos;
 import fwj.futures.resource.repository.hedging.HedgingProdBatchRepository;
 import fwj.futures.resource.repository.hedging.HedgingProdExperimentRepository;
-import fwj.futures.resource.repository.price.KLineRepository;
 import fwj.futures.resource.repository.prod.FuturesRepository;
 import fwj.futures.resource.util.CollectorsHelper;
 import fwj.futures.resource.util.FuncHelper;
@@ -53,7 +53,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 	private Experiment current;
 
 	@Autowired
-	private KLineRepository kLineRepo;
+	private KLineRepos kLineRepo;
 
 	@Autowired
 	private FuturesRepository futuresRepo;

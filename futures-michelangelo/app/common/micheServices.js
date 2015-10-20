@@ -49,6 +49,10 @@ angular.module('miche.services', [])
       xAxis: {
         type: "datetime",
         dateTimeLabelFormats: {
+          millisecond: '%H:%M:%S.%L',
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
           day: '%m-%d',
           week: '%m-%d',
           month: '%Y-%m',
@@ -58,6 +62,57 @@ angular.module('miche.services', [])
     };
 
     var service = {};
+
+    service.drawProdRealtimeChart = function(realtime, domId) {
+
+      $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
+        title: {
+          text: '实时'
+        },
+        yAxis: {
+          title: {
+            text: '价格'
+          }
+        },
+        legend: {
+          enabled: false
+        },
+        series: realtime.map(function(prod) {
+          return {
+            name: prod.name,
+            data: prod.prices.map(function(price) {
+              return [price.d, price.p];
+            })
+          }
+        })
+      }));
+    };
+
+    service.drawProdDailyPrice = function(daily, domId) {
+
+      $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
+        colors: ['#2f7ed8', '#8bbc21'],
+        title: {
+          text: '日K'
+        },
+        yAxis: {
+          title: {
+            text: '价格'
+          }
+        },
+        series: [{
+          name: '主力合约',
+          data: daily.mainPriceList.map(function(price) {
+            return [price.d, price.p];
+          })
+        }, {
+          name: '加权合约',
+          data: daily.indexPriceList.map(function(price) {
+            return [price.d, price.p];
+          })
+        }]
+      }));
+    };
 
     service.drawHedgingContractYear = function(hedging, domId) {
       var yearSeries = hedging.yearLines.map(function(ele) {
@@ -300,12 +355,24 @@ angular.module('miche.services', [])
       }
     };
 
-    service.getLabels = function() {
+    service.getLabels = function(clone) {
       if (labels) {
-        return $q.when(labels);
+        if (clone && clone == true) {
+          return $q.when(labels.map(function(label) {
+            return $.extend(false, {}, label);
+          }));
+        } else {
+          return $q.when(labels);
+        }
       } else {
         return getLabels().then(function() {
-          return labels;
+          if (clone && clone == true) {
+            return labels.map(function(label) {
+              return $.extend(false, {}, label);
+            });
+          } else {
+            return labels;
+          }
         });
       }
     };
