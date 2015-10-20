@@ -37,10 +37,13 @@ public class ProdIndexBuss {
 			BigDecimal b1 = BigDecimal.ZERO;
 			BigDecimal b2 = BigDecimal.ZERO;
 			for (ContractKLine ele : eleList) {
-				b1 = b1.add(ele.getEndPrice().multiply(new BigDecimal(ele.getTradeVol())));
-				b2 = b2.add(new BigDecimal(ele.getTradeVol()));
+				if (ele.getEndPrice() != null && ele.getTradeVol() != null) {
+					b1 = b1.add(ele.getEndPrice().multiply(new BigDecimal(ele.getTradeVol())));
+					b2 = b2.add(new BigDecimal(ele.getTradeVol()));
+				}
 			}
-			BigDecimal price = b1.divide(b2, 2, RoundingMode.FLOOR);
+			BigDecimal price = b2.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO
+					: b1.divide(b2, 2, RoundingMode.FLOOR);
 			ProdIndex prodIndex = new ProdIndex();
 			prodIndex.setCode(code);
 			prodIndex.setDt(dt);
