@@ -2,6 +2,7 @@ package fwj.futures.resource.price.buss;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.entity.price.ContractKLine;
@@ -56,5 +58,10 @@ public class ProdIndexBuss {
 
 		prodIndexRepos.save(prodIndexList);
 		prodIndexRepos.flush();
+	}
+
+	@Cacheable(value = "ProdIndexBuss.queryAscByCode")
+	public List<ProdIndex> queryAscByCode(String code) {
+		return Collections.unmodifiableList(prodIndexRepos.findByCodeOrderByDtAsc(code));
 	}
 }

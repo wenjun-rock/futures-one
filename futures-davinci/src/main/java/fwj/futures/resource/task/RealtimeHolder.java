@@ -131,10 +131,10 @@ public class RealtimeHolder {
 				if (price != null && price.compareTo(BigDecimal.ZERO) > 0) {
 					map.put(code, new UnitData(datetime, code, price));
 				}
-				realtimeRepository.save(rt);
+//				realtimeRepository.save(rt);
 			}
 		}
-		realtimeRepository.flush();
+//		realtimeRepository.flush();
 		UnitDataGroup current = new UnitDataGroup(datetime, map);
 		int nextIndex = (tick + 1) % loopCache.length;
 		loopCache[nextIndex] = current;
