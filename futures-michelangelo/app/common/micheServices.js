@@ -91,7 +91,7 @@ angular.module('miche.services', [])
     service.drawProdDailyPrice = function(daily, domId) {
 
       $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
-        colors: ['#2f7ed8', '#8bbc21'],
+        colors: ['#2f7ed8', '#f7a35c'],
         title: {
           text: '日K'
         },
