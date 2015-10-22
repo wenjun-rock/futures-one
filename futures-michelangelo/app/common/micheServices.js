@@ -64,7 +64,6 @@ angular.module('miche.services', [])
     var service = {};
 
     service.drawProdRealtimeChart = function(realtime, domId) {
-
       $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
         title: {
           text: '实时'
@@ -89,7 +88,6 @@ angular.module('miche.services', [])
     };
 
     service.drawProdDailyPrice = function(daily, domId) {
-
       $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
         colors: ['#2f7ed8', '#f7a35c'],
         title: {
@@ -112,6 +110,54 @@ angular.module('miche.services', [])
           })
         }]
       }));
+    };
+
+    service.drawTrendProd = function(prodma, domId) {
+      var series = [];
+      series.push({
+        name: prodma.prodIndexLine.name,
+        data: prodma.prodIndexLine.prices.map(function(price) {
+          return [price.d, price.p];
+        })
+      });
+      prodma.mvAvgLineList.forEach(function(mvAvgLine) {
+        series.push({
+          name: mvAvgLine.name,
+          data: mvAvgLine.prices.map(function(price) {
+            return [price.d, price.p];
+          })
+        });
+      });
+
+      $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
+        title: {
+          text: 'EMA均线'
+        },
+        yAxis: {
+          title: {
+            text: '价格'
+          }
+        },
+        plotOptions: {
+          line: {
+            lineWidth: 2,
+            states: {
+              hover: {
+                lineWidth: 3
+              }
+            }
+          }
+        },
+        series: series
+      }));
+
+      $('#' + domId).highcharts().series.forEach(function(series, index) {
+        if (index == 0 || index == 1 || index == 2 || index == 3 || index == 4) {
+          return;
+        } else {
+          series.hide();
+        }
+      });
     };
 
     service.drawHedgingContractYear = function(hedging, domId) {

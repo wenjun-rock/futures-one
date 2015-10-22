@@ -68,6 +68,13 @@ body {
   left: 10px;
 }
 
+.trend-prod-chart-toolbox{
+  position: relative;
+  float: left;
+  top: -610px;
+  left: 10px;
+}
+
 .trade-btn {
   padding: 1px 6px;
   margin-right: 10px;

@@ -1,5 +1,7 @@
 package fwj.futures.data.init.price;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,10 +20,14 @@ public class ProdIndexUpdator extends AbstractBaseLaunch {
 
 	@Override
 	protected void execute() throws Exception {
-		Calendar cal = Calendar.getInstance();
-		Date endDt = cal.getTime();
-		cal.add(Calendar.YEAR, -20);
-		Date startDt = cal.getTime();
+//		Calendar cal = Calendar.getInstance();
+//		Date endDt = cal.getTime();
+//		cal.add(Calendar.YEAR, -20);
+//		Date startDt = cal.getTime();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date startDt = df.parse("2015-10-21");
+		Date endDt = df.parse("2015-10-22");
+		
 		int i = 0;
 		for (ProdEnum prod : ProdEnum.values()) {
 			log.info(

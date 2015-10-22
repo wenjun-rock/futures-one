@@ -1,0 +1,32 @@
+<div>
+  <div class="row">
+    <ol class="breadcrumb">
+      <li class="active">商品均线</li>
+    </ol>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-primary">
+        <div class="panel-heading">产品列表</div>
+        <div class="panel-body">
+          <ul class="list-inline">
+            <li ng-repeat="prod in prods">
+              <a ng-href="#/trend/prod/{{prod.code}}" ng-hide="prod.code == code">
+                <span style="font-size: 24px; margin-right: 10px;">{{prod.name}}</span></a>
+              <span ng-show="prod.code == code" style="font-size: 30px;margin-right: 10px;">
+              <strong>{{prod.name}}</strong>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default" id="trend-prod-chart" style="height: 600px"></div>
+  <div class="trend-prod-chart-toolbox">
+    <button type="button" class="btn btn-success label-wall-btn" ng-click="dailyK(-1)">全部</button>
+    <button type="button" class="btn btn-info label-wall-btn" ng-click="dailyK(36)">近3年</button>
+    <button type="button" class="btn btn-warning label-wall-btn" ng-click="dailyK(12)">近1年</button>
+    <button type="button" class="btn btn-danger label-wall-btn" ng-click="dailyK(3)">近3月</button>
+  </div>
+</div>
