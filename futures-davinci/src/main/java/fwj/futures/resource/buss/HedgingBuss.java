@@ -11,24 +11,24 @@ import org.springframework.stereotype.Component;
 
 import fwj.futures.data.struct.Formula;
 import fwj.futures.data.struct.Formula.Multinomial;
-import fwj.futures.resource.entity.hedging.Hedging;
-import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.hedging.entity.Hedging;
+import fwj.futures.resource.hedging.repos.HedgingRepos;
+import fwj.futures.resource.hedging.vo.HedgingMonitor;
+import fwj.futures.resource.hedging.vo.HedgingView;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
 import fwj.futures.resource.price.entity.KLine;
-import fwj.futures.resource.repository.hedging.HedgingRepository;
-import fwj.futures.resource.vo.HedgingMonitor;
-import fwj.futures.resource.vo.HedgingView;
-import fwj.futures.resource.vo.KLineGroup;
-import fwj.futures.resource.vo.UnitData;
-import fwj.futures.resource.vo.UnitDataGroup;
-import fwj.futures.resource.web.vo.Price;
-import fwj.futures.resource.web.vo.Series;
+import fwj.futures.resource.price.vo.KLineGroup;
+import fwj.futures.resource.price.vo.Price;
+import fwj.futures.resource.price.vo.Series;
+import fwj.futures.resource.price.vo.UnitData;
+import fwj.futures.resource.price.vo.UnitDataGroup;
+import fwj.futures.resource.prod.entity.Futures;
 
 @Component
 public class HedgingBuss {
 
 	@Autowired
-	private HedgingRepository hedgingRepo;
+	private HedgingRepos hedgingRepo;
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;

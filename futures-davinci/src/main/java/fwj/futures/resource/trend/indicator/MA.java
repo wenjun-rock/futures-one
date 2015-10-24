@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import fwj.futures.resource.web.vo.Price;
+import fwj.futures.resource.price.vo.Price;
 
 public class MA implements Indicator {
 

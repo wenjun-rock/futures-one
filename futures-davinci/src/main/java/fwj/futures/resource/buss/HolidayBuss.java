@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.com.Holiday;
-import fwj.futures.resource.repository.com.HolidayRepository;
+import fwj.futures.resource.com.entity.Holiday;
+import fwj.futures.resource.com.repos.HolidayRepos;
 
 @Component
 public class HolidayBuss {
 	
 	@Autowired
-	private HolidayRepository holidayRepository;
+	private HolidayRepos holidayRepository;
 
 	@Cacheable(value = "HolidayBuss.queryAll")
 	public List<Holiday> queryAll() {

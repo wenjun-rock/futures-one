@@ -14,22 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.hedging.HedgingContract;
-import fwj.futures.resource.entity.price.ContractKLine;
-import fwj.futures.resource.repository.hedging.HedgingContractRepository;
-import fwj.futures.resource.repository.price.ContractKLineRepository;
+import fwj.futures.resource.hedging.entity.HedgingContract;
+import fwj.futures.resource.hedging.repos.HedgingContractRepos;
+import fwj.futures.resource.hedging.vo.HedgingContractContainer;
+import fwj.futures.resource.hedging.vo.HedgingContractDiff;
+import fwj.futures.resource.price.entity.ContractKLine;
+import fwj.futures.resource.price.repos.ContractKLineRepos;
 import fwj.futures.resource.util.LineHelper;
-import fwj.futures.resource.vo.HedgingContractContainer;
-import fwj.futures.resource.vo.HedgingContractDiff;
 
 @Component
 public class HedgingContractBuss {
 
 	@Autowired
-	private HedgingContractRepository hedgingRepo;
+	private HedgingContractRepos hedgingRepo;
 
 	@Autowired
-	private ContractKLineRepository contractKLineRepo;
+	private ContractKLineRepos contractKLineRepo;
 
 	@Cacheable(value = "HedgingContractBuss.queryHedgingContractByCode", key = "#code+','+#startDt.getTime()+','+#endDt.getTime()")
 	public List<HedgingContractContainer> queryHedgingContractByCode(Date startDt, Date endDt, String code) {

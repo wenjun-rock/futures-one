@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import fwj.futures.resource.vo.TimeLineable;
-import fwj.futures.resource.vo.YearTimeLine;
-import fwj.futures.resource.vo.YearTimeLine.PointWrap;
+import fwj.futures.resource.util.YearTimeLine.PointWrap;
 
 public class LineHelper {
 

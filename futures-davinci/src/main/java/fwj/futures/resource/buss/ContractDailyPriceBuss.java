@@ -14,17 +14,17 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.price.ContractKLine;
-import fwj.futures.resource.repository.price.ContractKLineRepository;
-import fwj.futures.resource.web.vo.Price;
-import fwj.futures.resource.web.vo.ProdContracts;
-import fwj.futures.resource.web.vo.ProdContracts.Contract;
+import fwj.futures.resource.price.entity.ContractKLine;
+import fwj.futures.resource.price.repos.ContractKLineRepos;
+import fwj.futures.resource.price.vo.Price;
+import fwj.futures.resource.prod.vo.ProdContracts;
+import fwj.futures.resource.prod.vo.ProdContracts.Contract;
 
 @Component
 public class ContractDailyPriceBuss {
 
 	@Autowired
-	private ContractKLineRepository kLineRepository;
+	private ContractKLineRepos kLineRepository;
 
 	@CacheEvict(value = { "ContractDailyPriceBuss.getConstractsByCode",
 			"ContractDailyPriceBuss.queryByCode" }, allEntries = true)

@@ -18,14 +18,14 @@ import fwj.futures.resource.buss.ProdPriceBuss;
 import fwj.futures.resource.buss.RealTimePriceBuss;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
 import fwj.futures.resource.price.vo.ProdDailyPrice;
+import fwj.futures.resource.price.vo.ProductPriceAggre;
+import fwj.futures.resource.price.vo.Series;
+import fwj.futures.resource.price.vo.UnitDataGroup;
 import fwj.futures.resource.prod.buss.ProductBuss;
 import fwj.futures.resource.prod.entity.ProdMainCon;
-import fwj.futures.resource.vo.ProductInfo;
-import fwj.futures.resource.vo.ProductLabel;
-import fwj.futures.resource.vo.UnitDataGroup;
-import fwj.futures.resource.web.vo.ProdContracts;
-import fwj.futures.resource.web.vo.ProductPriceAggre;
-import fwj.futures.resource.web.vo.Series;
+import fwj.futures.resource.prod.vo.ProdContracts;
+import fwj.futures.resource.prod.vo.ProductInfo;
+import fwj.futures.resource.prod.vo.ProductLabel;
 
 @RestController()
 @RequestMapping("/product")

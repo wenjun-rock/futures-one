@@ -10,35 +10,35 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.prod.Futures;
-import fwj.futures.resource.entity.prod.FuturesTradeTime;
-import fwj.futures.resource.entity.prod.Label;
-import fwj.futures.resource.entity.prod.LabelFutures;
+import fwj.futures.resource.prod.entity.Futures;
+import fwj.futures.resource.prod.entity.FuturesTradeTime;
+import fwj.futures.resource.prod.entity.Label;
+import fwj.futures.resource.prod.entity.LabelFutures;
 import fwj.futures.resource.prod.entity.ProdMainCon;
+import fwj.futures.resource.prod.repos.FuturesRepos;
+import fwj.futures.resource.prod.repos.FuturesTradeTimeRepos;
+import fwj.futures.resource.prod.repos.LabelFuturesRepos;
+import fwj.futures.resource.prod.repos.LabelRepos;
 import fwj.futures.resource.prod.repos.ProdMainConRepos;
-import fwj.futures.resource.repository.prod.FuturesRepository;
-import fwj.futures.resource.repository.prod.FuturesTradeTimeRepository;
-import fwj.futures.resource.repository.prod.LabelFuturesRepository;
-import fwj.futures.resource.repository.prod.LabelRepository;
-import fwj.futures.resource.vo.ProductInfo;
-import fwj.futures.resource.vo.ProductInfo.InnerLabel;
-import fwj.futures.resource.vo.ProductLabel;
-import fwj.futures.resource.vo.ProductLabel.InnerProduct;
+import fwj.futures.resource.prod.vo.ProductInfo;
+import fwj.futures.resource.prod.vo.ProductLabel;
+import fwj.futures.resource.prod.vo.ProductInfo.InnerLabel;
+import fwj.futures.resource.prod.vo.ProductLabel.InnerProduct;
 
 @Component
 public class ProductBuss {
 
 	@Autowired
-	private FuturesRepository futuresRepo;
+	private FuturesRepos futuresRepo;
 
 	@Autowired
-	private LabelFuturesRepository labelFuturesRepo;
+	private LabelFuturesRepos labelFuturesRepo;
 
 	@Autowired
-	private LabelRepository labelRepository;
+	private LabelRepos labelRepository;
 
 	@Autowired
-	private FuturesTradeTimeRepository tradeTimeRepo;
+	private FuturesTradeTimeRepos tradeTimeRepo;
 
 	@Autowired
 	private ProdMainConRepos prodMainConRepos;

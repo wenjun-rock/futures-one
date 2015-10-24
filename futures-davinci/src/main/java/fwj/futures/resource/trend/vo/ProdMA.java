@@ -2,7 +2,7 @@ package fwj.futures.resource.trend.vo;
 
 import java.util.List;
 
-import fwj.futures.resource.web.vo.Series;
+import fwj.futures.resource.price.vo.Series;
 
 public class ProdMA {
 	

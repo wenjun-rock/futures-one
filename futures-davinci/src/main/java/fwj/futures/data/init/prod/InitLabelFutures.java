@@ -9,19 +9,19 @@ import org.springframework.stereotype.Component;
 import fwj.futures.data.enu.Exchange;
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.prod.Label;
-import fwj.futures.resource.entity.prod.LabelFutures;
-import fwj.futures.resource.repository.prod.LabelFuturesRepository;
-import fwj.futures.resource.repository.prod.LabelRepository;
+import fwj.futures.resource.prod.entity.Label;
+import fwj.futures.resource.prod.entity.LabelFutures;
+import fwj.futures.resource.prod.repos.LabelFuturesRepos;
+import fwj.futures.resource.prod.repos.LabelRepos;
 
 @Component
 public class InitLabelFutures extends AbstractBaseLaunch {
 
 	@Autowired
-	private LabelRepository labelRepository;
+	private LabelRepos labelRepository;
 
 	@Autowired
-	private LabelFuturesRepository labelFuturesRepository;
+	private LabelFuturesRepos labelFuturesRepository;
 
 	@Override
 	protected void execute() throws Exception {

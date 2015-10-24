@@ -13,13 +13,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.price.vo.Price;
+import fwj.futures.resource.price.vo.Series;
+import fwj.futures.resource.price.vo.UnitData;
+import fwj.futures.resource.price.vo.UnitDataGroup;
 import fwj.futures.resource.prod.buss.ProductBuss;
+import fwj.futures.resource.prod.entity.Futures;
 import fwj.futures.resource.task.RealtimeHolder;
-import fwj.futures.resource.vo.UnitData;
-import fwj.futures.resource.vo.UnitDataGroup;
-import fwj.futures.resource.web.vo.Price;
-import fwj.futures.resource.web.vo.Series;
 
 @Component
 public class RealTimePriceBuss {

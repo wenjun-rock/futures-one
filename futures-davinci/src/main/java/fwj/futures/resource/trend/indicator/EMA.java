@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import fwj.futures.resource.web.vo.Price;
+import fwj.futures.resource.price.vo.Price;
 
 public class EMA implements Indicator {
 

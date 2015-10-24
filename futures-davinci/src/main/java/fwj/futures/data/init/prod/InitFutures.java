@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.prod.Futures;
-import fwj.futures.resource.repository.prod.FuturesRepository;
+import fwj.futures.resource.prod.entity.Futures;
+import fwj.futures.resource.prod.repos.FuturesRepos;
 
 @Component
 public class InitFutures extends AbstractBaseLaunch {
 
 	@Autowired
-	private FuturesRepository productRepository;
+	private FuturesRepos productRepository;
 
 	@Override
 	protected void execute() throws Exception {

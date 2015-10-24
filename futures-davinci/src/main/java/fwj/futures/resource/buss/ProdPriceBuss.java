@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
 import fwj.futures.resource.price.entity.KLine;
+import fwj.futures.resource.price.vo.ProductPriceAggre;
+import fwj.futures.resource.price.vo.UnitData;
 import fwj.futures.resource.prod.buss.ProductBuss;
-import fwj.futures.resource.vo.UnitData;
-import fwj.futures.resource.web.vo.ProductPriceAggre;
+import fwj.futures.resource.prod.entity.Futures;
 
 @Component
 public class ProdPriceBuss {

@@ -11,10 +11,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.com.Comment;
-import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.com.entity.Comment;
+import fwj.futures.resource.com.repos.CommentRepos;
 import fwj.futures.resource.prod.buss.ProductBuss;
-import fwj.futures.resource.repository.com.CommentRepository;
+import fwj.futures.resource.prod.entity.Futures;
 
 @Component
 public class CommentBuss {
@@ -27,7 +27,7 @@ public class CommentBuss {
 	private ProductBuss productBuss;
 
 	@Autowired
-	private CommentRepository commentRepository;
+	private CommentRepos commentRepository;
 
 	@Cacheable(value = "CommentBuss.queryAll")
 	public List<Comment> queryAll() {

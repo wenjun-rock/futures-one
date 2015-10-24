@@ -24,14 +24,14 @@ import com.google.common.io.Files;
 
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.struct.Formula;
-import fwj.futures.resource.entity.hedging.HedgingProdBatch;
-import fwj.futures.resource.entity.hedging.HedgingProdExperiment;
-import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.hedging.entity.HedgingProdBatch;
+import fwj.futures.resource.hedging.entity.HedgingProdExperiment;
+import fwj.futures.resource.hedging.repos.HedgingProdBatchRepos;
+import fwj.futures.resource.hedging.repos.HedgingProdExpRepos;
 import fwj.futures.resource.price.entity.KLine;
 import fwj.futures.resource.price.repos.KLineRepos;
-import fwj.futures.resource.repository.hedging.HedgingProdBatchRepository;
-import fwj.futures.resource.repository.hedging.HedgingProdExperimentRepository;
-import fwj.futures.resource.repository.prod.FuturesRepository;
+import fwj.futures.resource.prod.entity.Futures;
+import fwj.futures.resource.prod.repos.FuturesRepos;
 import fwj.futures.resource.util.CollectorsHelper;
 import fwj.futures.resource.util.FuncHelper;
 
@@ -56,13 +56,13 @@ public class BatchExpriment extends AbstractBaseLaunch {
 	private KLineRepos kLineRepo;
 
 	@Autowired
-	private FuturesRepository futuresRepo;
+	private FuturesRepos futuresRepo;
 
 	@Autowired
-	private HedgingProdBatchRepository hedgingProdbatchRepo;
+	private HedgingProdBatchRepos hedgingProdbatchRepo;
 
 	@Autowired
-	private HedgingProdExperimentRepository hedgingProdExperimentRepo;
+	private HedgingProdExpRepos hedgingProdExperimentRepo;
 
 	@Override
 	protected void execute() throws Exception {

@@ -26,14 +26,14 @@ import org.springframework.stereotype.Component;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.buss.HolidayBuss;
-import fwj.futures.resource.entity.price.RealtimeStore;
-import fwj.futures.resource.entity.prod.FuturesTradeTime;
+import fwj.futures.resource.price.entity.RealtimeStore;
+import fwj.futures.resource.price.repos.RealtimeRepos;
+import fwj.futures.resource.price.vo.UnitData;
+import fwj.futures.resource.price.vo.UnitDataGroup;
 import fwj.futures.resource.prod.buss.ProductBuss;
-import fwj.futures.resource.repository.price.RealtimeRepository;
+import fwj.futures.resource.prod.entity.FuturesTradeTime;
 import fwj.futures.resource.trade.repos.TradeBalanceRepos;
 import fwj.futures.resource.util.FuncHelper;
-import fwj.futures.resource.vo.UnitData;
-import fwj.futures.resource.vo.UnitDataGroup;
 
 @Component
 public class RealtimeHolder {
@@ -52,7 +52,7 @@ public class RealtimeHolder {
 	private HolidayBuss holidayBuss;
 
 	@Autowired
-	private RealtimeRepository realtimeRepository;
+	private RealtimeRepos realtimeRepository;
 
 	@Autowired
 	private TradeBalanceRepos tradeBalanceRepos;

@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 import fwj.futures.data.enu.Exchange;
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.prod.FuturesTradeTime;
-import fwj.futures.resource.repository.prod.FuturesTradeTimeRepository;
+import fwj.futures.resource.prod.entity.FuturesTradeTime;
+import fwj.futures.resource.prod.repos.FuturesTradeTimeRepos;
 
 @Component
 public class InitFuturesTradeTime extends AbstractBaseLaunch {
 
 	@Autowired
-	private FuturesTradeTimeRepository tradeTimeRepository;
+	private FuturesTradeTimeRepos tradeTimeRepository;
 
 	@Override
 	protected void execute() throws Exception {

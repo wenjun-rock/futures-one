@@ -8,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import fwj.futures.resource.entity.price.AbstractKLine;
-
 @Entity
 @Table(name = "price_kline", uniqueConstraints = {
 		@UniqueConstraint(name = "kline_uni", columnNames = { "dt", "code" }) })

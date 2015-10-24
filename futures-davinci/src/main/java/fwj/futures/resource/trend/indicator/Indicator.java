@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import fwj.futures.resource.web.vo.Price;
+import fwj.futures.resource.price.vo.Price;
 
 public interface Indicator {
 

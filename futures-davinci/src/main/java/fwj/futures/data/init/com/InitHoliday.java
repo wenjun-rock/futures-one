@@ -9,14 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.com.Holiday;
-import fwj.futures.resource.repository.com.HolidayRepository;
+import fwj.futures.resource.com.entity.Holiday;
+import fwj.futures.resource.com.repos.HolidayRepos;
 
 @Component
 public class InitHoliday extends AbstractBaseLaunch {
 
 	@Autowired
-	private HolidayRepository holidayRepository;
+	private HolidayRepos holidayRepository;
 
 	@Override
 	protected void execute() throws Exception {

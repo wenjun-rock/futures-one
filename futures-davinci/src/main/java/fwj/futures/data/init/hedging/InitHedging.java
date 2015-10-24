@@ -17,19 +17,19 @@ import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.struct.Formula;
 import fwj.futures.resource.buss.HedgingBuss;
-import fwj.futures.resource.entity.hedging.Hedging;
+import fwj.futures.resource.hedging.entity.Hedging;
+import fwj.futures.resource.hedging.repos.HedgingRepos;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
-import fwj.futures.resource.repository.hedging.HedgingRepository;
+import fwj.futures.resource.price.vo.KLineGroup;
+import fwj.futures.resource.price.vo.Price;
 import fwj.futures.resource.util.StatisticsHelper;
 import fwj.futures.resource.util.StatisticsHelper.Result;
-import fwj.futures.resource.vo.KLineGroup;
-import fwj.futures.resource.web.vo.Price;
 
 @Component
 public class InitHedging extends AbstractBaseLaunch {
 
 	@Autowired
-	private HedgingRepository hedgingRepository;
+	private HedgingRepos hedgingRepository;
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;

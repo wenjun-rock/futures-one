@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.data.struct.Formula;
-import fwj.futures.resource.entity.hedging.HedgingProdExperiment;
+import fwj.futures.resource.hedging.entity.HedgingProdExperiment;
+import fwj.futures.resource.hedging.repos.HedgingProdExpRepos;
+import fwj.futures.resource.hedging.vo.HedgingExperimentMonitor;
+import fwj.futures.resource.hedging.vo.HedgingExperimentView;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
-import fwj.futures.resource.repository.hedging.HedgingProdExperimentRepository;
-import fwj.futures.resource.vo.HedgingExperimentMonitor;
-import fwj.futures.resource.vo.HedgingExperimentView;
-import fwj.futures.resource.vo.KLineGroup;
-import fwj.futures.resource.web.vo.Price;
+import fwj.futures.resource.price.vo.KLineGroup;
+import fwj.futures.resource.price.vo.Price;
 
 @Component
 public class HedgingExperimentBuss {
@@ -30,7 +30,7 @@ public class HedgingExperimentBuss {
 	private HedgingBuss hedgingBuss;
 
 	@Autowired
-	private HedgingProdExperimentRepository experimentRepo;
+	private HedgingProdExpRepos experimentRepo;
 
 	public List<HedgingExperimentView> queryProdExperiments(BigDecimal minRsquared) {
 		List<HedgingProdExperiment> experimentList = experimentRepo.findByLimitRsquared(minRsquared);

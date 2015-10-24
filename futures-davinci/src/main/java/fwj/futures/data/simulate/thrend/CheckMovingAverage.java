@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
+import fwj.futures.resource.price.vo.Price;
 import fwj.futures.resource.trend.buss.MovingAvgBuss;
 import fwj.futures.resource.trend.indicator.EMA;
 import fwj.futures.resource.trend.vo.ProdMA;
-import fwj.futures.resource.web.vo.Price;
 
 @Component
 public class CheckMovingAverage extends AbstractBaseLaunch {

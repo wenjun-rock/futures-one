@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.hedging.HedgingContract;
-import fwj.futures.resource.repository.hedging.HedgingContractRepository;
+import fwj.futures.resource.hedging.entity.HedgingContract;
+import fwj.futures.resource.hedging.repos.HedgingContractRepos;
 
 @Component
 public class InitHedgingContract extends AbstractBaseLaunch {
 
 	@Autowired
-	private HedgingContractRepository hedgingContractRepo;
+	private HedgingContractRepos hedgingContractRepo;
 
 	@Override
 	protected void execute() throws Exception {

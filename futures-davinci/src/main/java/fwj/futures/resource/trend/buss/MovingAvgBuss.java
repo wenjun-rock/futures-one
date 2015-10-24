@@ -12,15 +12,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.buss.ContractDailyPriceBuss;
-import fwj.futures.resource.entity.price.ContractKLine;
 import fwj.futures.resource.price.buss.ProdIndexBuss;
+import fwj.futures.resource.price.entity.ContractKLine;
 import fwj.futures.resource.price.entity.ProdIndex;
+import fwj.futures.resource.price.vo.Price;
+import fwj.futures.resource.price.vo.Series;
 import fwj.futures.resource.trend.indicator.EMA;
 import fwj.futures.resource.trend.indicator.Indicator;
 import fwj.futures.resource.trend.indicator.MA;
 import fwj.futures.resource.trend.vo.ProdMA;
-import fwj.futures.resource.web.vo.Price;
-import fwj.futures.resource.web.vo.Series;
 
 @Component
 public class MovingAvgBuss {

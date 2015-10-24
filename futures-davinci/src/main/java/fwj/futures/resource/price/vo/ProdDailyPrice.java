@@ -2,8 +2,6 @@ package fwj.futures.resource.price.vo;
 
 import java.util.List;
 
-import fwj.futures.resource.web.vo.Price;
-
 public class ProdDailyPrice {
 
 	final public static ProdDailyPrice EMPTY = new ProdDailyPrice("", "", null, null);

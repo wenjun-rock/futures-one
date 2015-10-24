@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.entity.price.ContractKLine;
+import fwj.futures.resource.price.entity.ContractKLine;
 import fwj.futures.resource.price.entity.ProdIndex;
+import fwj.futures.resource.price.repos.ContractKLineRepos;
 import fwj.futures.resource.price.repos.ProdIndexRepos;
-import fwj.futures.resource.repository.price.ContractKLineRepository;
 
 @Component
 public class ProdIndexBuss {
 
 	@Autowired
-	private ContractKLineRepository conKlineRepos;
+	private ContractKLineRepos conKlineRepos;
 
 	@Autowired
 	private ProdIndexRepos prodIndexRepos;

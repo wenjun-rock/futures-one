@@ -21,17 +21,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.io.Resources;
 
 import fwj.futures.resource.buss.ContractDailyPriceBuss;
-import fwj.futures.resource.entity.price.ContractKLine;
-import fwj.futures.resource.entity.price.GlobalKLine;
-import fwj.futures.resource.entity.prod.Futures;
-import fwj.futures.resource.entity.prod.GlobalFutures;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.entity.ContractKLine;
+import fwj.futures.resource.price.entity.GlobalKLine;
 import fwj.futures.resource.price.entity.KLine;
+import fwj.futures.resource.price.repos.ContractKLineRepos;
+import fwj.futures.resource.price.repos.GlobalKLineRepos;
 import fwj.futures.resource.price.repos.KLineRepos;
-import fwj.futures.resource.repository.price.ContractKLineRepository;
-import fwj.futures.resource.repository.price.GlobalKLineRepository;
-import fwj.futures.resource.repository.prod.FuturesRepository;
-import fwj.futures.resource.repository.prod.GlobalFuturesRepository;
+import fwj.futures.resource.prod.entity.Futures;
+import fwj.futures.resource.prod.entity.GlobalFutures;
+import fwj.futures.resource.prod.repos.FuturesRepos;
+import fwj.futures.resource.prod.repos.GlobalFuturesRepos;
 
 @Component
 public class KLineRefresher {
@@ -46,16 +46,16 @@ public class KLineRefresher {
 	private KLineRepos kLineRepository;
 
 	@Autowired
-	private GlobalKLineRepository globalKLineRepository;
+	private GlobalKLineRepos globalKLineRepository;
 
 	@Autowired
-	private ContractKLineRepository contractKLineRepository;
+	private ContractKLineRepos contractKLineRepository;
 
 	@Autowired
-	private FuturesRepository futuresRepository;
+	private FuturesRepos futuresRepository;
 
 	@Autowired
-	private GlobalFuturesRepository globalFuturesRepository;
+	private GlobalFuturesRepos globalFuturesRepository;
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;

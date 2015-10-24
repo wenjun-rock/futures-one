@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.data.launch.AbstractBaseLaunch;
-import fwj.futures.resource.entity.prod.GlobalFutures;
-import fwj.futures.resource.repository.prod.GlobalFuturesRepository;
+import fwj.futures.resource.prod.entity.GlobalFutures;
+import fwj.futures.resource.prod.repos.GlobalFuturesRepos;
 
 @Component
 public class InitGlobalFutures extends AbstractBaseLaunch {
 
 	@Autowired
-	private GlobalFuturesRepository globalFuturesRepo;
+	private GlobalFuturesRepos globalFuturesRepo;
 
 	@Override
 	protected void execute() throws Exception {
