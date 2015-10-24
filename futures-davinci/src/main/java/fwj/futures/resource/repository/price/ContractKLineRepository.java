@@ -13,6 +13,8 @@ public interface ContractKLineRepository extends JpaRepository<ContractKLine, In
 	
 	List<ContractKLine> findByCodeAndDtBetween(String code, Date startDt, Date endDt);
 
+	List<ContractKLine> findByCodeAndContractMonthOrderByDtAsc(String code, int ContractMonth);
+	
 	List<ContractKLine> findByCodeOrderByDtAsc(String code);
 	
 	List<ContractKLine> findByCodeOrderByDtDesc(String code);

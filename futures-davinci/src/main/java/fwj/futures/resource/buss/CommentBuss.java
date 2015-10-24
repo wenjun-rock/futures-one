@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.entity.com.Comment;
 import fwj.futures.resource.entity.prod.Futures;
+import fwj.futures.resource.prod.buss.ProductBuss;
 import fwj.futures.resource.repository.com.CommentRepository;
 
 @Component

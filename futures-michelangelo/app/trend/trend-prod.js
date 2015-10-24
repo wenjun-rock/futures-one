@@ -27,5 +27,23 @@ angular.module('miche.trend.prod', ['ngRoute', 'miche.services'])
       });
     };
     $scope.dailyK(3);
+
+    $scope.dailyConK = function(contract, month) {
+      micheHttp.get('/trend/contract-ma', {
+        code: $scope.code,
+        contract: contract,
+        month: month
+      }).success(function(prodma) {
+        micheChart.drawTrendProd(prodma, 'trend-' + contract + '-chart')
+      });
+    };
+    micheHttp.get('/product/prod-main-contract', {
+      code: $scope.code
+    }).success(function(contracts) {
+      $scope.contracts = contracts;
+      contracts.forEach(function(contract) {
+        $scope.dailyConK(contract.month, 3);
+      });
+    });
   }
 ]);

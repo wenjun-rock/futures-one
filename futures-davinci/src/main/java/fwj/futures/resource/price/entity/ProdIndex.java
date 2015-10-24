@@ -25,6 +25,8 @@ public class ProdIndex extends AbstractPersistable<Integer>implements Comparable
 
 	@Column(precision = 10, scale = 2)
 	private BigDecimal price;
+	
+	private Integer vol;
 
 	public Date getDt() {
 		return dt;
@@ -48,6 +50,14 @@ public class ProdIndex extends AbstractPersistable<Integer>implements Comparable
 
 	public void setPrice(BigDecimal price) {
 		this.price = price;
+	}
+
+	public Integer getVol() {
+		return vol;
+	}
+
+	public void setVol(Integer vol) {
+		this.vol = vol;
 	}
 
 	@Override

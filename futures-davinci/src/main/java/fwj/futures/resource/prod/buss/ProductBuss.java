@@ -1,5 +1,6 @@
-package fwj.futures.resource.buss;
+package fwj.futures.resource.prod.buss;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,8 @@ import fwj.futures.resource.entity.prod.Futures;
 import fwj.futures.resource.entity.prod.FuturesTradeTime;
 import fwj.futures.resource.entity.prod.Label;
 import fwj.futures.resource.entity.prod.LabelFutures;
+import fwj.futures.resource.prod.entity.ProdMainCon;
+import fwj.futures.resource.prod.repos.ProdMainConRepos;
 import fwj.futures.resource.repository.prod.FuturesRepository;
 import fwj.futures.resource.repository.prod.FuturesTradeTimeRepository;
 import fwj.futures.resource.repository.prod.LabelFuturesRepository;
@@ -33,9 +36,12 @@ public class ProductBuss {
 
 	@Autowired
 	private LabelRepository labelRepository;
-	
+
 	@Autowired
 	private FuturesTradeTimeRepository tradeTimeRepo;
+
+	@Autowired
+	private ProdMainConRepos prodMainConRepos;
 
 	@Cacheable(value = "ProductBuss.queryAllLabels")
 	public List<ProductLabel> queryAllLabels() {
@@ -48,7 +54,7 @@ public class ProductBuss {
 		return this.queryLabel(labelRepository.findOne(labelId));
 	}
 
-	@Cacheable(value = "ProductBuss.queryLabel", key="#label.id")
+	@Cacheable(value = "ProductBuss.queryLabel", key = "#label.id")
 	private ProductLabel queryLabel(Label label) {
 		ProductLabel productLabel = new ProductLabel();
 		productLabel.setId(label.getId());
@@ -66,7 +72,7 @@ public class ProductBuss {
 		}
 		return productLabel;
 	}
-	
+
 	@Cacheable(value = "ProductBuss.queryInfoByCode")
 	public ProductInfo queryInfoByCode(String code) {
 		ProductInfo info = new ProductInfo();
@@ -89,7 +95,7 @@ public class ProductBuss {
 	public List<String> queryAllCode() {
 		return futuresRepo.findAllActive().stream().map(Futures::getCode).collect(Collectors.toList());
 	}
-	
+
 	@Cacheable(value = "ProductBuss.queryAllFutures")
 	public List<Futures> queryAllFutures() {
 		return futuresRepo.findAllActive();
@@ -105,15 +111,28 @@ public class ProductBuss {
 	public Futures queryFuturesByCode(String code) {
 		return futuresRepo.findByCode(code);
 	}
-	
+
 	@Cacheable(value = "ProductBuss.queryTradeTimesByCode")
 	public List<FuturesTradeTime> queryTradeTimesByCode(String code) {
 		return tradeTimeRepo.findByCodeOrderByStartTimeAsc(code);
 	}
-	
+
 	@Cacheable(value = "ProductBuss.queryAllTradeTimes")
 	public List<FuturesTradeTime> queryAllTradeTimes() {
 		return tradeTimeRepo.findAll();
 	}
-	
+
+	@Cacheable(value = "ProductBuss.queryMainConByCode")
+	public List<ProdMainCon> queryMainConByCode(String code) {
+		List<ProdMainCon> list = prodMainConRepos.findByCode(code);
+
+		int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+		list.sort((l, r) -> {
+			int i1 = l.getMonth() <= currentMonth ? l.getMonth() + 12 : l.getMonth();
+			int i2 = r.getMonth() <= currentMonth ? r.getMonth() + 12 : r.getMonth();
+			return i1 - i2;
+		});
+		return list;
+	}
+
 }

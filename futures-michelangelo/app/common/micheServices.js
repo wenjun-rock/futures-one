@@ -115,6 +115,8 @@ angular.module('miche.services', [])
     service.drawTrendProd = function(prodma, domId) {
       var series = [];
       series.push({
+        yAxis: 0,
+        zIndex: 10,
         name: prodma.prodIndexLine.name,
         data: prodma.prodIndexLine.prices.map(function(price) {
           return [price.d, price.p];
@@ -122,22 +124,38 @@ angular.module('miche.services', [])
       });
       prodma.mvAvgLineList.forEach(function(mvAvgLine) {
         series.push({
+          yAxis: 0,
+          zIndex: 10,
           name: mvAvgLine.name,
           data: mvAvgLine.prices.map(function(price) {
             return [price.d, price.p];
           })
         });
       });
+      series.push({
+        yAxis: 1,
+        zIndex: 1,
+        type: 'column',
+        name: '成交量',
+        data: prodma.volLine.prices.map(function(price) {
+          return [price.d, price.p];
+        })
+      });
 
       $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
         title: {
-          text: 'EMA均线'
+          text: prodma.code + ' EMA均线'
         },
-        yAxis: {
+        yAxis: [{
           title: {
             text: '价格'
           }
-        },
+        }, {
+          title: {
+            text: '成交量'
+          },
+          opposite: true
+        }],
         plotOptions: {
           line: {
             lineWidth: 2,
@@ -152,7 +170,7 @@ angular.module('miche.services', [])
       }));
 
       $('#' + domId).highcharts().series.forEach(function(series, index) {
-        if (index == 0 || index == 1 || index == 2 || index == 3 || index == 4) {
+        if (index == 0 || index == 1 || index == 2 || index == 3 || index == 4 || index == 9) {
           return;
         } else {
           series.hide();

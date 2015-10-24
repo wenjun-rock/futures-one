@@ -26,7 +26,8 @@ public class ContractDailyPriceBuss {
 	@Autowired
 	private ContractKLineRepository kLineRepository;
 
-	@CacheEvict(value = { "ContractDailyPriceBuss.getConstractsByCode" }, allEntries = true)
+	@CacheEvict(value = { "ContractDailyPriceBuss.getConstractsByCode",
+			"ContractDailyPriceBuss.queryByCode" }, allEntries = true)
 	public void reload() {
 	}
 
@@ -52,6 +53,11 @@ public class ContractDailyPriceBuss {
 		}).sorted().collect(Collectors.toList());
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		return new ProdContracts(code, df.format(startDt), df.format(endDt), df.format(latestDt), contracts);
+	}
+
+	@Cacheable(value = "ContractDailyPriceBuss.queryByCode")
+	public List<ContractKLine> queryByCode(String code, int contract) {
+		return kLineRepository.findByCodeAndContractMonthOrderByDtAsc(code, contract);
 	}
 
 }

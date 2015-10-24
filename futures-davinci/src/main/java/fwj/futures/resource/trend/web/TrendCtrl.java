@@ -22,4 +22,10 @@ public class TrendCtrl {
 		return movingAvgBuss.calProdMovingAverage(code, month);
 	}
 
+	@RequestMapping(value = "/contract-ma", method = RequestMethod.GET)
+	public ProdMA getContractMA(@RequestParam("code") String code, @RequestParam("contract") int contract,
+			@RequestParam(value = "month", defaultValue = "-1") int month) {
+		return movingAvgBuss.calContractMovingAverage(code, contract, month);
+	}
+
 }
