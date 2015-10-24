@@ -1,4 +1,4 @@
-package fwj.futures.resource.buss;
+package fwj.futures.resource.com.buss;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.com.entity.Comment;
 import fwj.futures.resource.com.repos.CommentRepos;
-import fwj.futures.resource.prod.buss.ProductBuss;
+import fwj.futures.resource.prod.buss.ProdBuss;
 import fwj.futures.resource.prod.entity.Futures;
 
 @Component
@@ -24,7 +24,7 @@ public class CommentBuss {
 	private long lastCommitTime = 0;
 
 	@Autowired
-	private ProductBuss productBuss;
+	private ProdBuss productBuss;
 
 	@Autowired
 	private CommentRepos commentRepository;

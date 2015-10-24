@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.buss.RealTimePriceBuss;
+import fwj.futures.resource.price.buss.RealTimePriceBuss;
 import fwj.futures.resource.price.vo.UnitData;
-import fwj.futures.resource.prod.buss.ProductBuss;
+import fwj.futures.resource.prod.buss.ProdBuss;
 import fwj.futures.resource.prod.entity.Futures;
 import fwj.futures.resource.trade.entity.Trade;
 import fwj.futures.resource.trade.entity.TradeAction;
@@ -40,7 +40,7 @@ public class TradeBuss {
 	private RealTimePriceBuss realTimePriceBuss;
 
 	@Autowired
-	private ProductBuss productBuss;
+	private ProdBuss productBuss;
 
 	public List<TradeView> listTrade() {
 		return tradeRepos.findAll().stream().map(trade -> {

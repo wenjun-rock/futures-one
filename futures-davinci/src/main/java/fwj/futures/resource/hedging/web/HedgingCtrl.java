@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fwj.futures.resource.buss.HedgingBuss;
-import fwj.futures.resource.buss.HedgingContractBuss;
-import fwj.futures.resource.buss.HedgingExperimentBuss;
+import fwj.futures.resource.hedging.buss.HedgingBuss;
+import fwj.futures.resource.hedging.buss.HedgingContractBuss;
+import fwj.futures.resource.hedging.buss.HedgingExperimentBuss;
 import fwj.futures.resource.hedging.entity.HedgingContract;
 import fwj.futures.resource.hedging.vo.HedgingContractContainer;
 import fwj.futures.resource.hedging.vo.HedgingExperimentMonitor;
@@ -25,7 +25,7 @@ import fwj.futures.resource.hedging.vo.HedgingExperimentView;
 import fwj.futures.resource.hedging.vo.HedgingMonitor;
 import fwj.futures.resource.hedging.vo.HedgingView;
 import fwj.futures.resource.price.vo.Series;
-import fwj.futures.resource.prod.buss.ProductBuss;
+import fwj.futures.resource.prod.buss.ProdBuss;
 import fwj.futures.resource.prod.entity.Futures;
 
 /**
@@ -48,7 +48,7 @@ public class HedgingCtrl {
 	private HedgingExperimentBuss hedgingExperimentBuss;
 
 	@Autowired
-	private ProductBuss productBuss;
+	private ProdBuss productBuss;
 
 	// @RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
 	// public HedgingMonitor monitorRealtime(@PathVariable("id") Integer id) {

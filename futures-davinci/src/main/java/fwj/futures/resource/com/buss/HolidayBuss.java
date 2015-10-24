@@ -1,4 +1,4 @@
-package fwj.futures.resource.buss;
+package fwj.futures.resource.com.buss;
 
 import java.util.List;
 

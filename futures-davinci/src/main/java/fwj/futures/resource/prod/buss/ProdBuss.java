@@ -26,7 +26,7 @@ import fwj.futures.resource.prod.vo.ProductInfo.InnerLabel;
 import fwj.futures.resource.prod.vo.ProductLabel.InnerProduct;
 
 @Component
-public class ProductBuss {
+public class ProdBuss {
 
 	@Autowired
 	private FuturesRepos futuresRepo;

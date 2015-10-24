@@ -1,4 +1,4 @@
-package fwj.futures.resource.buss;
+package fwj.futures.resource.hedging.buss;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

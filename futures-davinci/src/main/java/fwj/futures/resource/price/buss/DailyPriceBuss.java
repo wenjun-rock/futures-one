@@ -20,7 +20,7 @@ import fwj.futures.resource.price.vo.KLineGroup;
 import fwj.futures.resource.price.vo.Price;
 import fwj.futures.resource.price.vo.ProdDailyPrice;
 import fwj.futures.resource.price.vo.Series;
-import fwj.futures.resource.prod.buss.ProductBuss;
+import fwj.futures.resource.prod.buss.ProdBuss;
 import fwj.futures.resource.prod.entity.Futures;
 
 @Component
@@ -33,7 +33,7 @@ public class DailyPriceBuss {
 	private ProdIndexRepos prodIndexRepos;
 
 	@Autowired
-	private ProductBuss productBuss;
+	private ProdBuss productBuss;
 
 	@Cacheable(value = "KLineBuss.queryDescByCode")
 	public List<KLine> queryDescByCode(String code) {

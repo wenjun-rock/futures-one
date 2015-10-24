@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.io.Resources;
 
-import fwj.futures.resource.buss.ContractDailyPriceBuss;
+import fwj.futures.resource.price.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
 import fwj.futures.resource.price.entity.ContractKLine;
 import fwj.futures.resource.price.entity.GlobalKLine;

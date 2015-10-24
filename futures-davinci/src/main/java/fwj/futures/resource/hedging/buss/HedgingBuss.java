@@ -1,4 +1,4 @@
-package fwj.futures.resource.buss;
+package fwj.futures.resource.hedging.buss;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,6 +16,7 @@ import fwj.futures.resource.hedging.repos.HedgingRepos;
 import fwj.futures.resource.hedging.vo.HedgingMonitor;
 import fwj.futures.resource.hedging.vo.HedgingView;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.buss.RealTimePriceBuss;
 import fwj.futures.resource.price.entity.KLine;
 import fwj.futures.resource.price.vo.KLineGroup;
 import fwj.futures.resource.price.vo.Price;

@@ -1,4 +1,4 @@
-package fwj.futures.resource.buss;
+package fwj.futures.resource.prod.buss;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,17 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.buss.RealTimePriceBuss;
 import fwj.futures.resource.price.entity.KLine;
 import fwj.futures.resource.price.vo.ProductPriceAggre;
 import fwj.futures.resource.price.vo.UnitData;
-import fwj.futures.resource.prod.buss.ProductBuss;
 import fwj.futures.resource.prod.entity.Futures;
 
 @Component
 public class ProdPriceBuss {
 
 	@Autowired
-	private ProductBuss productBuss;
+	private ProdBuss productBuss;
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;

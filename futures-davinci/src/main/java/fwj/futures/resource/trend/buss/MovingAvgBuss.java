@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.buss.ContractDailyPriceBuss;
+import fwj.futures.resource.price.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.price.buss.ProdIndexBuss;
 import fwj.futures.resource.price.entity.ContractKLine;
 import fwj.futures.resource.price.entity.ProdIndex;

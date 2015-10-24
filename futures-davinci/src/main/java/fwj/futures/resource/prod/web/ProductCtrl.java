@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fwj.futures.resource.buss.ContractDailyPriceBuss;
-import fwj.futures.resource.buss.ProdPriceBuss;
-import fwj.futures.resource.buss.RealTimePriceBuss;
+import fwj.futures.resource.price.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.buss.RealTimePriceBuss;
 import fwj.futures.resource.price.vo.ProdDailyPrice;
 import fwj.futures.resource.price.vo.ProductPriceAggre;
 import fwj.futures.resource.price.vo.Series;
 import fwj.futures.resource.price.vo.UnitDataGroup;
-import fwj.futures.resource.prod.buss.ProductBuss;
+import fwj.futures.resource.prod.buss.ProdPriceBuss;
+import fwj.futures.resource.prod.buss.ProdBuss;
 import fwj.futures.resource.prod.entity.ProdMainCon;
 import fwj.futures.resource.prod.vo.ProdContracts;
 import fwj.futures.resource.prod.vo.ProductInfo;
@@ -32,7 +32,7 @@ import fwj.futures.resource.prod.vo.ProductLabel;
 public class ProductCtrl {
 
 	@Autowired
-	private ProductBuss productBuss;
+	private ProdBuss productBuss;
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;

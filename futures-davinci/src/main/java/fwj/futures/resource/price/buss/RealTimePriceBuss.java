@@ -1,4 +1,4 @@
-package fwj.futures.resource.buss;
+package fwj.futures.resource.price.buss;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,7 +17,7 @@ import fwj.futures.resource.price.vo.Price;
 import fwj.futures.resource.price.vo.Series;
 import fwj.futures.resource.price.vo.UnitData;
 import fwj.futures.resource.price.vo.UnitDataGroup;
-import fwj.futures.resource.prod.buss.ProductBuss;
+import fwj.futures.resource.prod.buss.ProdBuss;
 import fwj.futures.resource.prod.entity.Futures;
 import fwj.futures.resource.task.RealtimeHolder;
 
@@ -27,7 +27,7 @@ public class RealTimePriceBuss {
 	private Logger log = Logger.getLogger(this.getClass());
 
 	@Autowired
-	private ProductBuss productBuss;
+	private ProdBuss productBuss;
 
 	@Autowired
 	private RealtimeHolder realtimeHolder;

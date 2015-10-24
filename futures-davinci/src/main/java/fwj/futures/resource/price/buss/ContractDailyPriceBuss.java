@@ -1,4 +1,4 @@
-package fwj.futures.resource.buss;
+package fwj.futures.resource.price.buss;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
