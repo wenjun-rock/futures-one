@@ -13,7 +13,8 @@ angular.module('micheApp', [
   'miche.hedging.experiments',
   'miche.hedging.compare',
   'miche.trade.list',
-  'miche.trend.prod'
+  'miche.trend.prod',
+  'miche.trend.ma.monitor'
 ])
 
 .config(['$routeProvider', function($routeProvider) {
