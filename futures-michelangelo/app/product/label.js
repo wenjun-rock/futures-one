@@ -62,29 +62,46 @@ angular.module('miche.label', ['ngRoute', 'miche.services'])
         });
 
         $scope.realtimeChart = $('#realtimeChart').highcharts({
-          chart: {
-            zoomType: 'x'
-          },
-          title: {
-            text: '实时走势'
-          },
           credits: {
             enabled: false
           },
-          xAxis: {
-            type: "datetime"
-          },
-          yAxis: {
-            title: {
-              text: '涨幅'
-            },
-            labels: {
-              format: '{value} %',
-            }
+          chart: {
+            zoomType: 'x'
           },
           tooltip: {
+            descOrder: true,
             shared: true,
-            crosshairs: true
+            crosshairs: true,
+            dateTimeLabelFormats: {
+              second: '%Y-%m-%d %H:%M:%S',
+              minute: '%Y-%m-%d %H:%M',
+              hour: '%Y-%m-%d %H:%M',
+              day: '%Y-%m-%d'
+            }
+          },
+          xAxis: {
+            type: "datetime",
+            dateTimeLabelFormats: {
+              millisecond: '%H:%M:%S.%L',
+              second: '%H:%M:%S',
+              minute: '%H:%M',
+              hour: '%H:%M',
+              day: '%m-%d',
+              week: '%m-%d',
+              month: '%Y-%m',
+              Year: '%Y'
+            }
+          },
+          yAxis: {
+            labels: {
+              format: '{value} %',
+            },
+            title: {
+              text: '涨幅'
+            }
+          },
+          title: {
+            text: '实时走势'
           },
           series: seriesLine
         });

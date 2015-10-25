@@ -83,43 +83,72 @@ angular.module('miche.label.wall', ['ngRoute', 'miche.services'])
     };
 
     $scope.drawOneChart = function(label) {
+      var maxFromD = 0;
       var labelSeries = label.products.map(function(product) {
         var prototype = $scope.prodLineObj[product.code];
+        var fromD = prototype.data[0][0];
+        var toD = prototype.data[prototype.data.length - 1][0];
+        if (fromD > maxFromD) {
+          maxFromD = fromD;
+        }
         return {
+          formD: fromD,
+          toD: toD,
           name: prototype.name,
           basePrice: prototype.basePrice,
           data: [].concat(prototype.data)
         };
       });
       var highchart = $('#chart-label-' + label.id).highcharts({
-        chart: {
-          zoomType: 'x'
-        },
-        title: {
-          text: label.name
-        },
         credits: {
           enabled: false
         },
+        chart: {
+          zoomType: 'x'
+        },
+        tooltip: {
+          descOrder: true,
+          shared: true,
+          crosshairs: true,
+          dateTimeLabelFormats: {
+            second: '%Y-%m-%d %H:%M:%S',
+            minute: '%Y-%m-%d %H:%M',
+            hour: '%Y-%m-%d %H:%M',
+            day: '%Y-%m-%d'
+          }
+        },
         xAxis: {
-          type: "datetime"
+          type: "datetime",
+          dateTimeLabelFormats: {
+            millisecond: '%H:%M:%S.%L',
+            second: '%H:%M:%S',
+            minute: '%H:%M',
+            hour: '%H:%M',
+            day: '%m-%d',
+            week: '%m-%d',
+            month: '%Y-%m',
+            Year: '%Y'
+          }
         },
         yAxis: {
           labels: {
-            formatter: function() {
-              return this.value + '%';
-            }
+            format: '{value} %',
           },
           title: {
             text: '涨幅'
           }
         },
-        tooltip: {
-          descOrder: true,
-          shared: true,
-          crosshairs: true
+        title: {
+          text: label.name
         },
         series: labelSeries
+      });
+
+      highchart = $('#chart-label-' + label.id).highcharts();
+      highchart.series.forEach(function(series, index) {
+        if (labelSeries[index].toD < maxFromD) {
+          series.hide();
+        }
       });
 
       $scope.labelHighchart[label.id] = {

@@ -43,6 +43,9 @@ angular.module('miche.services', [])
         shared: true,
         crosshairs: true,
         dateTimeLabelFormats: {
+          second: '%Y-%m-%d %H:%M:%S',
+          minute: '%Y-%m-%d %H:%M',
+          hour: '%Y-%m-%d %H:%M',
           day: '%Y-%m-%d'
         }
       },

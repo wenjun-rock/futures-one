@@ -9,31 +9,20 @@
       <div class="panel panel-primary">
         <div class="panel-heading">产品列表</div>
         <div class="panel-body">
-          <ul class="list-inline">
-            <li ng-repeat="prod in prods"><a ng-href="#/product/code/{{prod.code}}">{{prod.name}}</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="panel panel-primary">
-        <div class="panel-heading">标签列表</div>
-        <div class="panel-body">
-          <ul class="list-inline">
-            <li ng-repeat="label in labels"><a ng-href="#/product/label/{{label.id}}">{{label.name}}</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="panel panel-default" id="container1"></div>
-        </div>
-        <div class="col-md-6">
-          <div class="panel panel-default" id="container2"></div>
-        </div>
-        <div class="col-md-6">
-          <div class="panel panel-default" id="container3"></div>
-        </div>
-        <div class="col-md-6">
-          <div class="panel panel-default" id="container4"></div>
+          <div style="margin-bottom: 10px" ng-repeat="label in labels">
+            <ul class="list-inline">
+              <li>
+                <a ng-href="#/product/label/{{label.id}}" target="_blank">
+                  <span style="font-size: 24px; margin-right: 30px;">{{label.name}}</span>
+                </a>
+              </li>
+              <li ng-repeat="prod in label.products">
+                <a ng-href="#/product/code/{{prod.code}}" target="_blank">
+                  <span style="font-size: 20px; margin-right: 10px;">{{prod.name}}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
