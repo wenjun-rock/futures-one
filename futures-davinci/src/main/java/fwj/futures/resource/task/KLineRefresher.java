@@ -22,6 +22,7 @@ import com.google.common.io.Resources;
 
 import fwj.futures.resource.price.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.buss.ProdIndexBuss;
 import fwj.futures.resource.price.entity.ContractKLine;
 import fwj.futures.resource.price.entity.GlobalKLine;
 import fwj.futures.resource.price.entity.KLine;
@@ -63,6 +64,9 @@ public class KLineRefresher {
 	@Autowired
 	private ContractDailyPriceBuss contractDailyPriceBuss;
 
+	@Autowired
+	ProdIndexBuss prodIndexBuss;
+
 	/**
 	 * 每天15时45分调度。
 	 */
@@ -71,7 +75,22 @@ public class KLineRefresher {
 		refreshKLine();
 		refreshGlobalKLine();
 		refreshContractKLine(false);
+		refreshProdIndex();
 		log.info("Done!");
+	}
+
+	private void refreshProdIndex() {
+		try {
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			String todayStr = df.format(new Date());
+			Date today = df.parse(todayStr);
+			for (Futures prod : futuresRepository.findAllActive()) {
+				log.info(String.format("update %s for %s", prod.getCode(), todayStr));
+				prodIndexBuss.updateProdIndex(prod.getCode(), today, today);
+			}
+		} catch (ParseException e) {
+			log.error("", e);
+		}
 	}
 
 	public void refreshGlobalKLine() {
