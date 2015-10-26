@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,6 +32,7 @@ public class ProdIndexBuss {
 
 	private Logger log = Logger.getLogger(this.getClass());
 
+	@Transactional
 	public void updateProdIndex(final String code, Date startDt, Date endDt) {
 		List<ContractKLine> conKLineList = conKlineRepos.findByCodeAndDtBetween(code, startDt, endDt);
 		Map<Date, List<ContractKLine>> kLineMap = conKLineList.stream()
@@ -61,6 +64,7 @@ public class ProdIndexBuss {
 		});
 
 		int del = prodIndexRepos.deleteByCodeAndDtBetween(code, startDt, endDt);
+		prodIndexRepos.flush();
 		log.info(String.format("delete %d records for %s between %s and %s", del, code, startDt, endDt));
 
 		prodIndexRepos.save(prodIndexList);
