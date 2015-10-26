@@ -33,6 +33,7 @@ import fwj.futures.resource.prod.entity.Futures;
 import fwj.futures.resource.prod.entity.GlobalFutures;
 import fwj.futures.resource.prod.repos.FuturesRepos;
 import fwj.futures.resource.prod.repos.GlobalFuturesRepos;
+import fwj.futures.resource.trend.buss.MovingAvgBuss;
 
 @Component
 public class KLineRefresher {
@@ -65,6 +66,9 @@ public class KLineRefresher {
 	private ContractDailyPriceBuss contractDailyPriceBuss;
 
 	@Autowired
+	private MovingAvgBuss movingAvgBuss;
+
+	@Autowired
 	ProdIndexBuss prodIndexBuss;
 
 	/**
@@ -76,7 +80,15 @@ public class KLineRefresher {
 		refreshGlobalKLine();
 		refreshContractKLine(false);
 		refreshProdIndex();
+		refreshTrendMonitor();
 		log.info("Done!");
+	}
+
+	private void refreshTrendMonitor() {
+		for (Futures prod : futuresRepository.findAllActive()) {
+			log.info(String.format("refreshTrendMonitor for %s ", prod.getCode()));
+			movingAvgBuss.calTrendMaMonitor(prod.getCode());
+		}
 	}
 
 	private void refreshProdIndex() {
