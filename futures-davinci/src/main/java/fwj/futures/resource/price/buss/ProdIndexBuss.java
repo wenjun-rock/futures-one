@@ -34,7 +34,7 @@ public class ProdIndexBuss {
 	private Logger log = Logger.getLogger(this.getClass());
 
 	@Transactional
-	@CacheEvict(value = "ProdIndexBuss.queryAscByCode", key = "#{code}")
+	@CacheEvict(value = "ProdIndexBuss.queryAscByCode", key = "#code")
 	public void updateProdIndex(final String code, Date startDt, Date endDt) {
 		List<ContractKLine> conKLineList = conKlineRepos.findByCodeAndDtBetween(code, startDt, endDt);
 		Map<Date, List<ContractKLine>> kLineMap = conKLineList.stream()
