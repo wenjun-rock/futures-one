@@ -25,8 +25,8 @@ public class ProdIndexUpdator extends AbstractBaseLaunch {
 		// cal.add(Calendar.YEAR, -20);
 		// Date startDt = cal.getTime();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		Date startDt = df.parse("2015-10-27");
-		Date endDt = df.parse("2015-10-27");
+		Date startDt = df.parse("2012-10-28");
+		Date endDt = df.parse("2015-10-30");
 
 		int i = 0;
 		for (ProdEnum prod : ProdEnum.values()) {
