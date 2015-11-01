@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import javax.transaction.Transactional;
 
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -18,10 +18,15 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.price.entity.ProdSpotPrice;
 import fwj.futures.resource.price.repos.ProdSpotPriceRepos;
+import fwj.futures.resource.price.vo.Price;
+import fwj.futures.resource.price.vo.ProdSpot;
+import fwj.futures.resource.prod.buss.ProdBuss;
+import fwj.futures.resource.prod.entity.Futures;
 
 @Component
 public class ProdSpotPriceBuss {
@@ -34,6 +39,9 @@ public class ProdSpotPriceBuss {
 
 	@Autowired
 	private ProdSpotPriceRepos prodSpotPriceRepos;
+
+	@Autowired
+	private ProdBuss productBuss;
 
 	public ProdSpotPriceBuss() {
 		prodNameCodeMap = new HashMap<>();
@@ -72,7 +80,7 @@ public class ProdSpotPriceBuss {
 		prodNameCodeMap.put("玉米淀粉", "CS");
 	}
 
-	@CacheEvict(value = "ProdSpotPriceBuss.queryAscByCode", key = "#code")
+	@CacheEvict(value = "ProdSpotPriceBuss.queryProdSpotPrice", allEntries = true)
 	public void updateProdSpotPrice(Date startDt, Date endDt) {
 
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -129,6 +137,44 @@ public class ProdSpotPriceBuss {
 			cal.add(Calendar.DAY_OF_MONTH, 1);
 		}
 
+	}
+
+	@Cacheable(value = "ProdSpotPriceBuss.queryProdSpotPrice")
+	public ProdSpot queryProdSpotPrice(String code, int month) {
+		Futures prod = productBuss.queryFuturesByCode(code);
+		if (prod == null) {
+			return null;
+		} else {
+			List<ProdSpotPrice> priceList = null;
+			if (month < 0) {
+				// 所有
+				priceList = prodSpotPriceRepos.findByCodeOrderByDtAsc(code);
+			} else {
+				// 指定月数
+				Calendar cal = Calendar.getInstance();
+				Date endDt = cal.getTime();
+				cal.add(Calendar.MONTH, -month);
+				Date startDt = cal.getTime();
+				priceList = prodSpotPriceRepos.findByCodeAndDtBetweenOrderByDtAsc(code, startDt, endDt);
+			}
+
+			List<Price> spotPriceList = new ArrayList<>();
+			List<Price> latestPriceList = new ArrayList<>();
+			List<Price> mainPriceList = new ArrayList<>();
+			List<Price> latestPercList = new ArrayList<>();
+			List<Price> mainPercList = new ArrayList<>();
+			ProdSpot prodSpot = new ProdSpot(prod.getCode(), prod.getName(), spotPriceList, latestPriceList,
+					mainPriceList, latestPercList, mainPercList);
+			priceList.forEach(spot -> {
+				spotPriceList.add(new Price(spot.getDt(), spot.getSpotPrice()));
+				latestPriceList.add(new Price(spot.getDt(), spot.getLatestPrice()));
+				mainPriceList.add(new Price(spot.getDt(), spot.getMainPrice()));
+				latestPercList.add(new Price(spot.getDt(), spot.getLatestPerc().multiply(new BigDecimal(100))));
+				mainPercList.add(new Price(spot.getDt(), spot.getMainPerc().multiply(new BigDecimal(100))));
+			});
+
+			return prodSpot;
+		}
 	}
 
 }

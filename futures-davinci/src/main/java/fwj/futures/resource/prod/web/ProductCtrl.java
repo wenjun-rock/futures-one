@@ -15,13 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fwj.futures.resource.price.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.buss.ProdSpotPriceBuss;
 import fwj.futures.resource.price.buss.RealTimePriceBuss;
 import fwj.futures.resource.price.vo.ProdDailyPrice;
+import fwj.futures.resource.price.vo.ProdSpot;
 import fwj.futures.resource.price.vo.ProductPriceAggre;
 import fwj.futures.resource.price.vo.Series;
 import fwj.futures.resource.price.vo.UnitDataGroup;
-import fwj.futures.resource.prod.buss.ProdPriceBuss;
 import fwj.futures.resource.prod.buss.ProdBuss;
+import fwj.futures.resource.prod.buss.ProdPriceBuss;
 import fwj.futures.resource.prod.entity.ProdMainCon;
 import fwj.futures.resource.prod.vo.ProdContracts;
 import fwj.futures.resource.prod.vo.ProductInfo;
@@ -45,6 +47,9 @@ public class ProductCtrl {
 
 	@Autowired
 	private ProdPriceBuss prodPriceBuss;
+
+	@Autowired
+	private ProdSpotPriceBuss prodSpotPriceBuss;
 
 	@RequestMapping(value = "/labels", method = RequestMethod.GET)
 	public List<ProductLabel> queryAllLabels() {
@@ -90,6 +95,12 @@ public class ProductCtrl {
 	public ProdDailyPrice queryDailyByCode(@RequestParam("code") String code,
 			@RequestParam(value = "month", defaultValue = "-1") int month) {
 		return dailyPriceBuss.queryProdDailyPrice(code, month);
+	}
+
+	@RequestMapping(value = "/price-prod-spot", method = RequestMethod.GET)
+	public ProdSpot queryProdSpotPrice(@RequestParam("code") String code,
+			@RequestParam(value = "month", defaultValue = "-1") int month) {
+		return prodSpotPriceBuss.queryProdSpotPrice(code, month);
 	}
 
 	@RequestMapping(value = "/price-prod-realtime", method = RequestMethod.GET)
