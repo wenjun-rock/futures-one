@@ -19,8 +19,8 @@ public class SpotPriceDownload extends AbstractBaseLaunch {
 	@Override
 	protected void execute() throws Exception {	
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		Date startDt = df.parse("2013-01-01");
-		Date endDt = df.parse("2015-12-31");
+		Date startDt = df.parse("2015-10-30");
+		Date endDt = df.parse("2015-10-30");
 		prodSpotPriceBuss.updateProdSpotPrice(startDt, endDt);
 	}
 
