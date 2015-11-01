@@ -61,13 +61,19 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-9">
           <div class="panel panel-default" style="height: 400px" id="realtimeChart"></div>
           <div class="panel panel-default" style="height: 400px" id="dailyChart"></div>
           <div class="product-chart-toolbox">
             <button type="button" class="btn btn-success label-wall-btn" ng-click="dailyK(-1)">全部</button>
             <button type="button" class="btn btn-info label-wall-btn" ng-click="dailyK(12)">近1年</button>
             <button type="button" class="btn btn-warning label-wall-btn" ng-click="dailyK(3)">近3月</button>
+          </div>
+          <div class="panel panel-default" style="height: 400px" id="spotChart"></div>
+          <div class="product-chart-toolbox">
+            <button type="button" class="btn btn-success label-wall-btn" ng-click="spot(-1)">全部</button>
+            <button type="button" class="btn btn-info label-wall-btn" ng-click="spot(12)">近1年</button>
+            <button type="button" class="btn btn-warning label-wall-btn" ng-click="spot(3)">近3月</button>
           </div>
           <div class="panel panel-default" style="height: 400px" id="contractPriceChart"></div>
           <div class="product-chart-toolbox">
@@ -76,7 +82,7 @@
           </div>
           <div class="panel panel-default" style="height: 400px" id="contractVolChart"></div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <div class="panel panel-danger">
             <div class="panel-heading" style="height: 55px;">
               <span style="font-size: 20px">备注列表</span>

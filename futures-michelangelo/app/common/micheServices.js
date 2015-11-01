@@ -115,6 +115,65 @@ angular.module('miche.services', [])
       }));
     };
 
+    service.drawProdSpotPrice = function(spot, domId) {
+      $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
+        title: {
+          text: '现期图'
+        },
+        yAxis: [{
+          title: {
+            text: '价格'
+          }
+        }, {
+          labels: {
+            format: '{value} %',
+          },
+          title: {
+            text: '百分比'
+          },
+          opposite: true
+        }],
+        series: [{
+          yAxis: 0,
+          zIndex: 10,
+          name: '现货',
+          data: spot.spotPriceList.map(function(price) {
+            return [price.d, price.p];
+          })
+        }, {
+          yAxis: 0,
+          zIndex: 10,
+          name: '最近合约',
+          data: spot.latestPriceList.map(function(price) {
+            return [price.d, price.p];
+          })
+        }, {
+          yAxis: 0,
+          zIndex: 10,
+          name: '主力合约',
+          data: spot.mainPriceList.map(function(price) {
+            return [price.d, price.p];
+          })
+        }, {
+          yAxis: 1,
+          zIndex: 1,
+          type: 'column',
+          name: '最近贴水',
+          data: spot.latestPercList.map(function(price) {
+            return [price.d, price.p];
+          })
+        }, {
+          yAxis: 1,
+          zIndex: 1,
+          type: 'column',
+          name: '主力贴水',
+          data: spot.mainPercList.map(function(price) {
+            return [price.d, price.p];
+          })
+        }]
+      }));
+    };
+
     service.drawTrendProd = function(prodma, domId) {
       var series = [];
       series.push({

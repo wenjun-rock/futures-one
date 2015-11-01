@@ -171,6 +171,17 @@ angular.module('miche.product', ['ngRoute', 'miche.services'])
     };
     $scope.dailyK(3);
 
+    // define event handler
+    $scope.spot = function(month) {
+      micheHttp.get('/product/price-prod-spot', {
+        code: code,
+        month: month
+      }).success(function(spot) {
+        micheChart.drawProdSpotPrice(spot, 'spotChart');
+      });
+    };
+    $scope.spot(3);
+
     $scope.showAllContract = function() {
       $('#contractPriceChart').highcharts().series.forEach(function(series, index) {
         if (!series.visible) {
