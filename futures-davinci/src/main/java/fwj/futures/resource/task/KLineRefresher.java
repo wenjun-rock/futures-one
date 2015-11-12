@@ -92,7 +92,9 @@ public class KLineRefresher {
 	private void refreshProdSpot() {
 		try {
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-			String todayStr = df.format(new Date());
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -1);
+			String todayStr = df.format(cal.getTime());
 			Date today = df.parse(todayStr);
 			prodSpotPriceBuss.updateProdSpotPrice(today, today);
 		} catch (ParseException e) {
