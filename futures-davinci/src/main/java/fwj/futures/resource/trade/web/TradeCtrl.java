@@ -15,6 +15,8 @@ import fwj.futures.resource.trade.buss.TradeOrderBuss;
 import fwj.futures.resource.trade.entity.TradeOrder;
 import fwj.futures.resource.trade.vo.ActionView;
 import fwj.futures.resource.trade.vo.TradeDetail;
+import fwj.futures.resource.trade.vo.TradeGroupAssignView;
+import fwj.futures.resource.trade.vo.TradeGroupView;
 import fwj.futures.resource.trade.vo.TradeView;
 
 @RestController()
@@ -62,6 +64,16 @@ public class TradeCtrl {
 	@RequestMapping(value = "/list-trade-order", method = RequestMethod.GET)
 	public List<TradeOrder> listTradeOrder() {
 		return tradeOrderBuss.listTradeOrder();
+	}
+	
+	@RequestMapping(value = "/add-trade-group", method = RequestMethod.POST)
+	public TradeGroupView addTrade(@RequestBody TradeGroupView body) {
+		return tradeOrderBuss.addTradeGroup(body);
+	}
+	
+	@RequestMapping(value = "/assign-trade-group", method = RequestMethod.POST)
+	public void addTrade(@RequestBody TradeGroupAssignView body) {
+		tradeOrderBuss.assignTradeGroup(body);
 	}
 
 }

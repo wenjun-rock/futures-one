@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,9 +17,15 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fwj.futures.resource.trade.entity.TradeGroup;
+import fwj.futures.resource.trade.entity.TradeGroupOrder;
 import fwj.futures.resource.trade.entity.TradeOrder;
 import fwj.futures.resource.trade.enu.TradeOrderType;
+import fwj.futures.resource.trade.repos.TradeGroupOrderRepos;
+import fwj.futures.resource.trade.repos.TradeGroupRepos;
 import fwj.futures.resource.trade.repos.TradeOrderRepos;
+import fwj.futures.resource.trade.vo.TradeGroupAssignView;
+import fwj.futures.resource.trade.vo.TradeGroupView;
 
 @Component
 public class TradeOrderBuss {
@@ -27,10 +34,15 @@ public class TradeOrderBuss {
 
 	@Autowired
 	private TradeOrderRepos tradeOrderRepos;
+	
+	@Autowired
+	private TradeGroupRepos tradeGroupRepos;
+	
+	@Autowired
+	private TradeGroupOrderRepos tradeGroupOrderRepos;
 
 	public List<TradeOrder> listTradeOrder() {
 		return tradeOrderRepos.findAll();
-
 	}
 
 	public int saveTradeOrderInExcel(byte[] bytes) throws Exception {
@@ -90,6 +102,27 @@ public class TradeOrderBuss {
 			}
 		}
 		return importList;
+	}
+
+	public TradeGroupView addTradeGroup(TradeGroupView body) {
+		TradeGroup tradeGroup = new TradeGroup();
+		tradeGroup.setName(body.getName());
+		tradeGroup.setComment(body.getComment());
+		TradeGroup tradeNewGroup = tradeGroupRepos.saveAndFlush(tradeGroup);
+		body.setId(tradeNewGroup.getId());
+		return body;
+	}
+
+	public void assignTradeGroup(TradeGroupAssignView body) {
+		tradeGroupOrderRepos.deleteByGroupId(body.getGroupId());
+		Stream.of(body.getOrderIds()).forEach(orderId -> {
+			TradeGroupOrder obj = new TradeGroupOrder();
+			obj.setGroupId(body.getGroupId());
+			obj.setOrderId(orderId);
+			tradeGroupOrderRepos.save(obj);
+		});
+		tradeGroupOrderRepos.flush();
+		return;
 	}
 
 }
