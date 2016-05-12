@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.log4j.Logger;
@@ -42,7 +43,7 @@ public class TradeOrderBuss {
 	private TradeGroupOrderRepos tradeGroupOrderRepos;
 
 	public List<TradeOrder> listTradeOrder() {
-		return tradeOrderRepos.findAll();
+		return tradeOrderRepos.findOrderByTradeDtDesc();
 	}
 
 	public int saveTradeOrderInExcel(byte[] bytes) throws Exception {
@@ -123,6 +124,17 @@ public class TradeOrderBuss {
 		});
 		tradeGroupOrderRepos.flush();
 		return;
+	}
+
+	public List<TradeGroupView> listTradeGroup() {
+		return tradeGroupRepos.findAll().stream().map(group -> {
+			TradeGroupView view = new TradeGroupView();
+			view.setId(group.getId());
+			view.setName(group.getName());
+			view.setComment(group.getComment());
+			view.setOrders(tradeOrderRepos.findByGroupId(group.getId()));
+			return view;
+		}).collect(Collectors.toList());
 	}
 
 }

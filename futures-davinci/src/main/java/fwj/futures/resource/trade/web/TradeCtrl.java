@@ -67,13 +67,18 @@ public class TradeCtrl {
 	}
 	
 	@RequestMapping(value = "/add-trade-group", method = RequestMethod.POST)
-	public TradeGroupView addTrade(@RequestBody TradeGroupView body) {
+	public TradeGroupView addTradeGroup(@RequestBody TradeGroupView body) {
 		return tradeOrderBuss.addTradeGroup(body);
 	}
 	
 	@RequestMapping(value = "/assign-trade-order", method = RequestMethod.POST)
-	public void addTrade(@RequestBody TradeGroupAssignView body) {
+	public void assignTradeOrder(@RequestBody TradeGroupAssignView body) {
 		tradeOrderBuss.assignTradeOrder(body);
+	}
+	
+	@RequestMapping(value = "/list-trade-group", method = RequestMethod.GET)
+	public List<TradeGroupView> listTradeGroup() {
+		return tradeOrderBuss.listTradeGroup();
 	}
 
 }
