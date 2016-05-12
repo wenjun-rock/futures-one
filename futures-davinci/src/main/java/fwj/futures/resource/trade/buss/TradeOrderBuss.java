@@ -113,7 +113,7 @@ public class TradeOrderBuss {
 		return body;
 	}
 
-	public void assignTradeGroup(TradeGroupAssignView body) {
+	public void assignTradeOrder(TradeGroupAssignView body) {
 		tradeGroupOrderRepos.deleteByGroupId(body.getGroupId());
 		Stream.of(body.getOrderIds()).forEach(orderId -> {
 			TradeGroupOrder obj = new TradeGroupOrder();
