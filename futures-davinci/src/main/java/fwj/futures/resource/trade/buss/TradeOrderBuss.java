@@ -50,10 +50,9 @@ public class TradeOrderBuss {
 		List<TradeOrder> importList = new ArrayList<>();
 		Workbook wb = null;
 		try {
-			// 交易日期 合约 成交序号 成交时间
-			// 买/卖 投机/套保 成交价 手数
-			// 成交额 开/平 手续费 平仓盈亏
-			// 实际成交日期
+			// 合约 成交序号 成交时间 买/卖
+			// 投机/套保 成交价 手数 成交额
+			// 开/平 手续费 平仓盈亏 实际成交日期
 			wb = new HSSFWorkbook(new ByteArrayInputStream(bytes));
 			Sheet sheet = wb.getSheetAt(0);
 			int start = sheet.getFirstRowNum() + 1;
@@ -63,19 +62,22 @@ public class TradeOrderBuss {
 				try {
 					Row row = sheet.getRow(i);
 					TradeOrder order = new TradeOrder();
-					String datetime = row.getCell(0).getStringCellValue() + " " + row.getCell(3).getStringCellValue();
+					String datetime = row.getCell(11).getStringCellValue() + " " + row.getCell(2).getStringCellValue();
 					order.setTradeDt(df.parse(datetime));
-					order.setConCode(row.getCell(1).getStringCellValue());
-					order.setSerialNo(row.getCell(2).getStringCellValue());
-					String type = row.getCell(4).getStringCellValue().trim()
-							+ row.getCell(9).getStringCellValue().trim();
+					order.setConCode(row.getCell(0).getStringCellValue());
+					order.setSerialNo(row.getCell(1).getStringCellValue());
+					String type = row.getCell(3).getStringCellValue().trim()
+							+ row.getCell(8).getStringCellValue().trim();
 					order.setType(TradeOrderType.getByName(type).getCode());
-					order.setPrice(BigDecimal.valueOf(row.getCell(6).getNumericCellValue()));
-					order.setVol((int)row.getCell(7).getNumericCellValue());
-					order.setAmount(BigDecimal.valueOf(row.getCell(8).getNumericCellValue()));
-					order.setFee(BigDecimal.valueOf(row.getCell(10).getNumericCellValue()));
-					if(row.getCell(11).getCellType() == Cell.CELL_TYPE_NUMERIC) {
-						order.setProfit(BigDecimal.valueOf(row.getCell(11).getNumericCellValue()));
+					order.setPrice(BigDecimal.valueOf(row.getCell(5).getNumericCellValue()));
+					order.setVol((int)row.getCell(6).getNumericCellValue());
+					order.setAmount(BigDecimal.valueOf(row.getCell(7).getNumericCellValue()));
+					order.setFee(BigDecimal.valueOf(row.getCell(9).getNumericCellValue()));
+					if(row.getCell(10).getCellType() == Cell.CELL_TYPE_NUMERIC) {
+						order.setProfit(BigDecimal.valueOf(row.getCell(10).getNumericCellValue()));
+					}
+					if(row.getCell(12) != null) {
+						order.setComment(row.getCell(12).getStringCellValue());
 					}
 					importList.add(order);
 				} catch (Exception ex) {
