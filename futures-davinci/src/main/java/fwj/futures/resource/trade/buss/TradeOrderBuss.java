@@ -25,8 +25,9 @@ import fwj.futures.resource.trade.enu.TradeOrderType;
 import fwj.futures.resource.trade.repos.TradeGroupOrderRepos;
 import fwj.futures.resource.trade.repos.TradeGroupRepos;
 import fwj.futures.resource.trade.repos.TradeOrderRepos;
-import fwj.futures.resource.trade.vo.TradeGroupAssignView;
+import fwj.futures.resource.trade.vo.TradeGroupAssignReq;
 import fwj.futures.resource.trade.vo.TradeGroupView;
+import fwj.futures.resource.trade.vo.TradeOrderAssignReq;
 
 @Component
 public class TradeOrderBuss {
@@ -114,7 +115,16 @@ public class TradeOrderBuss {
 		return body;
 	}
 
-	public void assignTradeOrder(TradeGroupAssignView body) {
+	public void assignTradeOrder(TradeOrderAssignReq body) {
+		TradeGroupOrder obj = new TradeGroupOrder();
+		obj.setGroupId(body.getGroupId());
+		obj.setOrderId(body.getOrderId());
+		tradeGroupOrderRepos.save(obj);
+		tradeGroupOrderRepos.flush();
+		return;
+	}
+	
+	public void assignTradeGroup(TradeGroupAssignReq body) {
 		tradeGroupOrderRepos.deleteByGroupId(body.getGroupId());
 		Stream.of(body.getOrderIds()).forEach(orderId -> {
 			TradeGroupOrder obj = new TradeGroupOrder();

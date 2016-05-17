@@ -1,6 +1,6 @@
 package fwj.futures.resource.trade.vo;
 
-public class TradeGroupAssignView {
+public class TradeGroupAssignReq {
 
 	private Integer groupId;
 	private Integer[] orderIds;
