@@ -17,7 +17,7 @@ public interface TradeOrderRepos extends JpaRepository<TradeOrder, Integer> {
 	@Query("select o from TradeOrder o order by o.tradeDt desc")
 	List<TradeOrder> findOrderByTradeDtDesc();
 
-	@Query("select o from TradeOrder o, TradeGroupOrder r where r.groupId=:groupId and r.orderId=o.id")
+	@Query("select o from TradeOrder o, TradeGroupOrder r where r.groupId=:groupId and r.orderId=o.id order by o.tradeDt desc")
 	List<TradeOrder> findByGroupId(@Param("groupId") Integer groupId);
 
 }

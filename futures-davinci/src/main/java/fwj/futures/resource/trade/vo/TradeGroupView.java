@@ -15,6 +15,7 @@ public class TradeGroupView {
 	private Date lastTradeDt;
 	private BigDecimal fee;
 	private BigDecimal profit;
+	private BigDecimal amount;
 	
 	private List<TradeOrder> orders;
 
@@ -80,6 +81,14 @@ public class TradeGroupView {
 
 	public void setOrders(List<TradeOrder> orders) {
 		this.orders = orders;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
 	}
 
 }

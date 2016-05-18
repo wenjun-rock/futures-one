@@ -10,4 +10,6 @@ public interface TradeGroupOrderRepos extends JpaRepository<TradeGroupOrder, Int
 
 	void deleteByGroupId(Integer groupId);
 
+	void deleteByOrderId(Integer orderId);
+
 }

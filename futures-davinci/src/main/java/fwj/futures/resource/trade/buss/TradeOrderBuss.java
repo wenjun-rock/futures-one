@@ -116,6 +116,7 @@ public class TradeOrderBuss {
 	}
 
 	public void assignTradeOrder(TradeOrderAssignReq body) {
+		tradeGroupOrderRepos.deleteByOrderId(body.getOrderId());
 		TradeGroupOrder obj = new TradeGroupOrder();
 		obj.setGroupId(body.getGroupId());
 		obj.setOrderId(body.getOrderId());
@@ -142,7 +143,25 @@ public class TradeOrderBuss {
 			view.setId(group.getId());
 			view.setName(group.getName());
 			view.setComment(group.getComment());
-			view.setOrders(tradeOrderRepos.findByGroupId(group.getId()));
+			List<TradeOrder> orderList = tradeOrderRepos.findByGroupId(group.getId());
+			view.setOrders(orderList);
+			
+			view.setAmount(BigDecimal.ZERO);
+			view.setFee(BigDecimal.ZERO);
+			view.setProfit(BigDecimal.ZERO);
+			orderList.forEach(order -> {
+				if(view.getFirstTradeDt() == null || view.getFirstTradeDt().after(order.getTradeDt())) {
+					view.setFirstTradeDt(order.getTradeDt());
+				}
+				if(view.getLastTradeDt() == null || view.getLastTradeDt().after(order.getTradeDt())) {
+					view.setLastTradeDt(order.getTradeDt());
+				}
+				view.setFee(view.getFee().add(order.getFee()));
+				view.setAmount(view.getAmount().add(order.getAmount()));
+				if(order.getProfit() != null) {
+					view.setProfit(view.getProfit().add(order.getProfit()));
+				}	
+			});
 			return view;
 		}).collect(Collectors.toList());
 	}
