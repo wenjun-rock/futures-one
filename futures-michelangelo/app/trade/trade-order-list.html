@@ -9,130 +9,31 @@
       <button type="button" class="btn btn-primary" ng-click="addTradeModal()">再来一局</button>
     </div>
     <div style="float: left; margin-bottom: 20px;">
-      <span style="margin-right: 10px; font-size: 24px">总交易金额:</span>
+      <span style="margin-right: 10px; font-size: 24px">总交易额:</span>
       <span style="margin-right: 30px; font-size: 30px">{{totalAmount | number}}</span>
       <span style="margin-right: 10px; font-size: 24px">总手续费:</span>
-      <span style="margin-right: 30px; font-size: 30px">{{totalFee | number}}</span>
+      <span style="margin-right: 30px; font-size: 30px">{{totalFee | number:2}}</span>
       <span style="margin-right: 10px; font-size: 24px">总收益:</span>
       <span ng-class="{'price-up':totalProfit>0,'price-down':totalProfit<0}" style="margin-right: 30px; font-size: 30px">{{totalProfit | number}}</span>
     </div>
   </div>
   <div style="clear: both">
-    <table id="trade-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <table id="trade-order-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
       <thead>
         <tr>
-          <th>名称</th>
+          <th>合约代码</th>
+          <th>交易时间</th>
+          <th>序列号</th>
           <th>类型</th>
-          <th>开始日期</th>
-          <th>结束日期</th>
-          <th>持仓量</th>
-          <th>保证金</th>
-          <th>持仓收益</th>
-          <th>平仓收益</th>
-          <th>总收益</th>
-          <th>最大保证金</th>
-          <th>ROI(%)</th>
+          <th>单价</th>
+          <th>数量</th>
+          <th>交易额</th>
+          <th>手续费</th>
+          <th>收益</th>
+          <th>备注</th>
           <th>操作</th>
         </tr>
       </thead>
     </table>
   </div>
-  <input type="hidden" ng-click="detailTradeModal();" id="detailId"></input>
-  <input type="hidden" ng-click="openPositionModal();" id="openId"></input>
-  <input type="hidden" ng-click="closePositionModal();" id="closeId"></input>
-  <script type="text/ng-template" id="addTradeModal.html">
-    <div class="modal-header">
-      <h3 class="modal-title">添加交易</h3>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label for="trade.name">名称</label>
-        <input type="text" class="form-control" id="trade.name" ng-model="trade.name">
-      </div>
-      <div class="form-group">
-        <label for="trade.type">类型</label>
-        <select id="trade.type" class="form-control" ng-model="trade.type" ng-options="ele.code as ele.name for ele in tradeTypes"></select>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="trade.name.length == 0">提交</button>
-      <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
-    </div>
-  </script>
-  <script type="text/ng-template" id="openPositionModal.html">
-    <div class="modal-header">
-      <h3 class="modal-title">开仓</h3>
-      <div style="margin-top: 5px">{{trade.name}}</div>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label for="action.conCode">合约编码</label>
-        <input type="text" class="form-control" id="action.conCode" ng-model="action.conCode">
-      </div>
-      <div class="form-group">
-        <label for="action.actionDt">交易时间</label>
-        <input type="date" class="form-control" id="action.dt" ng-model="action.dt">
-      </div>
-      <div class="form-group">
-        <label for="action.type">类型</label>
-        <select id="action.type" class="form-control" ng-model="action.type" ng-options="ele.code as ele.name for ele in actionTypes"></select>
-      </div>
-      <div class="form-group">
-        <label for="action.price">成交价</label>
-        <input type="text" class="form-control" id="action.price" ng-model="action.price">
-      </div>
-      <div class="form-group">
-        <label for="action.vol">手数</label>
-        <input type="text" class="form-control" id="action.vol" ng-model="action.vol">
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="action.contractCode.length == 0 || action.price.length == 0 || action.vol.length == 0">提交</button>
-      <button class="btn btn-warning" type="button" ng-click="cancel()">取消</button>
-    </div>
-  </script>
-  <script type="text/ng-template" id="detailTradeModal.html">
-    <div class="modal-header">
-      <h3 class="modal-title">{{trade.name}}</h3>
-    </div>
-    <div class="modal-body">
-      <div>
-        <span style="margin-right: 10px">持仓收益：</span>
-        <span ng-class="{'price-up':trade.floatProfit>0,'price-down':trade.floatProfit<0}" style="margin-right: 30px; font-size: 24px">{{trade.floatProfit | number}}</span>
-        <span style="margin-right: 10px">平仓收益：</span>
-        <span ng-class="{'price-up':trade.completeProfit>0,'price-down':trade.completeProfit<0}" style="margin-right: 30px; font-size: 24px">{{trade.completeProfit | number}}</span>
-        <span style="margin-right: 10px">总收益：</span>
-        <span ng-class="{'price-up':trade.profit>0,'price-down':trade.profit<0}" style="margin-right: 30px; font-size: 24px">{{trade.profit | number}}</span>
-      </div>
-      <div style="margin-top: 20px; margin-bottom: 10px; font-size: 18px"><strong>持仓列表</strong></div>
-      <table id="balance-table" class="table table-bordered" cellspacing="0" width="100%">
-        <thead>
-          <tr>
-            <th>合约</th>
-            <th>类型</th>
-            <th>持仓量</th>
-            <th>平均价</th>
-            <th>最新价</th>
-            <th>保证金</th>
-            <th>持仓收益</th>
-            <th>平仓收益</th>
-            <th>总收益</th>
-          </tr>
-        </thead>
-      </table>
-      <div style="margin-top: 20px; margin-bottom: 10px; font-size: 18px"><strong>交易记录</strong></div>
-      <table id="action-table" class="table table-bordered" cellspacing="0" width="100%">
-        <thead>
-          <tr>
-            <th>流水号</th>
-            <th>交易日期</th>
-            <th>合约</th>
-            <th>类型</th>
-            <th>手数</th>
-            <th>价格</th>
-          </tr>
-        </thead>
-      </table>
-    </div>
-  </script>
 </div>

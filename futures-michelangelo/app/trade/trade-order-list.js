@@ -9,11 +9,12 @@ angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
   });
 }])
 
-.controller('micheTradeOrderListCtrl', ['$scope', '$modal', 'micheHttp', 'micheChart', 'micheData',
-  function($scope, $modal, micheHttp, micheChart, micheData) {
+.controller('micheTradeOrderListCtrl', ['$scope', '$filter', '$modal', 'micheHttp', 'micheChart', 'micheData',
+  function($scope, $filter, $modal, micheHttp, micheChart, micheData) {
 
     var refresh = function() {
       micheHttp.get('/trade/list-trade-order').success(function(orderList) {
+        console.log(orderList);
         $scope.orderList = orderList;
         $scope.totalAmount = 0;
         $scope.totalFee = 0;
@@ -24,102 +25,65 @@ angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
           $scope.totalProfit += order.profit | 0;
         });
 
-        $('#trade-table').dataTable({
+        $('#trade-order-table').dataTable({
           "data": orderList,
           "destroy": true,
           "info": false,
           "order": [
-            [4, "desc"],
-            [2, "desc"]
+            [1, "desc"]
           ],
           "columns": [{
-            "data": "name"
+            "data": "conCode"
+          }, {
+            "data": "tradeDt"
+          }, {
+            "data": "serialNo"
           }, {
             "data": "type"
           }, {
-            "data": "startDt"
-          }, {
-            "data": "endDt"
+            "data": "price"
           }, {
             "data": "vol"
           }, {
-            "data": "margin"
+            "data": "amount"
           }, {
-            "data": "floatProfit"
-          }, {
-            "data": "completeProfit"
+            "data": "fee"
           }, {
             "data": "profit"
           }, {
-            "data": "maxMargin"
-          }, {
-            "data": "roi"
+            "data": "comment"
           }, {
             "data": "id"
           }],
           "columnDefs": [{
             "render": function(data, type, row) {
-              if (data == 1) {
-                return '开多'
-              } else if (data == 2) {
-                return '开空'
-              } else if (data == 3) {
-                return '对冲'
-              }
+              return $filter('date')(data, 'yyyy-MM-dd HH:mm:ss');
             },
             "targets": [1]
           }, {
             "render": function(data, type, row) {
-              if (data) {
-                var date = new Date(data);
-                var year = date.getFullYear();
-                var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
-                var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-                return year + "-" + month + "-" + day;
+              if (data == 1) {
+                return '买开'
+              } else if (data == 2) {
+                return '卖开'
+              } else if (data == 3) {
+                return '卖平'
+              } else if (data == 4) {
+                return '买平'
               } else {
-                return '';
+                return ''
               }
             },
-            "targets": [2, 3]
+            "targets": [3]
           }, {
             "render": function(data, type, row) {
-              return data.toLocaleString();
-            },
-            "targets": [5, 9]
-          }, {
-            "render": function(data, type, row) {
-              if (data > 0) {
-                return '<span style="color:red">' + data.toLocaleString() + '</span>';
-              } else if (data < 0) {
-                return '<span style="color:green">' + data.toLocaleString() + '</span>';
+              if(data) {
+                return data.toLocaleString();
               } else {
-                return data;
+                return null;
               }
             },
-            "targets": [6, 7, 8]
-          }, {
-            "render": function(data, type, row) {
-              var out = (data * 100).toFixed(2);
-              if (out > 0) {
-                return '<span style="color:red">' + out + '</span>';
-              } else if (out < 0) {
-                return '<span style="color:green">' + out + '</span>';
-              } else {
-                return out;
-              }
-            },
-            "targets": [10]
-          }, {
-            "orderable": false,
-            "render": function(data, type, row) {
-              var ele = '<button type="button" class="btn btn-info trade-btn" onclick="$(\'#detailId\').val(' + row.id + ');$(\'#detailId\').click();">详情</button>';
-              if (row.endDt == null) {
-                ele = ele + '<button type="button" class="btn btn-warning trade-btn" onclick="$(\'#openId\').val(' + row.id + ');$(\'#openId\').click();">开仓</button>' //
-                  + '<button type="button" class="btn btn-danger trade-btn" onclick="$(\'#closeId\').val(' + row.id + ');$(\'#closeId\').click();">平仓</button>';
-              }
-              return ele;
-            },
-            "targets": [11]
+            "targets": [4,5,6,7,8]
           }]
         });
       });
