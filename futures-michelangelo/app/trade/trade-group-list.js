@@ -1,56 +1,47 @@
 'use strict';
 
-angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
+angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
 
 .config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/trade/orders', {
-    templateUrl: 'trade/trade-order-list.html',
-    controller: 'micheTradeOrderListCtrl'
+  $routeProvider.when('/trade/groups', {
+    templateUrl: 'trade/trade-group-list.html',
+    controller: 'micheTradeGroupListCtrl'
   });
 }])
 
-.controller('micheTradeOrderListCtrl', ['$scope', '$filter', '$modal', 'micheHttp', 'micheChart', 'micheData',
+.controller('micheTradeGroupListCtrl', ['$scope', '$filter', '$modal', 'micheHttp', 'micheChart', 'micheData',
   function($scope, $filter, $modal, micheHttp, micheChart, micheData) {
 
     var refresh = function() {
-      micheHttp.get('/trade/list-trade-order').success(function(orderList) {
-        $scope.orderList = orderList;
-        $scope.totalAmount = 0;
-        $scope.totalFee = 0;
-        $scope.totalProfit = 0;
-        orderList.forEach(function(order) {
-          $scope.totalAmount += order.amount | 0;
-          $scope.totalFee += order.fee | 0;
-          $scope.totalProfit += order.profit | 0;
-        });
+      micheHttp.get('/trade/list-trade-group').success(function(groupList) {
+        $scope.groupList = groupList;
 
-        $('#trade-order-table').dataTable({
-          "data": orderList,
+        $('#trade-group-table').dataTable({
+          "data": groupList,
           "destroy": true,
           "info": false,
           "order": [
-            [1, "desc"]
+            [4, "desc"],
+            [3, "desc"]
           ],
           "columns": [{
-            "data": "conCode"
+            "data": "name"
           }, {
-            "data": "tradeDt"
+            "data": "comment"
           }, {
-            "data": "type"
+            "data": "firstTradeDt"
           }, {
-            "data": "price"
+            "data": "lastTradeDt"
           }, {
-            "data": "vol"
-          }, {
-            "data": "amount"
+            "data": "openVol"
           }, {
             "data": "fee"
           }, {
             "data": "profit"
           }, {
-            "data": "comment"
+            "data": "amount"
           }, {
-            "data": "groupId"
+            "data": "vol"
           }, {
             "data": "id"
           }],
@@ -58,22 +49,7 @@ angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
             "render": function(data, type, row) {
               return $filter('date')(data, 'yyyy-MM-dd HH:mm:ss');
             },
-            "targets": [1]
-          }, {
-            "render": function(data, type, row) {
-              if (data == 1) {
-                return '买开'
-              } else if (data == 2) {
-                return '卖开'
-              } else if (data == 3) {
-                return '卖平'
-              } else if (data == 4) {
-                return '买平'
-              } else {
-                return ''
-              }
-            },
-            "targets": [2]
+            "targets": [2,3]
           }, {
             "render": function(data, type, row) {
               if(data) {
@@ -82,16 +58,7 @@ angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
                 return null;
               }
             },
-            "targets": [3,4,5,6,7]
-          }, {
-            "render": function(data, type, row) {
-              if(data) {
-                return row.groupName + ' (' + row.groupId + ')';
-              } else {
-                return null;
-              }
-            },
-            "targets": [9]
+            "targets": [4,5,6,7,8]
           }]
         });
       });

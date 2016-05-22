@@ -14,6 +14,7 @@ angular.module('micheApp', [
   'miche.hedging.compare',
   'miche.trade.list',
   'miche.trade.order.list',
+  'miche.trade.group.list',
   'miche.trend.prod',
   'miche.trend.ma.monitor'
 ])
