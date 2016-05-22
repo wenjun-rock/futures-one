@@ -16,6 +16,8 @@ public class TradeGroupView {
 	private BigDecimal fee;
 	private BigDecimal profit;
 	private BigDecimal amount;
+	private Integer vol;
+	private Integer openVol;
 	
 	private List<TradeOrder> orders;
 
@@ -89,6 +91,22 @@ public class TradeGroupView {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public Integer getVol() {
+		return vol;
+	}
+
+	public void setVol(Integer vol) {
+		this.vol = vol;
+	}
+
+	public Integer getOpenVol() {
+		return openVol;
+	}
+
+	public void setOpenVol(Integer openVol) {
+		this.openVol = openVol;
 	}
 
 }

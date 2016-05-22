@@ -12,12 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import fwj.futures.resource.trade.buss.TradeBuss;
 import fwj.futures.resource.trade.buss.TradeOrderBuss;
-import fwj.futures.resource.trade.entity.TradeOrder;
 import fwj.futures.resource.trade.vo.ActionView;
 import fwj.futures.resource.trade.vo.TradeDetail;
 import fwj.futures.resource.trade.vo.TradeGroupAssignReq;
 import fwj.futures.resource.trade.vo.TradeGroupView;
 import fwj.futures.resource.trade.vo.TradeOrderAssignReq;
+import fwj.futures.resource.trade.vo.TradeOrderView;
 import fwj.futures.resource.trade.vo.TradeView;
 
 @RestController()
@@ -63,7 +63,7 @@ public class TradeCtrl {
 	}
 	
 	@RequestMapping(value = "/list-trade-order", method = RequestMethod.GET)
-	public List<TradeOrder> listTradeOrder() {
+	public List<TradeOrderView> listTradeOrder() {
 		return tradeOrderBuss.listTradeOrder();
 	}
 	
@@ -73,13 +73,15 @@ public class TradeCtrl {
 	}
 	
 	@RequestMapping(value = "/assign-trade-group", method = RequestMethod.POST)
-	public void assignTradeGroup(@RequestBody TradeGroupAssignReq body) {
+	public String assignTradeGroup(@RequestBody TradeGroupAssignReq body) {
 		tradeOrderBuss.assignTradeGroup(body);
+		return "done";
 	}
 	
 	@RequestMapping(value = "/assign-trade-order", method = RequestMethod.POST)
-	public void assignTradeOrder(@RequestBody TradeOrderAssignReq body) {
+	public String assignTradeOrder(@RequestBody TradeOrderAssignReq body) {
 		tradeOrderBuss.assignTradeOrder(body);
+		return "done";
 	}
 	
 	@RequestMapping(value = "/list-trade-group", method = RequestMethod.GET)

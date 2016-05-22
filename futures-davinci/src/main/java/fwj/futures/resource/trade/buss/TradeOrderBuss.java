@@ -19,15 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.trade.entity.TradeGroup;
-import fwj.futures.resource.trade.entity.TradeGroupOrder;
 import fwj.futures.resource.trade.entity.TradeOrder;
 import fwj.futures.resource.trade.enu.TradeOrderType;
-import fwj.futures.resource.trade.repos.TradeGroupOrderRepos;
 import fwj.futures.resource.trade.repos.TradeGroupRepos;
 import fwj.futures.resource.trade.repos.TradeOrderRepos;
 import fwj.futures.resource.trade.vo.TradeGroupAssignReq;
 import fwj.futures.resource.trade.vo.TradeGroupView;
 import fwj.futures.resource.trade.vo.TradeOrderAssignReq;
+import fwj.futures.resource.trade.vo.TradeOrderView;
 
 @Component
 public class TradeOrderBuss {
@@ -40,11 +39,23 @@ public class TradeOrderBuss {
 	@Autowired
 	private TradeGroupRepos tradeGroupRepos;
 	
-	@Autowired
-	private TradeGroupOrderRepos tradeGroupOrderRepos;
-
-	public List<TradeOrder> listTradeOrder() {
-		return tradeOrderRepos.findOrderByTradeDtDesc();
+	public List<TradeOrderView> listTradeOrder() {
+		return tradeOrderRepos.findOrderByTradeDtDesc().stream().map(order -> {
+			TradeOrderView view = new TradeOrderView();
+			view.setId(order.getId());
+			view.setConCode(order.getConCode());
+			view.setTradeDt(order.getTradeDt());
+			view.setType(order.getType());
+			view.setPrice(order.getPrice());
+			view.setVol(order.getVol());
+			view.setAmount(order.getAmount());
+			view.setFee(order.getFee());
+			view.setProfit(order.getProfit());
+			view.setComment(order.getComment());
+			view.setGroupId(order.getTradeGroup() != null ? order.getTradeGroup().getId() : null);
+			view.setGroupName(order.getTradeGroup() != null ? order.getTradeGroup().getName() : null);
+			return view;
+		}).collect(Collectors.toList());
 	}
 
 	public int saveTradeOrderInExcel(byte[] bytes) throws Exception {
@@ -116,24 +127,30 @@ public class TradeOrderBuss {
 	}
 
 	public void assignTradeOrder(TradeOrderAssignReq body) {
-		tradeGroupOrderRepos.deleteByOrderId(body.getOrderId());
-		TradeGroupOrder obj = new TradeGroupOrder();
-		obj.setGroupId(body.getGroupId());
-		obj.setOrderId(body.getOrderId());
-		tradeGroupOrderRepos.save(obj);
-		tradeGroupOrderRepos.flush();
+		TradeOrder tradeOrder = tradeOrderRepos.findOne(body.getOrderId());
+		TradeGroup tradeGroup = tradeGroupRepos.findOne(body.getGroupId());
+		if(tradeOrder != null && tradeGroup != null) {
+			tradeOrder.setTradeGroup(tradeGroup);
+			tradeOrderRepos.saveAndFlush(tradeOrder);
+		}
 		return;
 	}
 	
 	public void assignTradeGroup(TradeGroupAssignReq body) {
-		tradeGroupOrderRepos.deleteByGroupId(body.getGroupId());
-		Stream.of(body.getOrderIds()).forEach(orderId -> {
-			TradeGroupOrder obj = new TradeGroupOrder();
-			obj.setGroupId(body.getGroupId());
-			obj.setOrderId(orderId);
-			tradeGroupOrderRepos.save(obj);
+		TradeGroup tradeGroup = tradeGroupRepos.findOne(body.getGroupId());
+		if(tradeGroup == null) {
+			return;
+		}
+		tradeOrderRepos.findByTradeGroupOrderByTradeDtDesc(tradeGroup).stream().forEach(order -> {
+			order.setTradeGroup(null);
+			tradeOrderRepos.save(order);
 		});
-		tradeGroupOrderRepos.flush();
+		Stream.of(body.getOrderIds()).forEach(orderId -> {
+			TradeOrder order = tradeOrderRepos.findOne(orderId);
+			order.setTradeGroup(tradeGroup);
+			tradeOrderRepos.save(order);
+		});
+		tradeOrderRepos.flush();
 		return;
 	}
 
@@ -143,24 +160,29 @@ public class TradeOrderBuss {
 			view.setId(group.getId());
 			view.setName(group.getName());
 			view.setComment(group.getComment());
-			List<TradeOrder> orderList = tradeOrderRepos.findByGroupId(group.getId());
+			List<TradeOrder> orderList = tradeOrderRepos.findByTradeGroupOrderByTradeDtDesc(group);
 			view.setOrders(orderList);
-			
+
 			view.setAmount(BigDecimal.ZERO);
 			view.setFee(BigDecimal.ZERO);
 			view.setProfit(BigDecimal.ZERO);
+			view.setVol(0);
+			view.setOpenVol(0);
 			orderList.forEach(order -> {
-				if(view.getFirstTradeDt() == null || view.getFirstTradeDt().after(order.getTradeDt())) {
+				if (view.getFirstTradeDt() == null || view.getFirstTradeDt().after(order.getTradeDt())) {
 					view.setFirstTradeDt(order.getTradeDt());
 				}
-				if(view.getLastTradeDt() == null || view.getLastTradeDt().after(order.getTradeDt())) {
+				if (view.getLastTradeDt() == null || view.getLastTradeDt().before(order.getTradeDt())) {
 					view.setLastTradeDt(order.getTradeDt());
 				}
 				view.setFee(view.getFee().add(order.getFee()));
 				view.setAmount(view.getAmount().add(order.getAmount()));
-				if(order.getProfit() != null) {
+				if (order.getProfit() != null) {
 					view.setProfit(view.getProfit().add(order.getProfit()));
-				}	
+				}
+				view.setVol(view.getVol() + order.getVol());
+				view.setOpenVol((order.getType() == 1 || order.getType() == 2) ? (view.getOpenVol() + order.getVol())
+						: (view.getOpenVol() - order.getVol()));
 			});
 			return view;
 		}).collect(Collectors.toList());

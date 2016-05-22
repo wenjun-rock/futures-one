@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import fwj.futures.resource.trade.entity.TradeGroup;
 import fwj.futures.resource.trade.entity.TradeOrder;
 
 @RepositoryRestResource(exported = false)
@@ -17,7 +17,6 @@ public interface TradeOrderRepos extends JpaRepository<TradeOrder, Integer> {
 	@Query("select o from TradeOrder o order by o.tradeDt desc")
 	List<TradeOrder> findOrderByTradeDtDesc();
 
-	@Query("select o from TradeOrder o, TradeGroupOrder r where r.groupId=:groupId and r.orderId=o.id order by o.tradeDt desc")
-	List<TradeOrder> findByGroupId(@Param("groupId") Integer groupId);
+	List<TradeOrder> findByTradeGroupOrderByTradeDtDesc(TradeGroup tradeGroup);
 
 }

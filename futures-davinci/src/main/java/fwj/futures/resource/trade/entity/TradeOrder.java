@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -42,7 +44,9 @@ public class TradeOrder extends AbstractPersistable<Integer> {
 	@Column(length = 255)
 	private String comment;
 	
-	private Integer groupId;
+	@ManyToOne()
+	@JoinColumn(name = "group_id", nullable = true)
+	private TradeGroup tradeGroup;
 
 	public String getConCode() {
 		return conCode;
@@ -124,12 +128,12 @@ public class TradeOrder extends AbstractPersistable<Integer> {
 		this.comment = comment;
 	}
 
-	public Integer getGroupId() {
-		return groupId;
+	public TradeGroup getTradeGroup() {
+		return tradeGroup;
 	}
 
-	public void setGroupId(Integer groupId) {
-		this.groupId = groupId;
+	public void setTradeGroup(TradeGroup tradeGroup) {
+		this.tradeGroup = tradeGroup;
 	}
 
 }
