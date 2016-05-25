@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -88,7 +90,14 @@ public class TradeOrderBuss {
 					Row row = sheet.getRow(i);
 					TradeOrder order = new TradeOrder();
 					String datetime = row.getCell(11).getStringCellValue() + " " + row.getCell(2).getStringCellValue();
-					order.setTradeDt(df.parse(datetime));
+					Date tradeDt = df.parse(datetime);
+					if(row.getCell(2).getStringCellValue().substring(0, 2).compareTo("20") > 0) {
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(tradeDt);
+						cal.add(Calendar.DATE, -1);
+						tradeDt = cal.getTime();
+					}
+					order.setTradeDt(tradeDt);
 					order.setConCode(row.getCell(0).getStringCellValue());
 					order.setSerialNo(row.getCell(1).getStringCellValue());
 					String type = row.getCell(3).getStringCellValue().trim()
