@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import fwj.futures.resource.trade.entity.TradeOrder;
-
 public class TradeGroupView {
 
 	private Integer id;
@@ -19,7 +17,7 @@ public class TradeGroupView {
 	private Integer vol;
 	private Integer openVol;
 	
-	private List<TradeOrder> orders;
+	private List<Element> elmts;
 
 	public Integer getId() {
 		return id;
@@ -77,12 +75,12 @@ public class TradeGroupView {
 		this.profit = profit;
 	}
 
-	public List<TradeOrder> getOrders() {
-		return orders;
+	public List<Element> getElmts() {
+		return elmts;
 	}
 
-	public void setOrders(List<TradeOrder> orders) {
-		this.orders = orders;
+	public void setElmts(List<Element> elmts) {
+		this.elmts = elmts;
 	}
 
 	public BigDecimal getAmount() {
@@ -107,6 +105,73 @@ public class TradeGroupView {
 
 	public void setOpenVol(Integer openVol) {
 		this.openVol = openVol;
+	}
+	
+	public static class Element {
+
+		private String conCode;
+		private int type; // 1:多； 2：空
+		private Date openDt;
+		private Date closeDt;
+		private BigDecimal openPrice;
+		private BigDecimal closePrice;
+		private BigDecimal diffPrice;
+
+		public String getConCode() {
+			return conCode;
+		}
+
+		public int getType() {
+			return type;
+		}
+
+		public Date getOpenDt() {
+			return openDt;
+		}
+
+		public Date getCloseDt() {
+			return closeDt;
+		}
+
+		public BigDecimal getOpenPrice() {
+			return openPrice;
+		}
+
+		public BigDecimal getClosePrice() {
+			return closePrice;
+		}
+
+		public BigDecimal getDiffPrice() {
+			return diffPrice;
+		}
+
+		public void setConCode(String conCode) {
+			this.conCode = conCode;
+		}
+
+		public void setType(int type) {
+			this.type = type;
+		}
+
+		public void setOpenDt(Date openDt) {
+			this.openDt = openDt;
+		}
+
+		public void setCloseDt(Date closeDt) {
+			this.closeDt = closeDt;
+		}
+
+		public void setOpenPrice(BigDecimal openPrice) {
+			this.openPrice = openPrice;
+		}
+
+		public void setClosePrice(BigDecimal closePrice) {
+			this.closePrice = closePrice;
+		}
+
+		public void setDiffPrice(BigDecimal diffPrice) {
+			this.diffPrice = diffPrice;
+		}
 	}
 
 }

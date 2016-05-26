@@ -18,5 +18,7 @@ public interface TradeOrderRepos extends JpaRepository<TradeOrder, Integer> {
 	List<TradeOrder> findOrderByTradeDtDesc();
 
 	List<TradeOrder> findByTradeGroupOrderByTradeDtDesc(TradeGroup tradeGroup);
+	
+	List<TradeOrder> findByTradeGroupOrderByTradeDtAsc(TradeGroup tradeGroup);
 
 }

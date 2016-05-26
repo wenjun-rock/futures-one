@@ -4,10 +4,14 @@ import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,6 +31,7 @@ import fwj.futures.resource.trade.repos.TradeGroupRepos;
 import fwj.futures.resource.trade.repos.TradeOrderRepos;
 import fwj.futures.resource.trade.vo.TradeGroupAssignReq;
 import fwj.futures.resource.trade.vo.TradeGroupView;
+import fwj.futures.resource.trade.vo.TradeGroupView.Element;
 import fwj.futures.resource.trade.vo.TradeOrderAssignReq;
 import fwj.futures.resource.trade.vo.TradeOrderView;
 
@@ -37,10 +42,10 @@ public class TradeOrderBuss {
 
 	@Autowired
 	private TradeOrderRepos tradeOrderRepos;
-	
+
 	@Autowired
 	private TradeGroupRepos tradeGroupRepos;
-	
+
 	public List<TradeOrderView> listTradeOrder() {
 		return tradeOrderRepos.findOrderByTradeDtDesc().stream().map(order -> {
 			TradeOrderView view = new TradeOrderView();
@@ -63,7 +68,7 @@ public class TradeOrderBuss {
 	public int saveTradeOrderInExcel(byte[] bytes) throws Exception {
 		List<TradeOrder> importList = this.getImportList(bytes);
 		return importList.stream().mapToInt(tradeOrder -> {
-			if(tradeOrderRepos.findBySerialNo(tradeOrder.getSerialNo()) != null) {
+			if (tradeOrderRepos.findBySerialNo(tradeOrder.getSerialNo()) != null) {
 				// 已存在
 				return 0;
 			} else {
@@ -91,7 +96,7 @@ public class TradeOrderBuss {
 					TradeOrder order = new TradeOrder();
 					String datetime = row.getCell(11).getStringCellValue() + " " + row.getCell(2).getStringCellValue();
 					Date tradeDt = df.parse(datetime);
-					if(row.getCell(2).getStringCellValue().substring(0, 2).compareTo("20") > 0) {
+					if (row.getCell(2).getStringCellValue().substring(0, 2).compareTo("20") > 0) {
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(tradeDt);
 						cal.add(Calendar.DATE, -1);
@@ -104,13 +109,13 @@ public class TradeOrderBuss {
 							+ row.getCell(8).getStringCellValue().trim();
 					order.setType(TradeOrderType.getByName(type).getCode());
 					order.setPrice(BigDecimal.valueOf(row.getCell(5).getNumericCellValue()));
-					order.setVol((int)row.getCell(6).getNumericCellValue());
+					order.setVol((int) row.getCell(6).getNumericCellValue());
 					order.setAmount(BigDecimal.valueOf(row.getCell(7).getNumericCellValue()));
 					order.setFee(BigDecimal.valueOf(row.getCell(9).getNumericCellValue()));
-					if(row.getCell(10).getCellType() == Cell.CELL_TYPE_NUMERIC) {
+					if (row.getCell(10).getCellType() == Cell.CELL_TYPE_NUMERIC) {
 						order.setProfit(BigDecimal.valueOf(row.getCell(10).getNumericCellValue()));
 					}
-					if(row.getCell(12) != null) {
+					if (row.getCell(12) != null) {
 						order.setComment(row.getCell(12).getStringCellValue());
 					}
 					importList.add(order);
@@ -138,16 +143,16 @@ public class TradeOrderBuss {
 	public void assignTradeOrder(TradeOrderAssignReq body) {
 		TradeOrder tradeOrder = tradeOrderRepos.findOne(body.getOrderId());
 		TradeGroup tradeGroup = tradeGroupRepos.findOne(body.getGroupId());
-		if(tradeOrder != null && tradeGroup != null) {
+		if (tradeOrder != null && tradeGroup != null) {
 			tradeOrder.setTradeGroup(tradeGroup);
 			tradeOrderRepos.saveAndFlush(tradeOrder);
 		}
 		return;
 	}
-	
+
 	public void assignTradeGroup(TradeGroupAssignReq body) {
 		TradeGroup tradeGroup = tradeGroupRepos.findOne(body.getGroupId());
-		if(tradeGroup == null) {
+		if (tradeGroup == null) {
 			return;
 		}
 		tradeOrderRepos.findByTradeGroupOrderByTradeDtDesc(tradeGroup).stream().forEach(order -> {
@@ -169,14 +174,15 @@ public class TradeOrderBuss {
 			view.setId(group.getId());
 			view.setName(group.getName());
 			view.setComment(group.getComment());
-			List<TradeOrder> orderList = tradeOrderRepos.findByTradeGroupOrderByTradeDtDesc(group);
-			view.setOrders(orderList);
+			List<TradeOrder> orderList = tradeOrderRepos.findByTradeGroupOrderByTradeDtAsc(group);
 
 			view.setAmount(BigDecimal.ZERO);
 			view.setFee(BigDecimal.ZERO);
 			view.setProfit(BigDecimal.ZERO);
 			view.setVol(0);
 			view.setOpenVol(0);
+			List<Element> elmts = new ArrayList<>();
+			Map<String, Deque<TradeOrder>> map = new HashMap<>();
 			orderList.forEach(order -> {
 				if (view.getFirstTradeDt() == null || view.getFirstTradeDt().after(order.getTradeDt())) {
 					view.setFirstTradeDt(order.getTradeDt());
@@ -192,7 +198,51 @@ public class TradeOrderBuss {
 				view.setVol(view.getVol() + order.getVol());
 				view.setOpenVol((order.getType() == 1 || order.getType() == 2) ? (view.getOpenVol() + order.getVol())
 						: (view.getOpenVol() - order.getVol()));
+
+				Deque<TradeOrder> stack = map.get(order.getConCode());
+				if (stack == null) {
+					stack = new ArrayDeque<>();
+					map.put(order.getConCode(), stack);
+					for (int i = 0; i < order.getVol(); i++) {
+					}
+				}
+				if (order.getType() == 1 || order.getType() == 2) {
+					for (int i = 0; i < order.getVol(); i++) {
+						stack.push(order);
+					}
+				} else {
+					for (int i = 0; i < order.getVol(); i++) {
+						if(stack .isEmpty()) {
+							return;
+						}
+						TradeOrder openOrder = stack.pop();
+						Element ele = new Element();
+						ele.setConCode(order.getConCode());
+						ele.setOpenDt(openOrder.getTradeDt());
+						ele.setOpenPrice(openOrder.getPrice());
+						ele.setCloseDt(order.getTradeDt());
+						ele.setClosePrice(order.getPrice());
+						ele.setType(openOrder.getType());
+						ele.setDiffPrice(openOrder.getType() == 1 ? (order.getPrice().subtract(openOrder.getPrice()))
+								: (openOrder.getPrice().subtract(order.getPrice())));
+						elmts.add(ele);
+					}
+				}
+
 			});
+			for(Map.Entry<String, Deque<TradeOrder>> entry : map.entrySet()) {
+				Deque<TradeOrder> stack = entry.getValue();
+				while(!stack.isEmpty()) {
+					TradeOrder openOrder = stack.pop();
+					Element ele = new Element();
+					ele.setConCode(openOrder.getConCode());
+					ele.setOpenDt(openOrder.getTradeDt());
+					ele.setOpenPrice(openOrder.getPrice());
+					ele.setType(openOrder.getType());
+					elmts.add(ele);
+				}
+			}
+			view.setElmts(elmts);
 			return view;
 		}).collect(Collectors.toList());
 	}
