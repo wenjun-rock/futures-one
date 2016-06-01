@@ -27,4 +27,29 @@
       </thead>
     </table>
   </div>
+  <input type="hidden" ng-click="detailTradeGroupModal();" id="detailId"></input>
+  <script type="text/ng-template" id="detailTradeGroupModal.html">
+    <div class="modal-header">
+      <h3 class="modal-title">订单详细</h3>
+    </div>
+    <div class="modal-body">
+        {{group | json}}
+        <table id="elmts-table" class="table table-bordered" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>合约</th>
+            <th>类型</th>
+            <th>开仓时间</th>
+            <th>平仓时间</th>
+            <th>开仓价格</th>
+            <th>平仓价格</th>
+            <th>盈利价差</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-warning" type="button" ng-click="cancel()">关闭</button>
+    </div>
+  </script>
 </div>

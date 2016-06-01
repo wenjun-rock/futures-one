@@ -168,14 +168,18 @@ public class TradeOrderBuss {
 		return;
 	}
 
-	public List<TradeGroupView> listTradeGroup() {
+	public List<TradeGroupView> listTradeGroup(boolean orderFlag) {
 		return tradeGroupRepos.findAll().stream().map(group -> {
 			TradeGroupView view = new TradeGroupView();
 			view.setId(group.getId());
 			view.setName(group.getName());
 			view.setComment(group.getComment());
+			
+			if(orderFlag == false) {
+				return view;
+			}
+			
 			List<TradeOrder> orderList = tradeOrderRepos.findByTradeGroupOrderByTradeDtAsc(group);
-
 			view.setAmount(BigDecimal.ZERO);
 			view.setFee(BigDecimal.ZERO);
 			view.setProfit(BigDecimal.ZERO);

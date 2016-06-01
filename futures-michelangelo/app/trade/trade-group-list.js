@@ -47,6 +47,11 @@ angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
           }],
           "columnDefs": [{
             "render": function(data, type, row) {
+              return row.name + ' (' + row.id + ')';
+            },
+            "targets": [0]
+          }, {
+            "render": function(data, type, row) {
               return $filter('date')(data, 'yyyy-MM-dd HH:mm:ss');
             },
             "targets": [2,3]
@@ -59,67 +64,45 @@ angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
               }
             },
             "targets": [4,5,6,7,8]
+          }, {
+            "render": function(data, type, row) {
+              return '<button type="button" class="btn btn-info trade-btn" onclick="$(\'#detailId\').val(' + row.id + ');$(\'#detailId\').click();">详细</button>';
+            },
+            "targets": [9]
           }]
         });
       });
     };
 
-    $scope.addTradeModal = function() {
+    $scope.detailTradeGroupModal = function() {
       var modalInstance = $modal.open({
-        templateUrl: 'addTradeModal.html',
-        controller: 'micheAddTradeModalCtrl'
+        templateUrl: 'detailTradeGroupModal.html',
+        controller: 'micheDetailTradeGroupModalCtrl'
       });
       modalInstance.result.then(function() {
         refresh();
       });
     };
-    $scope.openPositionModal = function() {
-      var openId = $('#openId').val();
-      var openTrade;
-      $scope.tradeList.some(function(trade) {
-        if (trade.id == openId) {
-          openTrade = trade;
-          return true;
-        }
-      });
-      var modalInstance = $modal.open({
-        templateUrl: 'openPositionModal.html',
-        controller: 'micheOpenPositionModalCtrl',
-        resolve: {
-          params: function() {
-            return {
-              trade: openTrade
-            };
-          }
-        }
-      });
-      modalInstance.result.then(function() {
-        refresh();
-      });
-    };
-    $scope.detailTradeModal = function() {
+    $scope.detailTradeGroupModal = function() {
       var detailId = $('#detailId').val();
-      var detailTrade;
-      $scope.tradeList.some(function(trade) {
+      var detailGroup;
+      $scope.groupList.some(function(trade) {
         if (trade.id == detailId) {
-          detailTrade = trade;
+          detailGroup = trade;
           return true;
         }
       });
       var modalInstance = $modal.open({
         size: 'lg',
-        templateUrl: 'detailTradeModal.html',
-        controller: 'micheDetailTradeModalCtrl',
+        templateUrl: 'detailTradeGroupModal.html',
+        controller: 'micheDetailTradeGroupModalCtrl',
         resolve: {
           params: function() {
             return {
-              trade: detailTrade
+              'group': detailGroup
             };
           }
         }
-      });
-      modalInstance.result.then(function() {
-        refresh();
       });
     };
 
@@ -128,81 +111,43 @@ angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
   }
 ])
 
-.controller('micheAddTradeModalCtrl',
-  function($scope, micheHttp, micheData, $modalInstance) {
-    $scope.tradeTypes = [{
-      code: '1',
-      name: '开多'
-    }, {
-      code: '2',
-      name: '开空'
-    }, {
-      code: '3',
-      name: '对冲'
-    }];
-    $scope.trade = {
-      name: '',
-      type: '3'
-    };
+.controller('micheDetailTradeGroupModalCtrl',
+  function($scope, $filter, $q, micheHttp, micheData, $modalInstance, params) {
+    $scope.group = params.group;
 
-    $scope.ok = function() {
-      micheHttp.post('/trade/add-trade', $scope.trade)
-        .success(function(trade) {
-          if (trade) {
-            $modalInstance.close(trade);
-          } else {
-            alert('Error!');
-          }
-        });
-    };
-
-    $scope.cancel = function() {
-      $modalInstance.dismiss('cancel');
-    };
-
-  }
-)
-
-.controller('micheDetailTradeModalCtrl',
-  function($scope, micheHttp, micheData, $modalInstance, params) {
-    $scope.trade = params.trade;
-    micheHttp.get('/trade/detail-trade', {
-      id: params.trade.id
-    }).success(function(detail) {
-      $('#balance-table').dataTable({
-        "data": detail.balanceList,
+    var deferred = $q.defer();
+    deferred.promise.then(function(){
+      console.log(params.group);
+      $('#elmts-table').dataTable({
+        "data": params.group.elmts,
         "destroy": true,
         "paging": false,
         "searching": false,
         "info": false,
+        "order": [
+            [3, "desc"],
+            [2, "desc"]
+          ],
         "columns": [{
           "data": "conCode"
         }, {
           "data": "type"
         }, {
-          "data": "vol"
+          "data": "openDt"
         }, {
-          "data": "avgCostPrice"
+          "data": "closeDt"
         }, {
-          "data": "price"
+          "data": "openPrice"
         }, {
-          "data": "margin"
+          "data": "closePrice"
         }, {
-          "data": "floatProfit"
-        }, {
-          "data": "completeProfit"
-        }, {
-          "data": "profit"
+          "data": "diffPrice"
         }],
         "columnDefs": [{
           "render": function(data, type, row) {
-            if (data == 1) {
-              return '多'
-            } else if (data == 2) {
-              return '空'
-            }
+            return $filter('date')(data, 'yyyy-MM-dd HH:mm:ss');
           },
-          "targets": [1]
+          "targets": [2,3]
         }, {
           "render": function(data, type, row) {
             if (data) {
@@ -211,62 +156,7 @@ angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
               return '';
             }
           },
-          "targets": [3, 4, 5]
-        }, {
-          "render": function(data, type, row) {
-            if (data > 0) {
-              return '<span style="color:red">' + data.toLocaleString() + '</span>';
-            } else if (data < 0) {
-              return '<span style="color:green">' + data.toLocaleString() + '</span>';
-            } else {
-              return data;
-            }
-          },
-          "targets": [6, 7, 8]
-        }]
-      });
-
-      $('#action-table').dataTable({
-        "data": detail.actionList,
-        "destroy": true,
-        "paging": false,
-        "searching": false,
-        "info": false,
-        "columns": [{
-          "data": "id"
-        }, {
-          "data": "dt"
-        }, {
-          "data": "conCode"
-        }, {
-          "data": "type"
-        }, {
-          "data": "vol"
-        }, {
-          "data": "price"
-        }],
-        "columnDefs": [{
-          "render": function(data, type, row) {
-           if (data) {
-                var date = new Date(data);
-                var year = date.getFullYear();
-                var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
-                var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-                return year + "-" + month + "-" + day;
-              } else {
-                return '';
-              }
-          },
-          "targets": [1]
-        }, {
-          "render": function(data, type, row) {
-            if (data) {
-              return data.toLocaleString();
-            } else {
-              return '';
-            }
-          },
-          "targets": [5]
+          "targets": [4,5,6]
         }, {
          "render": function(data, type, row) {
             if (data == 1) {
@@ -275,46 +165,16 @@ angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
               return '空'
             }
           },
-          "targets": [3]
+          "targets": [1]
         }]
       });
     });
-  }
-)
-
-.controller('micheOpenPositionModalCtrl',
-  function($scope, micheHttp, micheData, $modalInstance, params) {
-    $scope.actionTypes = [{
-      code: '1',
-      name: '开多'
-    }, {
-      code: '2',
-      name: '开空'
-    }];
-    $scope.trade = params.trade;
-    $scope.action = {
-      tradeId: params.trade.id,
-      conCode: '',
-      dt: new Date(),
-      type: '1',
-      price: '',
-      vol: ''
-    };
-
-    $scope.ok = function() {
-      micheHttp.post('/trade/add-action', $scope.action)
-        .success(function(action) {
-          if (action) {
-            $modalInstance.close(action);
-          } else {
-            alert('Error!');
-          }
-        });
-    };
-
     $scope.cancel = function() {
       $modalInstance.dismiss('cancel');
     };
-
+    setTimeout(function() {  
+      deferred.resolve('');
+    }, 100);
+      
   }
 );

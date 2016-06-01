@@ -29,7 +29,7 @@ angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
           "destroy": true,
           "info": false,
           "order": [
-            [1, "desc"]
+          [1, "desc"]
           ],
           "columns": [{
             "data": "conCode"
@@ -88,261 +88,58 @@ angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
               if(data) {
                 return row.groupName + ' (' + row.groupId + ')';
               } else {
-                return null;
+                return ' <button type="button" class="btn btn-info trade-btn" onclick="$(\'#assignId\').val(' + row.id + ');$(\'#assignId\').click();">分组</button>';
               }
             },
             "targets": [9]
           }]
         });
       });
-    };
+  };
 
-    $scope.addTradeModal = function() {
-      var modalInstance = $modal.open({
-        templateUrl: 'addTradeModal.html',
-        controller: 'micheAddTradeModalCtrl'
-      });
-      modalInstance.result.then(function() {
-        refresh();
-      });
-    };
-    $scope.openPositionModal = function() {
-      var openId = $('#openId').val();
-      var openTrade;
-      $scope.tradeList.some(function(trade) {
-        if (trade.id == openId) {
-          openTrade = trade;
-          return true;
-        }
-      });
-      var modalInstance = $modal.open({
-        templateUrl: 'openPositionModal.html',
-        controller: 'micheOpenPositionModalCtrl',
-        resolve: {
-          params: function() {
-            return {
-              trade: openTrade
-            };
-          }
-        }
-      });
-      modalInstance.result.then(function() {
-        refresh();
-      });
-    };
-    $scope.detailTradeModal = function() {
-      var detailId = $('#detailId').val();
-      var detailTrade;
-      $scope.tradeList.some(function(trade) {
-        if (trade.id == detailId) {
-          detailTrade = trade;
-          return true;
-        }
-      });
-      var modalInstance = $modal.open({
-        size: 'lg',
-        templateUrl: 'detailTradeModal.html',
-        controller: 'micheDetailTradeModalCtrl',
-        resolve: {
-          params: function() {
-            return {
-              trade: detailTrade
-            };
-          }
-        }
-      });
-      modalInstance.result.then(function() {
-        refresh();
-      });
-    };
-
-    refresh();
-
-  }
-])
-
-.controller('micheAddTradeModalCtrl',
-  function($scope, micheHttp, micheData, $modalInstance) {
-    $scope.tradeTypes = [{
-      code: '1',
-      name: '开多'
-    }, {
-      code: '2',
-      name: '开空'
-    }, {
-      code: '3',
-      name: '对冲'
-    }];
-    $scope.trade = {
-      name: '',
-      type: '3'
-    };
-
-    $scope.ok = function() {
-      micheHttp.post('/trade/add-trade', $scope.trade)
-        .success(function(trade) {
-          if (trade) {
-            $modalInstance.close(trade);
-          } else {
-            alert('Error!');
-          }
-        });
-    };
-
-    $scope.cancel = function() {
-      $modalInstance.dismiss('cancel');
-    };
-
-  }
-)
-
-.controller('micheDetailTradeModalCtrl',
-  function($scope, micheHttp, micheData, $modalInstance, params) {
-    $scope.trade = params.trade;
-    micheHttp.get('/trade/detail-trade', {
-      id: params.trade.id
-    }).success(function(detail) {
-      $('#balance-table').dataTable({
-        "data": detail.balanceList,
-        "destroy": true,
-        "paging": false,
-        "searching": false,
-        "info": false,
-        "columns": [{
-          "data": "conCode"
-        }, {
-          "data": "type"
-        }, {
-          "data": "vol"
-        }, {
-          "data": "avgCostPrice"
-        }, {
-          "data": "price"
-        }, {
-          "data": "margin"
-        }, {
-          "data": "floatProfit"
-        }, {
-          "data": "completeProfit"
-        }, {
-          "data": "profit"
-        }],
-        "columnDefs": [{
-          "render": function(data, type, row) {
-            if (data == 1) {
-              return '多'
-            } else if (data == 2) {
-              return '空'
-            }
-          },
-          "targets": [1]
-        }, {
-          "render": function(data, type, row) {
-            if (data) {
-              return data.toLocaleString();
-            } else {
-              return '';
-            }
-          },
-          "targets": [3, 4, 5]
-        }, {
-          "render": function(data, type, row) {
-            if (data > 0) {
-              return '<span style="color:red">' + data.toLocaleString() + '</span>';
-            } else if (data < 0) {
-              return '<span style="color:green">' + data.toLocaleString() + '</span>';
-            } else {
-              return data;
-            }
-          },
-          "targets": [6, 7, 8]
-        }]
-      });
-
-      $('#action-table').dataTable({
-        "data": detail.actionList,
-        "destroy": true,
-        "paging": false,
-        "searching": false,
-        "info": false,
-        "columns": [{
-          "data": "id"
-        }, {
-          "data": "dt"
-        }, {
-          "data": "conCode"
-        }, {
-          "data": "type"
-        }, {
-          "data": "vol"
-        }, {
-          "data": "price"
-        }],
-        "columnDefs": [{
-          "render": function(data, type, row) {
-           if (data) {
-                var date = new Date(data);
-                var year = date.getFullYear();
-                var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
-                var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-                return year + "-" + month + "-" + day;
-              } else {
-                return '';
-              }
-          },
-          "targets": [1]
-        }, {
-          "render": function(data, type, row) {
-            if (data) {
-              return data.toLocaleString();
-            } else {
-              return '';
-            }
-          },
-          "targets": [5]
-        }, {
-         "render": function(data, type, row) {
-            if (data == 1) {
-              return '多'
-            } else if (data == 2) {
-              return '空'
-            }
-          },
-          "targets": [3]
-        }]
-      });
+  $scope.addTradeOrderModal = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'addTradeOrderModal.html',
+      controller: 'micheAddTradeOrderModalCtrl'
     });
-  }
-)
+    modalInstance.result.then(function() {
+      refresh();
+    });
+  };
 
-.controller('micheOpenPositionModalCtrl',
-  function($scope, micheHttp, micheData, $modalInstance, params) {
-    $scope.actionTypes = [{
-      code: '1',
-      name: '开多'
-    }, {
-      code: '2',
-      name: '开空'
-    }];
-    $scope.trade = params.trade;
-    $scope.action = {
-      tradeId: params.trade.id,
-      conCode: '',
-      dt: new Date(),
-      type: '1',
-      price: '',
-      vol: ''
-    };
+  $scope.assignTradeOrderModal = function() {
+    var modalInstance = $modal.open({
+      templateUrl: 'assignTradeOrderModal.html',
+      controller: 'micheAssignTradeOrderModalCtrl'
+    });
+    modalInstance.result.then(function() {
+      refresh();
+    });
+  };
+
+  refresh();
+}])
+.controller('micheAssignTradeOrderModalCtrl',
+  function($scope, micheHttp, micheData, $modalInstance) {
+
+    $scope.groups = [];
+    micheHttp.get('/trade/list-trade-group', {
+      "order":false
+    }).success(function(trade) {
+      trade.forEach(function(ele) {
+        ele.labelName = ele.name + ' (' + ele.id + ')';
+      });
+      $scope.groups = trade;
+    });
 
     $scope.ok = function() {
-      micheHttp.post('/trade/add-action', $scope.action)
-        .success(function(action) {
-          if (action) {
-            $modalInstance.close(action);
-          } else {
-            alert('Error!');
-          }
-        });
+      var orderId = $('#assignId').val();
+      micheHttp.post('/trade/assign-trade-order', {
+        'groupId':$scope.group,
+        'orderId':$('#assignId').val()
+      }).success(function() {
+        $modalInstance.close();
+      });
     };
 
     $scope.cancel = function() {
@@ -350,4 +147,43 @@ angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
     };
 
   }
-);
+  )
+.controller('micheAddTradeOrderModalCtrl',
+  function($scope, micheHttp, micheData, $modalInstance) {
+
+    $scope.ok = function() {
+      var fd = new FormData();
+      fd.append('file', $scope.tradeFile);
+      micheHttp.post('/trade/upload-trade-order', fd, {
+        transformRequest: angular.identity,
+        headers: {'Content-Type': undefined}
+      }).success(function(trade) {
+        if (trade) {
+          $modalInstance.close(trade);
+        } else {
+          alert('Error!');
+        }
+      });
+    };
+
+    $scope.cancel = function() {
+      $modalInstance.dismiss('cancel');
+    };
+
+  }
+  )
+.directive('fileModel', ['$parse', function ($parse) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attrs) {
+      var model = $parse(attrs.fileModel);
+      var modelSetter = model.assign;
+
+      element.bind('change', function(){
+        scope.$apply(function(){
+          modelSetter(scope, element[0].files[0]);
+        });
+      });
+    }
+  };
+}]);

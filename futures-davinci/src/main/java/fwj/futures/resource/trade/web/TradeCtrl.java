@@ -73,20 +73,20 @@ public class TradeCtrl {
 	}
 	
 	@RequestMapping(value = "/assign-trade-group", method = RequestMethod.POST)
-	public String assignTradeGroup(@RequestBody TradeGroupAssignReq body) {
+	public TradeOrderView assignTradeGroup(@RequestBody TradeGroupAssignReq body) {
 		tradeOrderBuss.assignTradeGroup(body);
-		return "done";
+		return new TradeOrderView();
 	}
 	
 	@RequestMapping(value = "/assign-trade-order", method = RequestMethod.POST)
-	public String assignTradeOrder(@RequestBody TradeOrderAssignReq body) {
+	public TradeGroupView assignTradeOrder(@RequestBody TradeOrderAssignReq body) {
 		tradeOrderBuss.assignTradeOrder(body);
-		return "done";
+		return new TradeGroupView();
 	}
 	
 	@RequestMapping(value = "/list-trade-group", method = RequestMethod.GET)
-	public List<TradeGroupView> listTradeGroup() {
-		return tradeOrderBuss.listTradeGroup();
+	public List<TradeGroupView> listTradeGroup(@RequestParam(value = "order", defaultValue = "true") boolean orderFlag) {
+		return tradeOrderBuss.listTradeGroup(orderFlag);
 	}
 
 }

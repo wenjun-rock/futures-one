@@ -19,10 +19,10 @@ angular.module('miche.services', [])
       return $http.get(targetUrl);
     };
 
-    service.post = function(url, params) {
+    service.post = function(url, params, opt) {
       var targetUrl = CF.preurl + url;
       console.log(targetUrl);
-      return $http.post(targetUrl, params);
+      return $http.post(targetUrl, params, opt);
     };
 
     return service;
