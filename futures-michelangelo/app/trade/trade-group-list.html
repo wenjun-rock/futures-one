@@ -6,7 +6,7 @@
   </div>
   <div style="height: 45px; border-bottom: 3px solid #ddd;">
     <div style="float: right; margin-bottom: 20px;">
-      <button type="button" class="btn btn-primary" ng-click="addTradeModal()">添加分组</button>
+      <button type="button" class="btn btn-primary" ng-click="addTradeGroupModal()">添加分组</button>
     </div>
   </div>
   <div style="clear: both">
@@ -17,7 +17,7 @@
           <th>备注</th>
           <th>首次交易时间</th>
           <th>最后交易时间</th>
-          <th>未平仓单数</th>          
+          <th>未平仓</th>          
           <th>手续费</th>
           <th>收益</th>
           <th>交易额</th>
@@ -28,6 +28,7 @@
     </table>
   </div>
   <input type="hidden" ng-click="detailTradeGroupModal();" id="detailId"></input>
+  <input type="hidden" ng-click="updateTradeGroupModal();" id="updateId"></input>
   <script type="text/ng-template" id="detailTradeGroupModal.html">
     <div class="modal-header">
       <h3 class="modal-title">订单详细</h3>
@@ -49,6 +50,25 @@
       </table>
     </div>
     <div class="modal-footer">
+      <button class="btn btn-warning" type="button" ng-click="cancel()">关闭</button>
+    </div>
+  </script>
+  <script type="text/ng-template" id="saveTradeGroupModal.html">
+    <div class="modal-header">
+      <h3 class="modal-title">保存分组</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+          <label for="save.name">名称</label>
+          <input type="text" class="form-control" id="save.name" ng-model="save.name">
+        </div>
+        <div class="form-group">
+          <label for="save.comment">备注</label>
+          <input type="text" class="form-control" id="save.comment" ng-model="save.comment">
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="ok()" ng-disabled="save.name == undefined || save.name.length == 0">提交</button>
       <button class="btn btn-warning" type="button" ng-click="cancel()">关闭</button>
     </div>
   </script>

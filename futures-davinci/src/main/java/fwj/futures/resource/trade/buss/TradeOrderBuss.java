@@ -131,8 +131,8 @@ public class TradeOrderBuss {
 		return importList;
 	}
 
-	public TradeGroupView addTradeGroup(TradeGroupView body) {
-		TradeGroup tradeGroup = new TradeGroup();
+	public TradeGroupView saveTradeGroup(TradeGroupView body) {
+		TradeGroup tradeGroup = body.getId() == null ? new TradeGroup() : tradeGroupRepos.getOne(body.getId());
 		tradeGroup.setName(body.getName());
 		tradeGroup.setComment(body.getComment());
 		TradeGroup tradeNewGroup = tradeGroupRepos.saveAndFlush(tradeGroup);
@@ -180,6 +180,7 @@ public class TradeOrderBuss {
 			}
 			
 			List<TradeOrder> orderList = tradeOrderRepos.findByTradeGroupOrderByTradeDtAsc(group);
+			view.setOrders(orderList.stream().map(TradeOrder::getId).collect(Collectors.toList()));
 			view.setAmount(BigDecimal.ZERO);
 			view.setFee(BigDecimal.ZERO);
 			view.setProfit(BigDecimal.ZERO);
@@ -247,6 +248,7 @@ public class TradeOrderBuss {
 				}
 			}
 			view.setElmts(elmts);
+			
 			return view;
 		}).collect(Collectors.toList());
 	}

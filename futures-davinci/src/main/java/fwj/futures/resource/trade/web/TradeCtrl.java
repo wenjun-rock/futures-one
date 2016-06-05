@@ -67,9 +67,9 @@ public class TradeCtrl {
 		return tradeOrderBuss.listTradeOrder();
 	}
 	
-	@RequestMapping(value = "/add-trade-group", method = RequestMethod.POST)
+	@RequestMapping(value = "/save-trade-group", method = RequestMethod.POST)
 	public TradeGroupView addTradeGroup(@RequestBody TradeGroupView body) {
-		return tradeOrderBuss.addTradeGroup(body);
+		return tradeOrderBuss.saveTradeGroup(body);
 	}
 	
 	@RequestMapping(value = "/assign-trade-group", method = RequestMethod.POST)

@@ -57,16 +57,14 @@ angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
             "targets": [2,3]
           }, {
             "render": function(data, type, row) {
-              if(data) {
-                return data.toLocaleString();
-              } else {
-                return null;
-              }
+              return data.toLocaleString();
             },
             "targets": [4,5,6,7,8]
           }, {
             "render": function(data, type, row) {
-              return '<button type="button" class="btn btn-info trade-btn" onclick="$(\'#detailId\').val(' + row.id + ');$(\'#detailId\').click();">详细</button>';
+              var h = '<button type="button" class="btn btn-info trade-btn" onclick="$(\'#detailId\').val(' + row.id + ');$(\'#detailId\').click();">详细</button>';
+              h += '<button type="button" class="btn btn-warning trade-btn" onclick="$(\'#updateId\').val(' + row.id + ');$(\'#updateId\').click();">编辑</button>';
+              return h;
             },
             "targets": [9]
           }]
@@ -74,10 +72,43 @@ angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
       });
     };
 
-    $scope.detailTradeGroupModal = function() {
+
+    $scope.addTradeGroupModal = function() {
       var modalInstance = $modal.open({
-        templateUrl: 'detailTradeGroupModal.html',
-        controller: 'micheDetailTradeGroupModalCtrl'
+        size: 'lg',
+        templateUrl: 'saveTradeGroupModal.html',
+        controller: 'micheSaveTradeGroupModalCtrl',
+        resolve: {
+          params: function() {
+            return {
+            };
+          }
+        }
+      });
+      modalInstance.result.then(function() {
+        refresh();
+      });
+    };
+    $scope.updateTradeGroupModal = function() {
+      var updateId = $('#updateId').val();
+      var updateGroup;
+      $scope.groupList.some(function(trade) {
+        if (trade.id == updateId) {
+          updateGroup = trade;
+          return true;
+        }
+      });
+      var modalInstance = $modal.open({
+        size: 'lg',
+        templateUrl: 'saveTradeGroupModal.html',
+        controller: 'micheSaveTradeGroupModalCtrl',
+        resolve: {
+          params: function() {
+            return {
+              'group': updateGroup
+            };
+          }
+        }
       });
       modalInstance.result.then(function() {
         refresh();
@@ -175,6 +206,26 @@ angular.module('miche.trade.group.list', ['ngRoute', 'miche.services'])
     setTimeout(function() {  
       deferred.resolve('');
     }, 100);
+      
+  }
+)
+
+.controller('micheSaveTradeGroupModalCtrl',
+  function($scope, $filter, $q, micheHttp, micheData, $modalInstance, params) {
+    $scope.save = params.group || {};
+    $scope.ok = function() {
+      micheHttp.post('/trade/save-trade-group', $scope.save)
+        .success(function(action) {
+          if (action) {
+            $modalInstance.close(action);
+          } else {
+            alert('Error!');
+          }
+        });
+    };
+    $scope.cancel = function() {
+      $modalInstance.dismiss('cancel');
+    };
       
   }
 );

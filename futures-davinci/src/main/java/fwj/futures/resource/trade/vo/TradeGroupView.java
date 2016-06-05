@@ -17,6 +17,7 @@ public class TradeGroupView {
 	private Integer vol;
 	private Integer openVol;
 	
+	private List<Integer> orders;
 	private List<Element> elmts;
 
 	public Integer getId() {
@@ -107,6 +108,14 @@ public class TradeGroupView {
 		this.openVol = openVol;
 	}
 	
+	public List<Integer> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Integer> orders) {
+		this.orders = orders;
+	}
+
 	public static class Element {
 
 		private String conCode;

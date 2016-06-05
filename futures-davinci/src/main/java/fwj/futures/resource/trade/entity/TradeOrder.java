@@ -21,7 +21,7 @@ public class TradeOrder extends AbstractPersistable<Integer> {
 	@Column(columnDefinition = "DATETIME")
 	private Date tradeDt;
 	
-	@Column(length = 10)
+	@Column(length = 12)
 	private String serialNo;
 	
 	@Column(columnDefinition = "TINYINT")
