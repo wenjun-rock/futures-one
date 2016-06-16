@@ -8,10 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
+import fwj.futures.resource.price.vo.K;
+
 @Entity
 @Table(name = "price_global_kline", uniqueConstraints = {
 		@UniqueConstraint(name = "global_kline_uni", columnNames = { "dt", "code" }) })
-public class GlobalKLine extends AbstractKLine {
+public class GlobalKLine extends AbstractPersistable<Integer> implements K {
 
 	private static final long serialVersionUID = 193739558344301213L;
 	
@@ -89,6 +93,11 @@ public class GlobalKLine extends AbstractKLine {
 
 	public void setDt(Date dt) {
 		this.dt = dt;
+	}
+
+	@Override
+	public String getName() {
+		return this.code;
 	}
 
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import fwj.futures.resource.price.buss.DailyPriceBuss;
 import fwj.futures.resource.price.buss.RealTimePriceBuss;
-import fwj.futures.resource.price.entity.KLine;
+import fwj.futures.resource.price.entity.ProdKLine;
 import fwj.futures.resource.price.vo.ProductPriceAggre;
 import fwj.futures.resource.price.vo.UnitData;
 import fwj.futures.resource.prod.entity.Futures;
@@ -36,7 +36,7 @@ public class ProdPriceBuss {
 				ProductPriceAggre prod = new ProductPriceAggre();
 				prod.setCode(futures.getCode());
 				prod.setName(futures.getName());
-				List<KLine> kLineList = dailyPriceBuss.queryDescByCode(code);
+				List<ProdKLine> kLineList = dailyPriceBuss.queryDescByCode(code);
 				prod.setLast1KIncPct(this.lastKIncPct(kLineList, 1));
 				prod.setLast5KIncPct(this.lastKIncPct(kLineList, 5));
 				prod.setLast10KIncPct(this.lastKIncPct(kLineList, 10));
@@ -78,7 +78,7 @@ public class ProdPriceBuss {
 		return newPrice.subtract(oldPrice).divide(oldPrice, 4, RoundingMode.DOWN);
 	}
 
-	private BigDecimal lastKIncPct(List<KLine> kLineList, int i) {
+	private BigDecimal lastKIncPct(List<ProdKLine> kLineList, int i) {
 		if (kLineList == null || kLineList.size() == 0) {
 			return BigDecimal.ZERO;
 		}

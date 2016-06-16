@@ -10,10 +10,12 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import fwj.futures.resource.price.vo.K;
+
 @Entity
 @Table(name = "price_prod_index", uniqueConstraints = {
 		@UniqueConstraint(name = "price_prod_index_uni", columnNames = { "dt", "code" }) })
-public class ProdIndex extends AbstractPersistable<Integer>implements Comparable<ProdIndex> {
+public class ProdIndex extends AbstractPersistable<Integer> implements K {
 
 	private static final long serialVersionUID = -7166262390048426516L;
 
@@ -61,8 +63,33 @@ public class ProdIndex extends AbstractPersistable<Integer>implements Comparable
 	}
 
 	@Override
-	public int compareTo(ProdIndex that) {
-		return this.dt.compareTo(that.dt);
+	public String getName() {
+		return this.code;
+	}
+
+	@Override
+	public Integer getTradeVol() {
+		return this.vol;
+	}
+
+	@Override
+	public BigDecimal getOpenPrice() {
+		return this.price;
+	}
+
+	@Override
+	public BigDecimal getEndPrice() {
+		return this.price;
+	}
+
+	@Override
+	public BigDecimal getMaxPrice() {
+		return this.price;
+	}
+
+	@Override
+	public BigDecimal getMinPrice() {
+		return this.price;
 	}
 
 }

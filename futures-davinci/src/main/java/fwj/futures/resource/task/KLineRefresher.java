@@ -26,10 +26,10 @@ import fwj.futures.resource.price.buss.ProdIndexBuss;
 import fwj.futures.resource.price.buss.ProdSpotPriceBuss;
 import fwj.futures.resource.price.entity.ContractKLine;
 import fwj.futures.resource.price.entity.GlobalKLine;
-import fwj.futures.resource.price.entity.KLine;
+import fwj.futures.resource.price.entity.ProdKLine;
 import fwj.futures.resource.price.repos.ContractKLineRepos;
 import fwj.futures.resource.price.repos.GlobalKLineRepos;
-import fwj.futures.resource.price.repos.KLineRepos;
+import fwj.futures.resource.price.repos.ProdKLineRepos;
 import fwj.futures.resource.prod.entity.Futures;
 import fwj.futures.resource.prod.entity.GlobalFutures;
 import fwj.futures.resource.prod.repos.FuturesRepos;
@@ -46,7 +46,7 @@ public class KLineRefresher {
 	private static final String GLOBAL_URI_DAILY = "http://stock2.finance.sina.com.cn/futures/api/json.php/GlobalFuturesService.getGlobalFuturesDailyKLine?symbol=%s";
 
 	@Autowired
-	private KLineRepos kLineRepository;
+	private ProdKLineRepos kLineRepository;
 
 	@Autowired
 	private GlobalKLineRepos globalKLineRepository;
@@ -248,7 +248,7 @@ public class KLineRefresher {
 		for (Futures prod : futuresRepository.findAllActive()) {
 			log.info("Downloading " + prod.getCode());
 
-			KLine latest = kLineRepository.findTopByCodeOrderByDtDesc(prod.getCode());
+			ProdKLine latest = kLineRepository.findTopByCodeOrderByDtDesc(prod.getCode());
 			String jsonStr = null;
 			try {
 				jsonStr = Resources.toString(new URL(String.format(URI_DAILY, prod.getCode())), StandardCharsets.UTF_8);
@@ -261,7 +261,7 @@ public class KLineRefresher {
 				log.info("Can't get " + prod.getCode());
 				continue;
 			}
-			List<KLine> createList = new ArrayList<>();
+			List<ProdKLine> createList = new ArrayList<>();
 			for (int i = 0; i < dailyKs.size(); i++) {
 				JSONArray ele = dailyKs.getJSONArray(i);
 				if (ele.getInteger(5) == null || ele.getIntValue(5) <= 0) {
@@ -271,7 +271,7 @@ public class KLineRefresher {
 				try {
 					Date dt = yyyyMMdd.parse(ele.getString(0));
 					if (latest == null || latest.getDt().compareTo(dt) <= 0) {
-						KLine daily = new KLine();
+						ProdKLine daily = new ProdKLine();
 						if (latest != null && latest.getDt().compareTo(dt) == 0) {
 							daily = latest;
 						}

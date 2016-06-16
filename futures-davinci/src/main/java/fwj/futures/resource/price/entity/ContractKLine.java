@@ -10,10 +10,12 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import fwj.futures.resource.price.vo.K;
+
 @Entity
 @Table(name = "price_contract_kline", uniqueConstraints = {
 		@UniqueConstraint(name = "contract_kline_uni", columnNames = { "dt", "code", "contractMonth" }) })
-public class ContractKLine extends AbstractPersistable<Integer>implements Comparable<ContractKLine> {
+public class ContractKLine extends AbstractPersistable<Integer> implements K {
 
 	private static final long serialVersionUID = 2664970167802802857L;
 
@@ -107,20 +109,9 @@ public class ContractKLine extends AbstractPersistable<Integer>implements Compar
 	public String getContractName() {
 		return String.format("%s%02d", code, contractMonth);
 	}
-
-	/*
-	 * 按照dt升序
-	 */
+	
 	@Override
-	public int compareTo(ContractKLine that) {
-		int cmp = this.dt.compareTo(that.dt);
-		if (cmp == 0) {
-			if (this.contractMonth == that.contractMonth) {
-				cmp = 0;
-			} else {
-				cmp = this.contractMonth > that.contractMonth ? 1 : -1;
-			}
-		}
-		return cmp;
+	public String getName() {
+		return String.format("%s%02d", this.code, this.contractMonth);
 	}
 }

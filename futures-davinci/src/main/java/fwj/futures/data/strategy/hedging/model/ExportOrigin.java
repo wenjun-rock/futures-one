@@ -18,14 +18,14 @@ import com.google.common.io.Files;
 import fwj.futures.data.enu.ProdEnum;
 import fwj.futures.data.launch.AbstractBaseLaunch;
 import fwj.futures.data.process.DataURI;
-import fwj.futures.resource.price.entity.KLine;
-import fwj.futures.resource.price.repos.KLineRepos;
+import fwj.futures.resource.price.entity.ProdKLine;
+import fwj.futures.resource.price.repos.ProdKLineRepos;
 
 @Component
 public class ExportOrigin extends AbstractBaseLaunch {
 
 	@Autowired
-	private KLineRepos kLineRepository;
+	private ProdKLineRepos kLineRepository;
 
 	@Autowired
 	private DataURI dataURI;
@@ -49,10 +49,10 @@ public class ExportOrigin extends AbstractBaseLaunch {
 		Collections.sort(codeList);
 
 		String head = codeList.stream().reduce("DATE", (l, r) -> l + "," + r);
-		Map<Date, List<KLine>> kLineMap = codeList.stream()
+		Map<Date, List<ProdKLine>> kLineMap = codeList.stream()
 				.map(code -> kLineRepository.findByCodeAndDtBetweenOrderByDtAsc(code, startDt, endDt))
 				.flatMap(kLineList -> kLineList.stream())
-				.collect(Collectors.groupingBy(KLine::getDt, Collectors.toList()));
+				.collect(Collectors.groupingBy(ProdKLine::getDt, Collectors.toList()));
 		String content = kLineMap.entrySet().stream().filter(entry -> entry.getValue().size() == codeList.size())
 				.sorted((l, r) -> l.getKey().compareTo(r.getKey())).map(entry -> {
 					String dt = String.valueOf(entry.getKey().getTime());

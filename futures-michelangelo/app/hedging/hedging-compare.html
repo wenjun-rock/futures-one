@@ -8,7 +8,12 @@
   <select ng-model="ctrl.code1" ng-options="prod.code as prod.name for prod in prods" style="width:100px"></select>
   <span style="margin-left: 20px">产品2:</span>
   <select ng-model="ctrl.code2" ng-options="prod.code as prod.name for prod in prods" style="width:100px"></select>
-  <button class="btn btn-primary" style="margin-left: 20px" ng-click="compareProd();">比较</button>
+  <button class="btn btn-primary" style="margin-left: 20px" ng-click="compareProd();">比较产品</button>
+  <span style="margin-left: 100px">合约1:</span>
+  <input ng-model="ctrl.contract1" type="text" style="width:100px"></select>
+  <span style="margin-left: 20px">合约2:</span>
+  <input ng-model="ctrl.contract2" type="text" style="width:100px"></select>
+  <button class="btn btn-primary" style="margin-left: 20px" ng-click="compareContract();">比较合约</button>
   <div class="row" style="margin-top: 10px">
     <div class="col-md-12">
       <div class="panel panel-default" id="hedgingCmpChart"></div>

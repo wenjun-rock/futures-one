@@ -3,13 +3,11 @@ package fwj.futures.resource.price.vo;
 import java.util.Date;
 import java.util.Map;
 
-import fwj.futures.resource.price.entity.KLine;
-
 /**
  * @author Administrator
  *
  */
-public class KLineGroup implements Comparable<KLineGroup> {
+public class KGroup implements Comparable<KGroup> {
 
 	/**
 	 * pattern: yyyy-MM-dd
@@ -19,9 +17,9 @@ public class KLineGroup implements Comparable<KLineGroup> {
 	/**
 	 * key:code
 	 */
-	private Map<String, KLine> kLineMap;
+	private Map<String, ? extends K> kLineMap;
 
-	public KLineGroup(Date dt, Map<String, KLine> kLineMap) {
+	public KGroup(Date dt, Map<String, K> kLineMap) {
 		this.dt = dt;
 		this.kLineMap = kLineMap;
 	}
@@ -30,12 +28,12 @@ public class KLineGroup implements Comparable<KLineGroup> {
 		return dt;
 	}
 
-	public Map<String, KLine> getkLineMap() {
+	public Map<String, ? extends K> getkLineMap() {
 		return kLineMap;
 	}
 
 	@Override
-	public int compareTo(KLineGroup that) {
+	public int compareTo(KGroup that) {
 		return this.dt.compareTo(that.dt);
 	}
 }

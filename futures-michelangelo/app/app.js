@@ -26,8 +26,8 @@ angular.module('micheApp', [
 }])
 
 .constant('CF', {
-  preurl: 'http://f7p8.win:8000/futures-api',
-  preurl2: 'http://localhost:8000/futures-api'
+  preurl2: 'http://f7p8.win:8000/futures-api',
+  preurl: 'http://localhost:8000/futures-api'
 })
 
 .filter('percentage', function() {

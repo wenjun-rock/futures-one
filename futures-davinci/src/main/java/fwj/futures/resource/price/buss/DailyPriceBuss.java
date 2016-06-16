@@ -12,11 +12,12 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import fwj.futures.resource.price.entity.KLine;
+import fwj.futures.resource.price.entity.ProdKLine;
 import fwj.futures.resource.price.entity.ProdIndex;
-import fwj.futures.resource.price.repos.KLineRepos;
+import fwj.futures.resource.price.repos.ProdKLineRepos;
 import fwj.futures.resource.price.repos.ProdIndexRepos;
-import fwj.futures.resource.price.vo.KLineGroup;
+import fwj.futures.resource.price.vo.K;
+import fwj.futures.resource.price.vo.KGroup;
 import fwj.futures.resource.price.vo.Price;
 import fwj.futures.resource.price.vo.ProdDailyPrice;
 import fwj.futures.resource.price.vo.Series;
@@ -27,7 +28,7 @@ import fwj.futures.resource.prod.entity.Futures;
 public class DailyPriceBuss {
 
 	@Autowired
-	private KLineRepos kLineRepos;
+	private ProdKLineRepos kLineRepos;
 	
 	@Autowired
 	private ProdIndexRepos prodIndexRepos;
@@ -36,27 +37,27 @@ public class DailyPriceBuss {
 	private ProdBuss productBuss;
 
 	@Cacheable(value = "KLineBuss.queryDescByCode")
-	public List<KLine> queryDescByCode(String code) {
+	public List<ProdKLine> queryDescByCode(String code) {
 		return Collections.unmodifiableList(kLineRepos.findByCodeOrderByDtDesc(code));
 	}
 
 	@Cacheable(value = "KLineBuss.queryAscByCode")
-	public List<KLine> queryAscByCode(String code) {
+	public List<ProdKLine> queryAscByCode(String code) {
 		return Collections.unmodifiableList(kLineRepos.findByCodeOrderByDtAsc(code));
 	}
 
 	@Cacheable(value = "KLineBuss.queryAllGroup")
-	public List<KLineGroup> queryAllGroup() {
-		Map<Date, Map<String, KLine>> kLineMap = kLineRepos.findAll().stream()
-				.collect(Collectors.groupingBy(KLine::getDt, Collectors.toMap(KLine::getCode, kLine -> kLine)));
-		List<KLineGroup> list = kLineMap.entrySet().stream()
-				.map(entry -> new KLineGroup(entry.getKey(), entry.getValue())).sorted().collect(Collectors.toList());
+	public List<KGroup> queryAllGroup() {
+		Map<Date, Map<String, K>> kLineMap = kLineRepos.findAll().stream()
+				.collect(Collectors.groupingBy(ProdKLine::getDt, Collectors.toMap(ProdKLine::getCode, kLine -> kLine)));
+		List<KGroup> list = kLineMap.entrySet().stream()
+				.map(entry -> new KGroup(entry.getKey(), entry.getValue())).sorted().collect(Collectors.toList());
 		return Collections.unmodifiableList(list);
 	}
 
 	@Cacheable(value = "KLineBuss.queryLatest")
-	public KLineGroup queryLatest() {
-		List<KLineGroup> list = queryAllGroup();
+	public KGroup queryLatest() {
+		List<KGroup> list = queryAllGroup();
 		return list.get(list.size() - 1);
 	}
 
@@ -66,7 +67,7 @@ public class DailyPriceBuss {
 		if (prod == null) {
 			return Series.EMPTY;
 		} else {
-			List<KLine> kLineList = null;
+			List<ProdKLine> kLineList = null;
 			if (month < 0) {
 				kLineList = this.queryAscByCode(code);
 			} else {
@@ -93,7 +94,7 @@ public class DailyPriceBuss {
 		if (prod == null) {
 			return null;
 		} else {
-			List<KLine> kLineList = null;
+			List<ProdKLine> kLineList = null;
 			List<ProdIndex> indexList = null; 
 			if (month < 0) {
 				// 所有

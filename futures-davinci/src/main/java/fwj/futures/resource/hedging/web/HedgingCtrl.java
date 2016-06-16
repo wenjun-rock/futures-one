@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fwj.futures.data.struct.Formula;
 import fwj.futures.resource.hedging.buss.HedgingBuss;
 import fwj.futures.resource.hedging.buss.HedgingContractBuss;
 import fwj.futures.resource.hedging.buss.HedgingExperimentBuss;
@@ -24,6 +26,9 @@ import fwj.futures.resource.hedging.vo.HedgingExperimentMonitor;
 import fwj.futures.resource.hedging.vo.HedgingExperimentView;
 import fwj.futures.resource.hedging.vo.HedgingMonitor;
 import fwj.futures.resource.hedging.vo.HedgingView;
+import fwj.futures.resource.price.buss.ContractDailyPriceBuss;
+import fwj.futures.resource.price.buss.KLineBuss;
+import fwj.futures.resource.price.entity.ContractKLine;
 import fwj.futures.resource.price.vo.Series;
 import fwj.futures.resource.prod.buss.ProdBuss;
 import fwj.futures.resource.prod.entity.Futures;
@@ -49,6 +54,12 @@ public class HedgingCtrl {
 
 	@Autowired
 	private ProdBuss productBuss;
+	
+	@Autowired
+	private ContractDailyPriceBuss conPriceBuss;
+	
+	@Autowired
+	private KLineBuss kLineBuss;
 
 	// @RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
 	// public HedgingMonitor monitorRealtime(@PathVariable("id") Integer id) {
@@ -107,6 +118,26 @@ public class HedgingCtrl {
 		Futures f1 = productBuss.queryFuturesByCode(code1);
 		Futures f2 = productBuss.queryFuturesByCode(code2);
 		return hedgingBuss.compareProd(f1, f2);
+	}
+	
+	@RequestMapping(value = "/contract-compare", method = RequestMethod.GET)
+	public List<Series> compareContract(@RequestParam("contract1") String contract1, @RequestParam("contract2") String contract2) {
+		String code1 = contract1.substring(0, contract1.length() - 4);
+		int month1 = Integer.parseInt(contract1.substring(contract1.length() - 2));
+		String code2 = contract2.substring(0, contract2.length() - 4);
+		int month2 = Integer.parseInt(contract2.substring(contract2.length() - 2));
+		List<ContractKLine> kLine1 = conPriceBuss.queryByCode(code1, month1);
+		List<ContractKLine> kLine2 = conPriceBuss.queryByCode(code2, month2);
+
+		String name1 = kLine1.get(0).getName();
+		String name2 = kLine2.get(0).getName();
+		Formula formula = Formula.create().putConstant(BigDecimal.ZERO).putMultinomial(name1, "1")
+				.putMultinomial(name2, "-1");
+		Series series0 = kLineBuss.calculateSeries(name1 + "-" + name2, formula, kLine1, kLine2);
+		Series series1 = kLineBuss.transform2Series(kLine1);
+		Series series2 = kLineBuss.transform2Series(kLine2);
+		
+		return Arrays.asList(series1, series2, series0);
 	}
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)

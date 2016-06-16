@@ -20,7 +20,7 @@ import fwj.futures.resource.hedging.buss.HedgingBuss;
 import fwj.futures.resource.hedging.entity.Hedging;
 import fwj.futures.resource.hedging.repos.HedgingRepos;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
-import fwj.futures.resource.price.vo.KLineGroup;
+import fwj.futures.resource.price.vo.KGroup;
 import fwj.futures.resource.price.vo.Price;
 import fwj.futures.resource.util.StatisticsHelper;
 import fwj.futures.resource.util.StatisticsHelper.Result;
@@ -40,7 +40,7 @@ public class InitHedging extends AbstractBaseLaunch {
 	@Override
 	protected void execute() throws Exception {
 
-		List<KLineGroup> kLineGroup = dailyPriceBuss.queryAllGroup();
+		List<KGroup> kLineGroup = dailyPriceBuss.queryAllGroup();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Date startDt = df.parse("2012-09-01");
 		Date endDt = df.parse("2015-09-01");

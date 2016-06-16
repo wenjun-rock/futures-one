@@ -16,9 +16,9 @@ import fwj.futures.resource.hedging.repos.HedgingRepos;
 import fwj.futures.resource.hedging.vo.HedgingMonitor;
 import fwj.futures.resource.hedging.vo.HedgingView;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
+import fwj.futures.resource.price.buss.KLineBuss;
 import fwj.futures.resource.price.buss.RealTimePriceBuss;
-import fwj.futures.resource.price.entity.KLine;
-import fwj.futures.resource.price.vo.KLineGroup;
+import fwj.futures.resource.price.vo.KGroup;
 import fwj.futures.resource.price.vo.Price;
 import fwj.futures.resource.price.vo.Series;
 import fwj.futures.resource.price.vo.UnitData;
@@ -33,25 +33,15 @@ public class HedgingBuss {
 
 	@Autowired
 	private DailyPriceBuss dailyPriceBuss;
-
+	
 	@Autowired
 	private RealTimePriceBuss realTimePriceBuss;
-
+	
+	@Autowired
+	private KLineBuss kLineBuss;
+	
 	public Hedging getById(Integer id) {
 		return hedgingRepo.findOne(id);
-	}
-
-	public BigDecimal calculate(Formula fomular, KLineGroup group) {
-		BigDecimal result = fomular.getConstant();
-		for (Multinomial multinomial : fomular.getMultinomials()) {
-			KLine kLine = group.getkLineMap().get(multinomial.getCode());
-			if (kLine == null) {
-				return null;
-			} else {
-				result = result.add(multinomial.getCoefficient().multiply(kLine.getEndPrice()));
-			}
-		}
-		return result.setScale(2, RoundingMode.FLOOR);
 	}
 
 	public BigDecimal calculate(Formula fomular, UnitDataGroup unitDataGroup) {
@@ -67,12 +57,12 @@ public class HedgingBuss {
 		return result.setScale(2, RoundingMode.FLOOR);
 	}
 
-	public List<Price> calculateKLine(Formula fomular, List<KLineGroup> groupList) {
-		return groupList.stream().map(group -> new Price(group.getDt(), this.calculate(fomular, group)))
+	public List<Price> calculateKLine(Formula fomular, List<KGroup> groupList) {
+		return groupList.stream().map(group -> new Price(group.getDt(), kLineBuss.calculate(fomular, group)))
 				.filter(price -> price.getP() != null).collect(Collectors.toList());
 	}
 
-	public List<Price> calculateKLine(String expression, List<KLineGroup> groupList) {
+	public List<Price> calculateKLine(String expression, List<KGroup> groupList) {
 		return calculateKLine(Formula.parse(expression), groupList);
 	}
 
@@ -90,18 +80,17 @@ public class HedgingBuss {
 		Series s2 = dailyPriceBuss.querySeriesByCode(f2.getCode(), -1);
 		Formula formula = Formula.create().putConstant(BigDecimal.ZERO).putMultinomial(f1.getCode(), "1")
 				.putMultinomial(f2.getCode(), "-1");
-		List<Price> diffPriceList = this.calculateKLine(formula, dailyPriceBuss.queryAllGroup());
-		String diffName = f1.getName() + "-" + f2.getName();
-		Series diffSeries = new Series("", diffName, diffPriceList);
+		Series diffSeries = kLineBuss.calculateSeries(f1.getName() + "-" + f2.getName(), formula,
+				dailyPriceBuss.queryAllGroup());
 		return Arrays.asList(s1, s2, diffSeries);
 	}
 
 	public List<HedgingView> queryHedging() {
 		UnitDataGroup realTime = realTimePriceBuss.queryLatest();
-		KLineGroup kline = dailyPriceBuss.queryLatest();
+		KGroup kline = dailyPriceBuss.queryLatest();
 		return hedgingRepo.findAll().stream().map(hedging -> {
 			Formula f = Formula.parse(hedging.getExpression());
-			BigDecimal diffKline = this.calculate(f, kline);
+			BigDecimal diffKline = kLineBuss.calculate(f, kline);
 			BigDecimal diffRealtime = this.calculate(f, realTime);
 			BigDecimal diff = diffRealtime == null ? diffKline : diffRealtime;
 			int mid = hedging.getMid();
@@ -126,4 +115,5 @@ public class HedgingBuss {
 		return new HedgingMonitor(id, hedging.getName(), formula.toString(), hedging.getStartDt(), hedging.getEndDt(),
 				hedging.getDown(), hedging.getUp(), realtimePrices, klinePrices);
 	}
+
 }

@@ -28,8 +28,8 @@ import fwj.futures.resource.hedging.entity.HedgingProdBatch;
 import fwj.futures.resource.hedging.entity.HedgingProdExperiment;
 import fwj.futures.resource.hedging.repos.HedgingProdBatchRepos;
 import fwj.futures.resource.hedging.repos.HedgingProdExpRepos;
-import fwj.futures.resource.price.entity.KLine;
-import fwj.futures.resource.price.repos.KLineRepos;
+import fwj.futures.resource.price.entity.ProdKLine;
+import fwj.futures.resource.price.repos.ProdKLineRepos;
 import fwj.futures.resource.prod.entity.Futures;
 import fwj.futures.resource.prod.repos.FuturesRepos;
 import fwj.futures.resource.util.CollectorsHelper;
@@ -53,7 +53,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 	private Experiment current;
 
 	@Autowired
-	private KLineRepos kLineRepo;
+	private ProdKLineRepos kLineRepo;
 
 	@Autowired
 	private FuturesRepos futuresRepo;
@@ -178,10 +178,10 @@ public class BatchExpriment extends AbstractBaseLaunch {
 	}
 
 	private boolean outputCsv(Date startDt, Date endDt, List<Futures> futuresList) throws Exception {
-		TreeMap<Date, Map<String, KLine>> kLineMap = futuresList.stream()
+		TreeMap<Date, Map<String, ProdKLine>> kLineMap = futuresList.stream()
 				.map(futures -> kLineRepo.findByCodeAndDtBetweenOrderByDtAsc(futures.getCode(), startDt, endDt))
-				.flatMap(kLineList -> kLineList.stream()).collect(Collectors.groupingBy(KLine::getDt, TreeMap::new,
-						Collectors.toMap(KLine::getCode, Function.identity())));
+				.flatMap(kLineList -> kLineList.stream()).collect(Collectors.groupingBy(ProdKLine::getDt, TreeMap::new,
+						Collectors.toMap(ProdKLine::getCode, Function.identity())));
 		kLineMap = kLineMap.entrySet().stream().filter(entry -> entry.getValue().size() == futuresList.size())
 				.collect(CollectorsHelper.toTreeMap(Map.Entry::getKey, Map.Entry::getValue));
 		
@@ -200,7 +200,7 @@ public class BatchExpriment extends AbstractBaseLaunch {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String content = kLineMap.entrySet().stream().map(entry -> {
 			Date dt = entry.getKey();
-			Map<String, KLine> prices = entry.getValue();
+			Map<String, ProdKLine> prices = entry.getValue();
 			return codeList.stream().map(code -> prices.get(code).getEndPrice().toString())
 					.reduce(df.format(dt.getTime()), FuncHelper.joinString(","));
 		}).reduce(head, FuncHelper.joinString("\n"));

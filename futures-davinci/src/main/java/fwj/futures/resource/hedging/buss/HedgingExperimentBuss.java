@@ -17,7 +17,7 @@ import fwj.futures.resource.hedging.repos.HedgingProdExpRepos;
 import fwj.futures.resource.hedging.vo.HedgingExperimentMonitor;
 import fwj.futures.resource.hedging.vo.HedgingExperimentView;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
-import fwj.futures.resource.price.vo.KLineGroup;
+import fwj.futures.resource.price.vo.KGroup;
 import fwj.futures.resource.price.vo.Price;
 
 @Component
@@ -59,7 +59,7 @@ public class HedgingExperimentBuss {
 		Formula formula2 = Formula.parse(experiment.getExpression2());
 		BigDecimal stdError1 = experiment.getStdError1().setScale(0, RoundingMode.FLOOR);
 		BigDecimal stdError2 = experiment.getStdError2().setScale(0, RoundingMode.FLOOR);
-		List<KLineGroup> groupList = kLineBuss.queryAllGroup();
+		List<KGroup> groupList = kLineBuss.queryAllGroup();
 		List<Price> price1 = hedgingBuss.calculateKLine(formula1, groupList);
 		List<Price> price2 = hedgingBuss.calculateKLine(formula2, groupList);
 		return new HedgingExperimentMonitor(id, name, startDt, endDt, formula1.toString(), formula2.toString(),
