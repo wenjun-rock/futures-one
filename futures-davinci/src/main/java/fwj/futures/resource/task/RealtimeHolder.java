@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
@@ -32,7 +31,6 @@ import fwj.futures.resource.price.vo.UnitData;
 import fwj.futures.resource.price.vo.UnitDataGroup;
 import fwj.futures.resource.prod.buss.ProdBuss;
 import fwj.futures.resource.prod.entity.FuturesTradeTime;
-import fwj.futures.resource.trade.repos.TradeBalanceRepos;
 import fwj.futures.resource.util.FuncHelper;
 
 @Component
@@ -54,21 +52,15 @@ public class RealtimeHolder {
 	@Autowired
 	private RealtimeRepos realtimeRepository;
 
-	@Autowired
-	private TradeBalanceRepos tradeBalanceRepos;
-
 	private int tick = -1;
 	private boolean first = true;
 	private boolean running = false;
 	private UnitDataGroup[] loopCache = new UnitDataGroup[CACHE_SIZE];
 
-	private ConcurrentHashMap<String, List<String>> regContract = new ConcurrentHashMap<>();
-	private Map<String, UnitData> latestContractPrice = new HashMap<>();
-
 	/**
 	 * 间隔1分钟调度
 	 */
-	//@Scheduled(cron = "0 */1 * * * ?")
+	@Scheduled(cron = "0 */1 * * * ?")
 	public void refresh() {
 		if (running) {
 			log.info("Busy!");
@@ -105,7 +97,6 @@ public class RealtimeHolder {
 			Date datetime = new Date(mills);
 
 			updateProd(codeList, datetime);
-			updateContract(codeList, datetime);
 		}
 
 	}
@@ -140,39 +131,6 @@ public class RealtimeHolder {
 		loopCache[nextIndex] = current;
 		tick++;
 		log.info(String.format("%6d | get %s codes (%s)", tick, map.size(), String.join(",", map.keySet())));
-	}
-
-	private void updateContract(List<String> prodCodeList, Date datetime) {
-		List<String> conCodeList = prodCodeList.stream().filter(code -> regContract.containsKey(code))
-				.flatMap(code -> regContract.get(code).stream()).collect(Collectors.toList());
-
-		List<String> lines = new ArrayList<>();
-		int from = 0;
-		while (from < conCodeList.size()) {
-			int to = Math.min(from + 10, conCodeList.size());
-			lines.addAll(this.getExternalRealtime(conCodeList.subList(from, to)));
-			from += 10;
-		}
-
-		Map<String, UnitData> map = new HashMap<>();
-		for (int i = 0; i < conCodeList.size(); i++) {
-			String line = lines.get(i);
-			String code = conCodeList.get(i);
-			RealtimeStore rt = this.parseRealtime(code, datetime, line);
-			if (rt != null) {
-				BigDecimal price = rt.getPrice();
-				if (price != null && price.compareTo(BigDecimal.ZERO) > 0) {
-					map.put(code, new UnitData(datetime, code, price));
-				}
-			}
-		}
-		log.info(String.format("refresh %s contracts (%s)", map.size(), String.join(",", map.keySet())));
-		latestContractPrice.entrySet().stream().forEach(entry -> {
-			if (!map.containsKey(entry.getKey())) {
-				map.put(entry.getKey(), entry.getValue());
-			}
-		});
-		latestContractPrice = map;
 	}
 
 	private RealtimeStore parseRealtime(String code, Date datetime, String line) {
@@ -236,7 +194,6 @@ public class RealtimeHolder {
 	private void init() throws Exception {
 		first = false;
 		initProd();
-		initContract();
 	}
 
 	private void initProd() {
@@ -263,29 +220,6 @@ public class RealtimeHolder {
 		log.info(groupList.size() + " UnitDataGroup was loaded.");
 	}
 
-	private void initContract() {
-		// 设置regContract
-		tradeBalanceRepos.findAll().forEach(balance -> {
-			if (balance.getVol() <= 0) {
-				return;
-			}
-			String conCode = balance.getConCode();
-			String code = balance.getCode();
-			List<String> conCodeList = regContract.get(code);
-			if (conCodeList == null) {
-				conCodeList = new ArrayList<>();
-				conCodeList.add(conCode);
-				regContract.put(code, conCodeList);
-			} else if (!conCodeList.contains(conCode)) {
-				conCodeList.add(conCode);
-			}
-		});
-
-		// 更新所有已注册的合约，即使在非交易时段。
-		this.updateContract(productBuss.queryAllCode(), new Date());
-
-	}
-
 	public List<UnitDataGroup> getRealtime() {
 		if (tick < 0) {
 			return Collections.emptyList();
@@ -307,19 +241,4 @@ public class RealtimeHolder {
 		}
 	}
 
-	public Map<String, UnitData> getLatestContractPrice() {
-		return latestContractPrice;
-	}
-
-	public void registerContract(String code, String conCode) {
-		List<String> conCodeList = regContract.get(code);
-		if (conCodeList == null) {
-			conCodeList = new ArrayList<>();
-			conCodeList.add(conCode);
-			this.updateContract(Arrays.asList(code), new Date());
-		} else if (!conCodeList.contains(conCode)) {
-			conCodeList.add(conCode);
-			this.updateContract(Arrays.asList(code), new Date());
-		}
-	}
 }

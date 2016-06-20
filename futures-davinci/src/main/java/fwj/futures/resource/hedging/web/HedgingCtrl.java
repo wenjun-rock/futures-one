@@ -61,37 +61,16 @@ public class HedgingCtrl {
 	@Autowired
 	private KLineBuss kLineBuss;
 
-	// @RequestMapping(value = "/realtime/{id}", method = RequestMethod.GET)
-	// public HedgingMonitor monitorRealtime(@PathVariable("id") Integer id) {
-	// Hedging hedging = hedgingBuss.getById(id);
-	// List<UnitDataGroup> unitDataGroupList = realTimePriceBuss.queryAllAsc();
-	// List<Price> prices =
-	// hedgingBuss.calculateUnitData(hedging.getExpression(),
-	// unitDataGroupList);
-	// return null;
-	// // return new HedgingMonitor(hedging, prices);
-	// }
-	//
-	// @RequestMapping(value = "/daily/{id}", method = RequestMethod.GET)
-	// public HedgingMonitor monitorDaily(@PathVariable("id") Integer id) {
-	// Hedging hedging = hedgingBuss.getById(id);
-	// List<KLineGroup> groupList = kLineBuss.queryAllGroup();
-	// List<Price> prices = hedgingBuss.calculateKLine(hedging.getExpression(),
-	// groupList);
-	// return null;
-	//// return new HedgingMonitor(hedging, prices);
-	// }
-
 	@RequestMapping(value = "/contracts", method = RequestMethod.GET)
-	public List<HedgingContractContainer> queryHedgingContractByCode(@RequestParam("code") String code) {
+	public List<HedgingContractContainer> queryHedgingContractByCode(@RequestParam("code") String prodCode) {
 		try {
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			Date endDt = df.parse(df.format(new Date()));
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(endDt);
-			cal.add(Calendar.YEAR, -5);
+			cal.add(Calendar.YEAR, -3);
 			Date startDt = cal.getTime();
-			return hedgingContractBuss.queryHedgingContractByCode(startDt, endDt, code);
+			return hedgingContractBuss.queryHedgingContractByCode(startDt, endDt, prodCode);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return Collections.emptyList();
