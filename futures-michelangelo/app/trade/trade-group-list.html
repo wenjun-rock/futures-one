@@ -5,7 +5,7 @@
     </ol>
   </div>
   <div style="height: 45px; border-bottom: 3px solid #ddd;">
-    <div style="float: right; margin-bottom: 20px;">
+    <div class="fr mb20">
       <button type="button" class="btn btn-primary" ng-click="addTradeGroupModal()">添加分组</button>
     </div>
   </div>
@@ -34,7 +34,27 @@
       <h3 class="modal-title">订单详细</h3>
     </div>
     <div class="modal-body">
-        {{group | json}}
+        <ul class="ul-none cb h20">
+          <li class="fl mr10">名称：</li> 
+          <li class="fl mr50">{{group.name}}</li>
+          <li class="fl mr10">备注：</li>
+          <li class="fl mr10">{{group.comment}}</li>
+        </ul>
+       <ul class="ul-none cb h20">
+          <li class="fl mr10">首次交易时间：</li>
+          <li class="fl mr50">{{group.firstTradeDt | date:'yyyy-MM-dd HH:mm:ss'}}</li>
+          <li class="fl mr10">最后交易时间：</li>
+          <li class="fl mr50">{{group.lastTradeDt | date:'yyyy-MM-dd HH:mm:ss'}}</li>
+        </ul>
+        <ul class="ul-none cb h20">
+          <li class="fl mr10">收益：</li>
+          <li class="fl mr50 fs20" ng-class="{'price-up':group.profit>0,'price-down':group.profit<0}">{{group.profit | number}}</li>
+          <li class="fl mr10">手续费：</li>
+          <li class="fl mr50">{{group.fee | number}}</li>
+          <li class="fl mr10">交易额：</li>
+          <li class="fl mr50">{{group.amount | number}}</li>
+        </ul>
+   
         <table id="elmts-table" class="table table-bordered" cellspacing="0" width="100%">
         <thead>
           <tr>
