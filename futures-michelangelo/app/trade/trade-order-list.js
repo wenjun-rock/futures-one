@@ -85,11 +85,12 @@ angular.module('miche.trade.order.list', ['ngRoute', 'miche.services'])
             "targets": [3,4,5,6,7]
           }, {
             "render": function(data, type, row) {
+              var group = '';
               if(data) {
-                return row.groupName + ' (' + row.groupId + ')';
-              } else {
-                return ' <button type="button" class="btn btn-info trade-btn" onclick="$(\'#assignId\').val(' + row.id + ');$(\'#assignId\').click();">分组</button>';
-              }
+                group += row.groupName + ' (' + row.groupId + ')';
+              } 
+              group += ' <button type="button" class="btn btn-info trade-btn ml10" onclick="$(\'#assignId\').val(' + row.id + ');$(\'#assignId\').click();">分组</button>';
+              return group;
             },
             "targets": [9]
           }]
