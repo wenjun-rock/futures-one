@@ -204,7 +204,7 @@ public class KLineRefresher {
 				}
 				int contractMonth = Integer.parseInt(contract.substring(contract.length() - 2));
 				ContractKLine latest = contractKLineRepository
-						.findTopByCodeAndContractMonthOrderByDtDesc(prod.getCode(), contractMonth);
+						.findTopByCodeAndMonthOrderByDtDesc(prod.getCode(), contractMonth);
 				List<ContractKLine> createList = new ArrayList<>();
 				for (int i = 0; i < dailyKs.size(); i++) {
 					JSONArray ele = dailyKs.getJSONArray(i);
@@ -221,7 +221,7 @@ public class KLineRefresher {
 								daily = latest;
 							}
 							daily.setCode(prod.getCode());
-							daily.setContractMonth(contractMonth);
+							daily.setMonth(contractMonth);
 							daily.setDt(dt);
 							daily.setOpenPrice(ele.getBigDecimal(1));
 							daily.setMaxPrice(ele.getBigDecimal(2));

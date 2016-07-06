@@ -57,7 +57,12 @@ public class ContractDailyPriceBuss {
 
 	@Cacheable(value = "ContractDailyPriceBuss.queryByCode")
 	public List<ContractKLine> queryByCode(String code, int contract) {
-		return kLineRepository.findByCodeAndContractMonthOrderByDtAsc(code, contract);
+		return kLineRepository.findByCodeAndMonthOrderByDtAsc(code, contract);
+	}
+	
+	@Cacheable(value = "ContractDailyPriceBuss.queryWithRange")
+	public List<ContractKLine> queryWithRange(String code, int contract, Date startDt, Date endDt) {
+		return kLineRepository.findByCodeAndMonthAndDtBetween(code, contract, startDt, endDt);
 	}
 
 }

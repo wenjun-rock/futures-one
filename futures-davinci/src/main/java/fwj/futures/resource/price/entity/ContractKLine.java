@@ -14,7 +14,7 @@ import fwj.futures.resource.price.vo.K;
 
 @Entity
 @Table(name = "price_contract_kline", uniqueConstraints = {
-		@UniqueConstraint(name = "contract_kline_uni", columnNames = { "dt", "code", "contractMonth" }) })
+		@UniqueConstraint(name = "contract_kline_uni", columnNames = { "dt", "code", "contract_month" }) })
 public class ContractKLine extends AbstractPersistable<Integer> implements K {
 
 	private static final long serialVersionUID = 2664970167802802857L;
@@ -22,8 +22,8 @@ public class ContractKLine extends AbstractPersistable<Integer> implements K {
 	@Column(columnDefinition = "DATE")
 	private Date dt;
 
-	@Column(columnDefinition = "TINYINT")
-	private int contractMonth;
+	@Column(name = "contract_month", columnDefinition = "TINYINT")
+	private int month;
 
 	@Column(length = 2)
 	private String code;
@@ -90,12 +90,12 @@ public class ContractKLine extends AbstractPersistable<Integer> implements K {
 		this.minPrice = minPrice;
 	}
 
-	public int getContractMonth() {
-		return contractMonth;
+	public int getMonth() {
+		return month;
 	}
 
-	public void setContractMonth(int contractMonth) {
-		this.contractMonth = contractMonth;
+	public void setMonth(int contractMonth) {
+		this.month = contractMonth;
 	}
 
 	public Date getDt() {
@@ -107,11 +107,11 @@ public class ContractKLine extends AbstractPersistable<Integer> implements K {
 	}
 
 	public String getContractName() {
-		return String.format("%s%02d", code, contractMonth);
+		return String.format("%s%02d", code, month);
 	}
 	
 	@Override
 	public String getName() {
-		return String.format("%s%02d", this.code, this.contractMonth);
+		return String.format("%s%02d", this.code, this.month);
 	}
 }
