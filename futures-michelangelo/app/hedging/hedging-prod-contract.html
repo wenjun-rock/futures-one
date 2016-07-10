@@ -1,0 +1,35 @@
+<div>
+  <div class="row">
+    <ol class="breadcrumb">
+      <li class="active">合约对冲列表</li>
+    </ol>
+  </div>
+  <table id="hedging-prod-contract-table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th>名称</th>
+        <th>孵化度</th>
+        <th>当前价</th>
+        <th>最低价</th>
+        <th>下限价</th>
+        <th>上限价</th>
+        <th>最高价</th>
+        <th>等级</th>
+        <th>类型</th>
+        <th>刷新日期</th>
+      </tr>
+    </thead>
+  </table>
+  <input type="hidden" ng-click="monitorHedgingContract();" id="hedgingId"></input>
+  <script type="text/ng-template" id="hedgingContractModal.html">
+    <div class="modal-body mt10" style="height:450px">
+      <div class="col-md-12">
+        <div id="monitor-hedging-contract"></div>
+        <div class="product-chart-toolbox">
+          <button type="button" class="btn btn-success label-wall-btn" ng-click="spot(120)">全部</button>
+          <button type="button" class="btn btn-info label-wall-btn" ng-click="spot(18)">近18月</button>
+        </div>
+      </div>
+    </div>
+  </script>
+</div>

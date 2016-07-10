@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.io.Resources;
 
+import fwj.futures.resource.hedging.buss.HedgingProdContractBuss;
 import fwj.futures.resource.price.buss.ContractDailyPriceBuss;
 import fwj.futures.resource.price.buss.DailyPriceBuss;
 import fwj.futures.resource.price.buss.ProdIndexBuss;
@@ -74,6 +75,9 @@ public class KLineRefresher {
 
 	@Autowired
 	private ProdSpotPriceBuss prodSpotPriceBuss;
+	
+	@Autowired
+	private HedgingProdContractBuss hedgingProdContractBuss;
 
 	/**
 	 * 每天15时45分调度。
@@ -83,10 +87,17 @@ public class KLineRefresher {
 		refreshKLine();
 		refreshGlobalKLine();
 		refreshContractKLine(false);
+		
+		refreshHedgingProdContract();
 		refreshProdIndex();
 		refreshTrendMonitor();
+		
 		refreshProdSpot();
 		log.info("Done!");
+	}
+
+	private void refreshHedgingProdContract() {
+		hedgingProdContractBuss.refreshHedging();
 	}
 
 	private void refreshProdSpot() {

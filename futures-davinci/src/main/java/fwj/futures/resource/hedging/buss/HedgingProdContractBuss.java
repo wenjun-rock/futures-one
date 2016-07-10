@@ -96,20 +96,12 @@ public class HedgingProdContractBuss {
 		});
 	}
 
-	@SuppressWarnings("unchecked")
 	private void refreshHedging(HedgingProdContract hedging) {
 		Calendar cal = Calendar.getInstance();
 		Date end = cal.getTime();
 		cal.add(Calendar.MONTH, -12);
 		Date start = cal.getTime();
-		List<ContractKLine> kLine1 = conPriceBuss.queryWithRange(hedging.getCode1(), hedging.getMonth1(), start, end);
-		List<ContractKLine> kLine2 = conPriceBuss.queryWithRange(hedging.getCode2(), hedging.getMonth2(), start, end);
-
-		String name1 = kLine1.get(0).getName();
-		String name2 = kLine2.get(0).getName();
-		Formula f = Formula.create().putConstant(BigDecimal.ZERO) //
-				.putMultinomial(name1, "1").putMultinomial(name2, "-1");
-		Series series = kLineBuss.calculateSeries(name1 + "-" + name2, f, kLine1, kLine2);
+		Series series = this.getHedgingSeries(hedging, start, end);		
 		int size = series.getPrices().size();
 		List<BigDecimal> pList = series.getPrices().stream().map(Price::getP).sorted().collect(Collectors.toList());
 		BigDecimal curr = series.getPrices().get(size - 1).getP();
@@ -130,6 +122,26 @@ public class HedgingProdContractBuss {
 		hedging.setRate(rate);
 		hedging.setRefreshDt(end);
 		hedgingProdContractRepo.saveAndFlush(hedging);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Series getHedgingSeries(HedgingProdContract hedging, Date start, Date end) {
+		List<ContractKLine> kLine1 = conPriceBuss.queryWithRange(hedging.getCode1(), hedging.getMonth1(), start, end);
+		List<ContractKLine> kLine2 = conPriceBuss.queryWithRange(hedging.getCode2(), hedging.getMonth2(), start, end);
+		String name1 = kLine1.get(0).getName();
+		String name2 = kLine2.get(0).getName();
+		Formula f = Formula.create().putConstant(BigDecimal.ZERO) //
+				.putMultinomial(name1, "1").putMultinomial(name2, "-1");
+		return kLineBuss.calculateSeries(name1 + "-" + name2, f, kLine1, kLine2);
+	}
+	
+	public Series getHedgingSeries(Integer id, Date start, Date end) {
+		HedgingProdContract hedging = hedgingProdContractRepo.findOne(id);
+		return this.getHedgingSeries(hedging, start, end);
+	}
+
+	public List<HedgingProdContract> listAll() {
+		return hedgingProdContractRepo.findAll();	
 	}
 
 }
