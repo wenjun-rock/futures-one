@@ -106,8 +106,8 @@ public class HedgingProdContractBuss {
 		List<BigDecimal> pList = series.getPrices().stream().map(Price::getP).sorted().collect(Collectors.toList());
 		BigDecimal curr = series.getPrices().get(size - 1).getP();
 		BigDecimal min = pList.get(0);
-		BigDecimal down = pList.get(size / 10);
-		BigDecimal up = pList.get(size * 9 / 10);
+		BigDecimal down = pList.get(size / 20);
+		BigDecimal up = pList.get(size * 19 / 20);
 		BigDecimal max = pList.get(size - 1);
 		BigDecimal range = up.subtract(down);
 		BigDecimal rate1 = curr.subtract(down).divide(range, 4, RoundingMode.FLOOR);
