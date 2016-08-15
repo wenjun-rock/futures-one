@@ -245,7 +245,7 @@ angular.module('miche.services', [])
         return {
           name: ele.year,
           data: ele.line.map(function(wrap) {
-            return [wrap.dt, wrap.p.d];
+            return [wrap.dt, wrap.p.p];
           })
         };
       });
@@ -261,6 +261,39 @@ angular.module('miche.services', [])
         yAxis: {
           title: {
             text: '价差'
+          }
+        },
+        tooltip: {
+          dateTimeLabelFormats: {
+            day: '%m-%d'
+          }
+        },
+        series: yearSeries
+      }));
+    };
+
+    service.drawMainContractYear = function(container, domId) {
+      var yearSeries = container.yearLines.map(function(ele) {
+        var startPrice = ele.line[0].p.p;
+        return {
+          name: ele.year + ' (' + startPrice + ')',
+          data: ele.line.map(function(wrap) {
+            return [wrap.dt, parseFloat((wrap.p.p - startPrice).toFixed(2))];
+          })
+        };
+      });
+      $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
+        title: {
+          text: container.name
+        },
+        xAxis: {
+          dateTimeLabelFormats: {
+            month: '%m'
+          }
+        },
+        yAxis: {
+          title: {
+            text: '价格'
           }
         },
         tooltip: {
@@ -294,9 +327,9 @@ angular.module('miche.services', [])
         data: []
       }];
       hedging.line.forEach(function(ele) {
-        series[0].data.push([ele.dt, ele.d]);
-        series[1].data.push([ele.dt, ele.vol1]);
-        series[2].data.push([ele.dt, ele.vol2]);
+        series[0].data.push([ele.d, ele.p]);
+        series[1].data.push([ele.d, ele.vol1]);
+        series[2].data.push([ele.d, ele.vol2]);
       });
       $('#' + domId).highcharts($.extend(true, {}, defaultOptions, {
         title: {

@@ -14,9 +14,9 @@ public class LineHelper {
 	public static <T extends TimeLineable> List<YearTimeLine<T>> foldLineInYear(List<T> timeLine) {
 		DateFormat df = new SimpleDateFormat("yyyy");
 		Map<String, List<PointWrap<T>>> map = timeLine.stream().map(point -> {
-			String year = df.format(point.getDt());
+			String year = df.format(point.getD());
 			Calendar cal = Calendar.getInstance();
-			cal.setTime(point.getDt());
+			cal.setTime(point.getD());
 			cal.set(Calendar.YEAR, 2012);
 			return new PointWrap<T>(cal.getTime(), year, point);
 		}).collect(Collectors.groupingBy(PointWrap::getY, Collectors.toList()));

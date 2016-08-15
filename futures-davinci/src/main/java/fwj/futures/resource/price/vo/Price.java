@@ -3,7 +3,9 @@ package fwj.futures.resource.price.vo;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public  class Price implements Comparable<Price> {
+import fwj.futures.resource.util.TimeLineable;
+
+public  class Price implements Comparable<Price>, TimeLineable {
 	private Date d;
 	private BigDecimal p;
 
@@ -24,4 +26,5 @@ public  class Price implements Comparable<Price> {
 	public int compareTo(Price that) {
 		return this.d.compareTo(that.d);
 	}
+
 }

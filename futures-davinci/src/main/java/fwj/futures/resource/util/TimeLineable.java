@@ -4,6 +4,6 @@ import java.util.Date;
 
 public interface TimeLineable {
 	
-	Date getDt();
+	Date getD();
 
 }

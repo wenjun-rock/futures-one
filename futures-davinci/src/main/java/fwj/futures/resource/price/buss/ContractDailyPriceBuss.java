@@ -19,6 +19,9 @@ import fwj.futures.resource.price.repos.ContractKLineRepos;
 import fwj.futures.resource.price.vo.Price;
 import fwj.futures.resource.prod.vo.ProdContracts;
 import fwj.futures.resource.prod.vo.ProdContracts.Contract;
+import fwj.futures.resource.util.LineHelper;
+import fwj.futures.resource.util.YearTimeLine;
+import fwj.futures.resource.util.YearTimeLineContainer;
 
 @Component
 public class ContractDailyPriceBuss {
@@ -26,8 +29,8 @@ public class ContractDailyPriceBuss {
 	@Autowired
 	private ContractKLineRepos kLineRepository;
 
-	@CacheEvict(value = { "ContractDailyPriceBuss.getConstractsByCode",
-			"ContractDailyPriceBuss.queryByCode" }, allEntries = true)
+	@CacheEvict(value = { "ContractDailyPriceBuss.getConstractsByCode", "ContractDailyPriceBuss.queryByCode",
+			"ContractDailyPriceBuss.queryWithRange", "ContractDailyPriceBuss.queryWithRangeInYear" }, allEntries = true)
 	public void reload() {
 	}
 
@@ -59,10 +62,20 @@ public class ContractDailyPriceBuss {
 	public List<ContractKLine> queryByCode(String code, int contract) {
 		return kLineRepository.findByCodeAndMonthOrderByDtAsc(code, contract);
 	}
-	
+
 	@Cacheable(value = "ContractDailyPriceBuss.queryWithRange")
 	public List<ContractKLine> queryWithRange(String code, int contract, Date startDt, Date endDt) {
 		return kLineRepository.findByCodeAndMonthAndDtBetween(code, contract, startDt, endDt);
+	}
+
+	@Cacheable(value = "ContractDailyPriceBuss.queryWithRangeInYear")
+	public YearTimeLineContainer<Price> queryWithRangeInYear(String code, int month, Date start, Date end) {
+		List<ContractKLine> line = kLineRepository.findByCodeAndMonthAndDtBetween(code, month, start, end);
+		List<Price> priceList = line.stream().map(k -> new Price(k.getDt(), k.getEndPrice()))
+				.collect(Collectors.toList());
+		String name = String.format("%s%02d", code, month);
+		List<YearTimeLine<Price>> yearLines = LineHelper.foldLineInYear(priceList);
+		return new YearTimeLineContainer<>(name, yearLines);
 	}
 
 }

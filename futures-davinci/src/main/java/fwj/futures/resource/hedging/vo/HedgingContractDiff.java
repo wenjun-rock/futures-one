@@ -5,22 +5,22 @@ import java.util.Date;
 
 import fwj.futures.resource.util.TimeLineable;
 
-public class HedgingContractDiff implements TimeLineable{
+public class HedgingContractDiff implements TimeLineable {
 
-	private BigDecimal d;
+	private BigDecimal p;
 	private Integer vol1;
 	private Integer vol2;
-	private Date dt;
+	private Date d;
 
-	public HedgingContractDiff(BigDecimal diff, Integer tradeVol1, Integer tradeVol2, Date dt) {
-		this.d = diff;
-		this.dt = dt;
+	public HedgingContractDiff(BigDecimal diff, Integer tradeVol1, Integer tradeVol2, Date d) {
+		this.p = diff;
+		this.d = d;
 		this.vol1 = tradeVol1;
 		this.vol2 = tradeVol2;
 	}
 
-	public BigDecimal getD() {
-		return d;
+	public BigDecimal getP() {
+		return p;
 	}
 
 	public Integer getVol1() {
@@ -31,8 +31,11 @@ public class HedgingContractDiff implements TimeLineable{
 		return vol2;
 	}
 
-	public Date getDt() {
-		return dt;
+	@Override
+	public Date getD() {
+		return d;
 	}
+
+
 
 }

@@ -16,7 +16,8 @@ angular.module('micheApp', [
   'miche.trade.order.list',
   'miche.trade.group.list',
   'miche.trend.prod',
-  'miche.trend.ma.monitor'
+  'miche.trend.ma.monitor',
+  'miche.price.contract'
 ])
 
 .config(['$routeProvider', function($routeProvider) {
